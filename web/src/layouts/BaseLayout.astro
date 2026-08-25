@@ -75,4 +75,48 @@ const { lang, version, title, description } = Astro.props;
   .skip-link:focus {
     left: 0;
   }
+
+  /*
+    Dark-mode toggle transition: a diagonal clip-path wipe driven by the
+    View Transitions API (theme-toggle.rdsx.dev's "polygon" technique).
+    Unsupported browsers (Firefox, older Safari) just get an instant swap —
+    `document.startViewTransition` is feature-detected in ThemeToggle.astro,
+    so nothing here is required for the toggle to keep working.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-group(root) {
+      animation-duration: 0.7s;
+      animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    ::view-transition-new(root) {
+      animation-name: natura-reveal-light;
+      animation-fill-mode: both;
+    }
+    ::view-transition-old(root),
+    :root[data-theme='dark']::view-transition-old(root) {
+      animation: none;
+      animation-fill-mode: both;
+      z-index: -1;
+    }
+    :root[data-theme='dark']::view-transition-new(root) {
+      animation-name: natura-reveal-dark;
+      animation-fill-mode: both;
+    }
+    @keyframes natura-reveal-dark {
+      from {
+        clip-path: polygon(50% -71%, -50% 71%, -50% 71%, 50% -71%);
+      }
+      to {
+        clip-path: polygon(50% -71%, -50% 71%, 50% 171%, 171% 50%);
+      }
+    }
+    @keyframes natura-reveal-light {
+      from {
+        clip-path: polygon(171% 50%, 50% 171%, 50% 171%, 171% 50%);
+      }
+      to {
+        clip-path: polygon(171% 50%, 50% 171%, -50% 71%, 50% -71%);
+      }
+    }
+  }
 </style>

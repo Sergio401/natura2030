@@ -56,11 +56,10 @@ export interface SiteContent {
     org: OrgFact[];
   };
   cta: {
-    primary: string;
-    secondary: string;
+    initiatives: string;
+    models: string;
   };
   footer: {
-    tagline: string;
     email: string;
     copyright: string;
     note: string;
@@ -72,5 +71,7 @@ export interface SiteContent {
     languageLabel: string;
     versionLabel: string;
     versionNames: Record<'v1' | 'v2' | 'v3', string>;
+    copyEmail: string;
+    emailCopied: string;
   };
 }

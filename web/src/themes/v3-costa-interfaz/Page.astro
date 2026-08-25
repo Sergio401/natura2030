@@ -4,6 +4,7 @@ import isotipoColor from '../../assets/brand/isotipo-color.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
+import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
 import type { Locale } from '../../data/types';
 import { parseHeadline } from '../../utils/headline';
@@ -26,13 +27,11 @@ const ringRadii = [112, 96, 80, 64];
       <Image src={isotipoColor} alt="Adaptation Latin America" width={32} height={32} />
       <span class="word">{t.meta.orgName.toUpperCase()}</span>
     </div>
-    <nav class="co-navlinks" aria-label="Principal">
-      {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
-    </nav>
     <div class="co-nav-tools">
       <LanguageSwitcher version="v3" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href="#cta" class="co-btn co-btn-primary">{t.cta.primary.split(' ').slice(0, 2).join(' ')}</a>
+      <a href="#" class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
+      <a href="#" class="co-btn co-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
@@ -53,8 +52,8 @@ const ringRadii = [112, 96, 80, 64];
     </h1>
     <p class="lede">{c.hero.lede}</p>
     <div class="co-hero-cta">
-      <a href="#cta" class="co-btn co-btn-primary magnetic">{t.cta.primary}</a>
-      <a href="#entradas" class="co-btn co-btn-ghost">{c.hero.ctaSecondary}</a>
+      <a href="#" class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
+      <a href="#" class="co-btn co-btn-primary magnetic">{t.cta.models}</a>
     </div>
     <div class="co-coast" data-draw-trigger aria-hidden="true">
       <svg viewBox="0 0 1100 180" fill="none">
@@ -160,11 +159,12 @@ const ringRadii = [112, 96, 80, 64];
   </section>
 
   <section class="co-cta" id="cta">
-    <span class="co-eyebrow" style="color:var(--ink);">{c.sections.cta.eyebrow}</span>
-    <h2>{c.sections.cta.title}</h2>
-    <div class="row">
-      <a href="#" class="co-btn co-btn-primary magnetic">{t.cta.primary}</a>
-      <a href="#" class="co-btn co-btn-ghost" style="border-color:color-mix(in srgb, var(--ink) 35%, transparent);">{t.cta.secondary}</a>
+    <div class="co-cta-inner">
+      <div class="co-cta-copy">
+        <span class="co-eyebrow" style="color:var(--ink);">{c.sections.cta.eyebrow}</span>
+        <h2>{c.sections.cta.title}</h2>
+      </div>
+      <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} />
     </div>
   </section>
 
@@ -172,7 +172,6 @@ const ringRadii = [112, 96, 80, 64];
     <div class="co-footer-top">
       <div class="co-footer-brand"><Image src={isotipoColor} alt="" width={26} height={26} /><span>{t.meta.orgName}</span></div>
       <div class="co-footer-links">
-        {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
         <a href={`mailto:${t.footer.email}`}>{t.footer.email}</a>
       </div>
     </div>
@@ -203,13 +202,11 @@ const ringRadii = [112, 96, 80, 64];
   .co-wrap { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
 
   .co-nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 48px; background: color-mix(in srgb, var(--bg-1) 72%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border); transition: box-shadow .3s ease, background .3s ease; }
-  .co-nav.scrolled { background: color-mix(in srgb, var(--bg-1) 95%, transparent); box-shadow: 0 6px 24px color-mix(in srgb, var(--ink) 6%, transparent); }
+    padding: 16px 48px; background: transparent;
+    transition: background .3s ease, backdrop-filter .3s ease; }
+  .co-nav.scrolled { background: color-mix(in srgb, var(--bg-1) 45%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
   .co-brand { display: flex; align-items: center; gap: 10px; }
   .co-brand .word { font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 14.5px; line-height: 1.1; }
-  .co-navlinks { display: flex; align-items: center; gap: 28px; }
-  .co-navlinks a { font-size: 14px; font-weight: 700; }
   .co-nav-tools { display: flex; align-items: center; gap: 16px; }
   .co-btn { font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
     display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
@@ -288,28 +285,30 @@ const ringRadii = [112, 96, 80, 64];
   .co-map2 img { animation: mfloat 7s ease-in-out infinite; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3)); }
   @keyframes mfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-  .co-cta { text-align: center; padding: 100px 48px; background: var(--teal); }
-  .co-cta h2 { font-size: clamp(28px,3.6vw,44px); max-width: 640px; margin: 0 auto 30px; line-height: 1.16; color: #08110b; }
-  .co-cta .row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .co-cta { padding: 80px 48px; background: var(--teal); }
+  .co-cta-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 48px; }
+  .co-cta-copy { max-width: 620px; }
+  .co-cta h2 { font-size: clamp(26px,3.1vw,38px); margin-top: 12px; line-height: 1.18; color: #08110b; }
+  .co-cta :global(.natura-contact-email) { color: #08110b; flex: none; }
 
   .co-footer { background: var(--ink); color: color-mix(in srgb, var(--bg-1) 75%, transparent); padding: 60px 48px 90px; }
   .co-footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding-bottom: 32px; border-bottom: 1px solid color-mix(in srgb, var(--bg-1) 12%, transparent); }
   .co-footer-brand { display: flex; align-items: center; gap: 10px; }
   .co-footer-brand span { font-family: 'Archivo',sans-serif; font-weight: 900; color: var(--bg-1); font-size: 13.5px; }
   .co-footer-links { display: flex; gap: 26px; flex-wrap: wrap; }
-  .co-footer-links a { color: color-mix(in srgb, var(--bg-1) 68%, transparent); font-size: 13.5px; }
-  .co-footer-links a:hover { color: var(--teal); }
+  .co-footer .co-footer-links a { color: color-mix(in srgb, var(--bg-1) 68%, transparent); font-size: 13.5px; }
+  .co-footer .co-footer-links a:hover { color: var(--teal); }
   .co-footer-bottom { display: flex; justify-content: space-between; padding-top: 22px; font-size: 12.5px; flex-wrap: wrap; gap: 8px; }
 
   @media (max-width: 900px) {
-    .co-navlinks { display: none; }
     .co-scrolly { grid-template-columns: 1fr; }
     .co-sticky { position: relative; top: 0; height: auto; padding: 20px 0 40px; }
     .co-deliver-grid { grid-template-columns: 1fr; }
     .co-about { grid-template-columns: 1fr; }
+    .co-cta-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .co-wrap, .co-section, .co-hero { padding-left: 22px; padding-right: 22px; }
     .co-nav { padding: 14px 16px; }
-    .co-nav-tools { gap: 10px; }
+    .co-nav-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .co-btn { padding: 11px 18px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {

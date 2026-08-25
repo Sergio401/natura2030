@@ -98,12 +98,11 @@ export const en: SiteContent = {
     ],
   },
   cta: {
-    primary: 'Request access to the platform',
-    secondary: 'Write to the team',
+    initiatives: 'View initiatives',
+    models: 'View models',
   },
   footer: {
-    tagline: "NATURA 2030 is ALA's coastal climate information platform supporting adaptation decisions across Latin America.",
-    email: 'correo@adaptationla.org',
+    email: 'algo@natura2030.com',
     copyright: '© 2026 Adaptation Latin America. All rights reserved.',
     note: 'NATURA 2030 is an initiative of ALA.',
   },
@@ -118,5 +117,7 @@ export const en: SiteContent = {
       v2: 'Data Engine',
       v3: 'The Coastline',
     },
+    copyEmail: 'Copy email',
+    emailCopied: 'Copied!',
   },
 };

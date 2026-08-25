@@ -1,0 +1,110 @@
+---
+interface Props {
+  email: string;
+  copyLabel: string;
+  copiedLabel: string;
+}
+const { email, copyLabel, copiedLabel } = Astro.props;
+---
+
+<div class="natura-contact-email" data-natura-copy-email data-email={email} data-label-copy={copyLabel} data-label-copied={copiedLabel}>
+  <a href={`mailto:${email}`} class="natura-contact-email-address">{email}</a>
+  <button type="button" class="natura-contact-email-copy" aria-label={copyLabel} title={copyLabel}>
+    <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <rect x="8" y="8" width="12" height="12" rx="2" />
+      <path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" />
+    </svg>
+    <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+</div>
+
+<style>
+  .natura-contact-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .natura-contact-email-address {
+    font-weight: 800;
+    font-size: 19px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .natura-contact-email-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border: 1px solid currentColor;
+    opacity: 0.7;
+    background: transparent;
+    color: inherit;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .natura-contact-email-copy:hover {
+    opacity: 1;
+  }
+  .natura-contact-email-copy:active {
+    transform: scale(0.94);
+  }
+  .natura-contact-email-copy svg {
+    width: 18px;
+    height: 18px;
+  }
+  .icon-check {
+    display: none;
+  }
+  .natura-contact-email-copy.copied {
+    opacity: 1;
+  }
+  .natura-contact-email-copy.copied .icon-copy {
+    display: none;
+  }
+  .natura-contact-email-copy.copied .icon-check {
+    display: block;
+  }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('[data-natura-copy-email]').forEach((wrap) => {
+    const btn = wrap.querySelector('.natura-contact-email-copy');
+    const email = wrap.getAttribute('data-email') || '';
+    const copyLabel = wrap.getAttribute('data-label-copy') || '';
+    const copiedLabel = wrap.getAttribute('data-label-copied') || '';
+    if (!btn) return;
+    let timer;
+    btn.addEventListener('click', async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(email);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+      } catch (err) {
+        return;
+      }
+      btn.classList.add('copied');
+      btn.setAttribute('aria-label', copiedLabel);
+      btn.setAttribute('title', copiedLabel);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.setAttribute('aria-label', copyLabel);
+        btn.setAttribute('title', copyLabel);
+      }, 2000);
+    });
+  });
+</script>

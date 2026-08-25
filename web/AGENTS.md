@@ -2,6 +2,8 @@
 
 Contexto operativo para cualquier agente (Claude Code u otro) que trabaje en este repo. Para la descripción del proyecto, stack y estructura, ver primero **[README.md](./README.md)** — esta guía asume que ya la leíste y se enfoca en convenciones y errores ya encontrados que no son obvios a simple vista.
 
+> **No hagas commits.** El usuario hace todos los commits de este repo manualmente. No corras `git commit` (ni `git add` pensando en commitear, ni `git push`) salvo que el usuario lo pida explícitamente en ese mismo turno — dejá los cambios en el working tree sin commitear cuando termines una tarea.
+
 ## Lo más importante antes de tocar código
 
 Este NO es un sitio con una sola identidad visual: son **3 skins independientes** (`src/themes/v1-*`, `v2-*`, `v3-*`) que comparten datos y conviven en el mismo repo. Antes de editar algo, ubicate:
@@ -63,6 +65,7 @@ Para dejar el dev server corriendo en background en vez de en foreground: `astro
 
 ## Qué no hacer sin que el usuario lo pida explícitamente
 
+- **Hacer commits o push.** El usuario los hace a mano — ver nota al inicio del documento.
 - Elegir una sola versión visual y borrar/archivar las otras dos.
 - Cambiar el stack (meter Tailwind, React/Vue, un framework de i18n) — fue una decisión explícita documentada en el README.
 

@@ -1,12 +1,10 @@
 import type { Locale } from '../../data/types';
 
 export interface V3Copy {
-  nav: { href: string; label: string }[];
   hero: {
     eyebrow: string;
     headline: string;
     lede: string;
-    ctaSecondary: string;
   };
   sections: {
     inputs: { eyebrow: string; title: string };
@@ -20,17 +18,10 @@ export interface V3Copy {
 
 export const v3Copy: Record<Locale, V3Copy> = {
   es: {
-    nav: [
-      { href: '#entradas', label: 'La costa' },
-      { href: '#proceso', label: 'Proceso' },
-      { href: '#aplicaciones', label: 'Aplicaciones' },
-      { href: '#nosotros', label: 'Nosotros' },
-    ],
     hero: {
       eyebrow: 'NATURA 2030 · Adaptation Latin America',
       headline: 'La costa de América Latina,\nleída de {{punta a punta}}.',
       lede: 'Mareógrafos, boyas, satélites y campañas de campo, convertidos en una misma lectura del litoral para decidir con información.',
-      ctaSecondary: 'Recorrer la costa',
     },
     sections: {
       inputs: { eyebrow: 'Un territorio, miles de señales', title: 'Cuatro tipos de datos alimentan la misma lectura del litoral.' },
@@ -42,17 +33,10 @@ export const v3Copy: Record<Locale, V3Copy> = {
     },
   },
   en: {
-    nav: [
-      { href: '#entradas', label: 'The coast' },
-      { href: '#proceso', label: 'Process' },
-      { href: '#aplicaciones', label: 'Applications' },
-      { href: '#nosotros', label: 'About' },
-    ],
     hero: {
       eyebrow: 'NATURA 2030 · Adaptation Latin America',
       headline: "Latin America's coastline,\nread from {{end to end}}.",
       lede: 'Tide gauges, buoys, satellites and field campaigns, turned into one single reading of the coastline to decide with information.',
-      ctaSecondary: 'Explore the coast',
     },
     sections: {
       inputs: { eyebrow: 'A territory, thousands of signals', title: 'Four types of data feed the same reading of the coastline.' },

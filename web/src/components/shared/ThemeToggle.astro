@@ -68,10 +68,18 @@ const { labelToLight, labelToDark } = Astro.props;
     const root = document.documentElement;
     const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
     const next = current === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try {
-      localStorage.setItem('natura-theme', next);
-    } catch (err) {}
-    btn.setAttribute('aria-label', next === 'dark' ? btn.getAttribute('data-label-light') : btn.getAttribute('data-label-dark'));
+    const applyTheme = () => {
+      root.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('natura-theme', next);
+      } catch (err) {}
+      btn.setAttribute('aria-label', next === 'dark' ? btn.getAttribute('data-label-light') : btn.getAttribute('data-label-dark'));
+    };
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !document.startViewTransition) {
+      applyTheme();
+    } else {
+      document.startViewTransition(applyTheme);
+    }
   });
 </script>

@@ -4,6 +4,7 @@ import isotipoColor from '../../assets/brand/isotipo-color.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
+import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
 import type { Locale } from '../../data/types';
 import { parseHeadline } from '../../utils/headline';
@@ -27,14 +28,12 @@ const stats = [
 <div class="theme-v2" id="main">
   <header class="dv-nav" data-natura-nav>
     <div class="dv-brand"><Image src={isotipoColor} alt="ALA" width={28} height={28} /><span class="word">{t.meta.orgName.toUpperCase()}</span></div>
-    <nav class="dv-navlinks" aria-label="Principal">
-      {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
-    </nav>
     <div class="dv-tools">
       <span class="dv-status"><span class="dot" aria-hidden="true"></span>{c.statusBadge}</span>
       <LanguageSwitcher version="v2" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href="#cta" class="dv-btn dv-btn-primary">{t.cta.primary.split(' ').slice(0, 2).join(' ')}</a>
+      <a href="#" class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
+      <a href="#" class="dv-btn dv-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
@@ -57,8 +56,8 @@ const stats = [
         </h1>
         <p class="lede">{c.hero.lede}</p>
         <div class="dv-hero-cta">
-          <a href="#cta" class="dv-btn dv-btn-primary magnetic">{t.cta.primary}</a>
-          <a href="#motor" class="dv-btn dv-btn-ghost">{c.hero.ctaSecondary}</a>
+          <a href="#" class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
+          <a href="#" class="dv-btn dv-btn-primary magnetic">{t.cta.models}</a>
         </div>
         <div class="dv-stats">
           {stats.map((s) => (
@@ -176,11 +175,12 @@ const stats = [
   </section>
 
   <section class="dv-cta" id="cta">
-    <span class="dv-eyebrow" style="justify-content:center;"><span class="dot" aria-hidden="true"></span>{c.sections.cta.eyebrow}</span>
-    <h2>{c.sections.cta.title}</h2>
-    <div class="row">
-      <a href="#" class="dv-btn dv-btn-primary magnetic">{t.cta.primary}</a>
-      <a href="#" class="dv-btn dv-btn-ghost">{t.cta.secondary}</a>
+    <div class="dv-cta-inner">
+      <div class="dv-cta-copy">
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.sections.cta.eyebrow}</span>
+        <h2>{c.sections.cta.title}</h2>
+      </div>
+      <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} />
     </div>
   </section>
 
@@ -188,7 +188,6 @@ const stats = [
     <div class="dv-footer-top">
       <div class="dv-footer-brand"><Image src={isotipoColor} alt="" width={24} height={24} /><span>{t.meta.orgName}</span></div>
       <div class="dv-footer-links">
-        {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
         <a href={`mailto:${t.footer.email}`}>{t.footer.email}</a>
       </div>
     </div>
@@ -227,9 +226,6 @@ const stats = [
   .dv-nav.scrolled { background: color-mix(in srgb, var(--bg) 92%, transparent); box-shadow: 0 10px 30px color-mix(in srgb, black 30%, transparent); }
   .dv-brand { display: flex; align-items: center; gap: 10px; }
   .dv-brand .word { font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 14px; }
-  .dv-navlinks { display: flex; align-items: center; gap: 24px; }
-  .dv-navlinks a { font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono',monospace; color: var(--ink-soft); text-transform: uppercase; }
-  .dv-navlinks a:hover { color: var(--teal); }
   .dv-tools { display: flex; align-items: center; gap: 14px; }
   .dv-status { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--ink-soft); border: 1px solid var(--border); padding: 6px 12px; border-radius: 999px; text-transform: uppercase; }
   .dv-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: ping 2.2s ease-out infinite; }
@@ -323,8 +319,11 @@ const stats = [
   .dv-orgpanel .row:last-child { border-bottom: none; }
   .dv-orgpanel .row b { color: var(--ink); font-family: Arial,sans-serif; font-size: 13px; }
 
-  .dv-cta { text-align: center; padding: 100px 48px; background: linear-gradient(180deg, color-mix(in srgb, var(--teal) 8%, transparent), transparent); }
-  .dv-cta h2 { font-size: clamp(28px,3.6vw,42px); max-width: 640px; margin: 0 auto 30px; line-height: 1.16; }
+  .dv-cta { padding: 88px 48px; background: linear-gradient(180deg, color-mix(in srgb, var(--teal) 8%, transparent), transparent); }
+  .dv-cta-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 48px; }
+  .dv-cta-copy { max-width: 620px; }
+  .dv-cta h2 { font-size: clamp(26px,3.1vw,36px); margin-top: 12px; line-height: 1.18; }
+  .dv-cta :global(.natura-contact-email) { flex: none; }
   .dv-cta .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
   .dv-footer { padding: 48px 48px 96px; border-top: 1px solid var(--border); }
@@ -332,13 +331,14 @@ const stats = [
   .dv-footer-brand { display: flex; align-items: center; gap: 10px; }
   .dv-footer-brand span { font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 13px; }
   .dv-footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
-  .dv-footer-links a { font-family: 'JetBrains Mono',monospace; font-size: 12px; color: var(--ink-soft); }
-  .dv-footer-links a:hover { color: var(--teal); }
+  .dv-footer .dv-footer-links a { font-family: 'JetBrains Mono',monospace; font-size: 12px; color: var(--ink-soft); }
+  .dv-footer .dv-footer-links a:hover { color: var(--teal); }
   .dv-footer-bottom { font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--ink-softer); border-top: 1px solid var(--border); padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
   @media (max-width: 900px) {
-    .dv-navlinks, .dv-status { display: none; }
+    .dv-status { display: none; }
     .dv-hero-grid, .dv-about { grid-template-columns: 1fr; }
+    .dv-cta-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .dv-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .dv-deliver-grid, .dv-apps-grid { grid-template-columns: 1fr; }
     .dv-nodes { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -346,7 +346,7 @@ const stats = [
     .dv-loglist { grid-template-columns: 1fr; }
     .dv-wrap, .dv-section, .dv-hero { padding-left: 22px; padding-right: 22px; }
     .dv-nav { padding: 14px 16px; }
-    .dv-tools { gap: 8px; }
+    .dv-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .dv-btn { padding: 11px 16px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {

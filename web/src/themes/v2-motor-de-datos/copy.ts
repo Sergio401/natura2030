@@ -1,13 +1,11 @@
 import type { Locale } from '../../data/types';
 
 export interface V2Copy {
-  nav: { href: string; label: string }[];
   statusBadge: string;
   hero: {
     eyebrow: string;
     headline: string;
     lede: string;
-    ctaSecondary: string;
     statsLabels: string[];
     consoleLabels: { left: string; right: string };
   };
@@ -28,18 +26,11 @@ export interface V2Copy {
 
 export const v2Copy: Record<Locale, V2Copy> = {
   es: {
-    nav: [
-      { href: '#motor', label: 'Motor' },
-      { href: '#datos', label: 'Datos' },
-      { href: '#aplicaciones', label: 'Aplicaciones' },
-      { href: '#nosotros', label: 'ALA' },
-    ],
     statusBadge: 'Plataforma activa',
     hero: {
       eyebrow: 'NATURA 2030 · Inteligencia climática costera',
       headline: 'Datos climáticos dispersos.\nUna {{sola fuente}} de verdad.',
       lede: 'NATURA 2030 arma, depura e integra información oceánica y climática de múltiples fuentes en un motor de análisis para decisiones de adaptación costera en América Latina.',
-      ctaSecondary: 'Ver el motor',
       statsLabels: ['Tipos de datos de entrada', 'Etapas de procesamiento', 'Productos entregables'],
       consoleLabels: { left: 'LAT · LON', right: 'Sincronizando' },
     },
@@ -62,18 +53,11 @@ export const v2Copy: Record<Locale, V2Copy> = {
     },
   },
   en: {
-    nav: [
-      { href: '#motor', label: 'Engine' },
-      { href: '#datos', label: 'Data' },
-      { href: '#aplicaciones', label: 'Applications' },
-      { href: '#nosotros', label: 'ALA' },
-    ],
     statusBadge: 'Platform active',
     hero: {
       eyebrow: 'NATURA 2030 · Coastal climate intelligence',
       headline: 'Scattered climate data.\nOne {{single source}} of truth.',
       lede: 'NATURA 2030 assembles, cleans and integrates ocean and climate data from multiple sources into an analysis engine for coastal adaptation decisions across Latin America.',
-      ctaSecondary: 'See the engine',
       statsLabels: ['Input data types', 'Processing stages', 'Delivered products'],
       consoleLabels: { left: 'LAT · LON', right: 'Syncing' },
     },

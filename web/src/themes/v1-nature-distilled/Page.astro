@@ -4,6 +4,7 @@ import isotipoColor from '../../assets/brand/isotipo-color.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
+import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
 import type { Locale } from '../../data/types';
 import { parseHeadline } from '../../utils/headline';
@@ -26,13 +27,11 @@ let wordIndex = 0;
       <Image src={isotipoColor} alt="Adaptation Latin America" width={34} height={34} />
       <span class="word">{t.meta.orgName.toUpperCase()}<small>{t.meta.siteName}</small></span>
     </div>
-    <nav class="nd-navlinks" aria-label="Principal">
-      {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
-    </nav>
     <div class="nd-nav-tools">
       <LanguageSwitcher version="v1" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href="#cta" class="nd-btn nd-btn-primary">{t.cta.primary.split(' ').slice(0, 2).join(' ')}</a>
+      <a href="#" class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
+      <a href="#" class="nd-btn nd-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
@@ -61,15 +60,22 @@ let wordIndex = 0;
       </h1>
       <p class="lede">{c.hero.lede}</p>
       <div class="nd-hero-cta">
-        <a href="#cta" class="nd-btn nd-btn-primary magnetic">{t.cta.primary}</a>
-        <a href="#proceso" class="nd-btn nd-btn-ghost">{c.hero.ctaSecondary}</a>
+        <a href="#" class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
+        <a href="#" class="nd-btn nd-btn-primary magnetic">{t.cta.models}</a>
       </div>
       <div class="nd-hero-mark"><Image src={isotipoColor} alt="" width={108} height={108} /></div>
       <div class="nd-scrollcue" aria-hidden="true"><span></span></div>
     </div>
   </section>
 
-  <div class="nd-divider" aria-hidden="true"><svg viewBox="0 0 1440 96" preserveAspectRatio="none"><path d="M0 40C240 90 480 0 720 30C960 60 1200 10 1440 50V96H0Z" fill="var(--block-bg)"/></svg></div>
+  <div class="nd-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 96" preserveAspectRatio="none">
+      <g class="nd-divider-track">
+        <path d="M0,48 C120,78 240,18 360,48 C480,78 600,18 720,48 C840,78 960,18 1080,48 C1200,78 1320,18 1440,48 V110 H0 Z" fill="var(--block-bg)"/>
+        <path d="M1440,48 C1560,78 1680,18 1800,48 C1920,78 2040,18 2160,48 C2280,78 2400,18 2520,48 C2640,78 2760,18 2880,48 V110 H1440 Z" fill="var(--block-bg)"/>
+      </g>
+    </svg>
+  </div>
 
   <section class="nd-problem">
     <div class="nd-wrap">
@@ -176,23 +182,21 @@ let wordIndex = 0;
   </section>
 
   <section class="nd-cta" id="cta">
-    <span class="nd-eyebrow" style="color:var(--ink);">{c.sections.cta.eyebrow}</span>
-    <h2>{c.sections.cta.title}</h2>
-    <div class="row">
-      <a href="#" class="nd-btn nd-btn-primary magnetic">{t.cta.primary}</a>
-      <a href="#" class="nd-btn nd-btn-ghost">{t.cta.secondary}</a>
+    <div class="nd-cta-inner">
+      <div class="nd-cta-copy">
+        <span class="nd-eyebrow" style="color:var(--ink);">{c.sections.cta.eyebrow}</span>
+        <h2>{c.sections.cta.title}</h2>
+      </div>
+      <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} />
     </div>
   </section>
 
   <footer class="nd-footer">
     <div class="nd-footer-top">
-      <div>
-        <div class="nd-footer-brand"><Image src={isotipoColor} alt="" width={30} height={30} /><span>{t.meta.orgName}</span></div>
-        <p class="small">{t.footer.tagline}</p>
+      <div class="nd-footer-brand"><Image src={isotipoColor} alt="" width={24} height={24} /><span>{t.meta.orgName}</span></div>
+      <div class="nd-footer-links">
+        <a href={`mailto:${t.footer.email}`}>{t.footer.email}</a>
       </div>
-      <div><h4>{c.sections.inputs.eyebrow}</h4><ul><li><a href="#proceso">{c.nav[1].label}</a></li><li><a href="#plataforma">{c.nav[0].label}</a></li><li><a href="#aplicaciones">{c.nav[2].label}</a></li></ul></div>
-      <div><h4>{t.meta.orgName}</h4><ul><li><a href="#nosotros">{c.sections.about.eyebrow}</a></li></ul></div>
-      <div><h4>Contacto</h4><ul><li><a href={`mailto:${t.footer.email}`}>{t.footer.email}</a></li></ul></div>
     </div>
     <div class="nd-footer-bottom">
       <span>{t.footer.copyright}</span>
@@ -221,15 +225,13 @@ let wordIndex = 0;
   .nd-wrap { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
 
   .nd-nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 48px; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border); transition: box-shadow .3s ease, background .3s ease; }
-  .nd-nav.scrolled { background: color-mix(in srgb, var(--bg) 94%, transparent); box-shadow: 0 6px 24px color-mix(in srgb, var(--ink) 6%, transparent); }
+    padding: 18px 48px; background: transparent;
+    transition: background .3s ease, backdrop-filter .3s ease; }
+  .nd-nav.scrolled { background: color-mix(in srgb, var(--bg) 45%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
   .nd-brand { display: flex; align-items: center; gap: 10px; }
   .nd-brand img { display: block; }
   .nd-brand .word { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; font-size: 15px; line-height: 1.15; }
   .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
-  .nd-navlinks { display: flex; align-items: center; gap: 28px; }
-  .nd-navlinks a { font-size: 14px; font-weight: 700; }
   .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
   .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
     display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
@@ -241,11 +243,11 @@ let wordIndex = 0;
 
   .nd-hero { position: relative; padding: 96px 48px 120px; overflow: hidden; }
   .nd-hero-waves { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .nd-hero-waves svg { position: absolute; width: 140%; max-width: 1600px; opacity: 0.09; }
-  .nd-hero-waves .w1 { top: -60px; left: -140px; animation: driftA 46s ease-in-out infinite; }
-  .nd-hero-waves .w2 { bottom: -120px; right: -160px; opacity: 0.07; animation: driftB 60s ease-in-out infinite; }
-  @keyframes driftA { 0%,100% { transform: translate(0,0); } 50% { transform: translate(24px,14px); } }
-  @keyframes driftB { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-30px,-10px); } }
+  .nd-hero-waves svg { position: absolute; width: 140%; max-width: 1600px; opacity: 0.22; }
+  .nd-hero-waves .w1 { top: -60px; left: -140px; animation: driftA 18s ease-in-out infinite; }
+  .nd-hero-waves .w2 { bottom: -120px; right: -160px; opacity: 0.18; animation: driftB 24s ease-in-out infinite; }
+  @keyframes driftA { 0%,100% { transform: translate(0,0); } 50% { transform: translate(100px,50px); } }
+  @keyframes driftB { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-110px,-36px); } }
   .nd-hero-inner { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; text-align: center; }
   .nd-hero-eyebrow { display: inline-block; opacity: 0; transform: translateY(14px); animation: riseWord .8s cubic-bezier(.16,1,.3,1) forwards; }
   .nd-hero h1 { font-size: clamp(38px,5.4vw,68px); line-height: 1.06; margin: 20px 0 26px; }
@@ -270,8 +272,10 @@ let wordIndex = 0;
   .theme-v1 .stagger .reveal:nth-child(5) { transition-delay: .34s; }
   .theme-v1 .stagger .reveal:nth-child(6) { transition-delay: .42s; }
 
-  .nd-divider { height: 96px; background: var(--bg); }
+  .nd-divider { height: 96px; background: var(--bg); overflow: hidden; }
   .nd-divider svg { display: block; width: 100%; height: 100%; }
+  .nd-divider-track { animation: waveDrift 22s linear infinite; }
+  @keyframes waveDrift { from { transform: translateX(0); } to { transform: translateX(-1440px); } }
 
   .nd-problem { background: var(--block-bg); color: var(--block-ink); padding: 10px 48px 96px; }
   .nd-problem .nd-wrap { text-align: center; }
@@ -328,35 +332,31 @@ let wordIndex = 0;
   .nd-river svg { position: absolute; inset: 0; width: 110%; height: 110%; margin: -5%; animation: riverDrift 34s ease-in-out infinite; }
   @keyframes riverDrift { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-2%,1.5%) rotate(0.6deg); } }
 
-  .nd-cta { background: var(--teal); text-align: center; padding: 96px 48px; }
-  .nd-cta h2 { font-size: clamp(28px,3.6vw,44px); max-width: 640px; margin: 0 auto 30px; line-height: 1.15; color: #0b1626; }
-  .nd-cta .row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .nd-cta .nd-btn-primary { background: var(--block-bg); color: #fff; }
-  .nd-cta .nd-btn-primary:hover { color: #fff; box-shadow: 0 10px 30px color-mix(in srgb, var(--block-bg) 35%, transparent); }
-  .nd-cta .nd-btn-ghost { color: #0b1626; border-color: color-mix(in srgb, #0b1626 35%, transparent); }
+  .nd-cta { background: var(--teal); padding: 80px 48px; }
+  .nd-cta-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 48px; }
+  .nd-cta-copy { max-width: 620px; }
+  .nd-cta h2 { font-size: clamp(26px,3.1vw,38px); margin-top: 12px; line-height: 1.18; color: #0b1626; }
+  .nd-cta :global(.natura-contact-email) { color: #0b1626; flex: none; }
 
-  .nd-footer { background: var(--block-bg); color: color-mix(in srgb, var(--block-ink) 70%, transparent); padding: 64px 48px 90px; }
-  .nd-footer-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; padding-bottom: 40px; border-bottom: 1px solid color-mix(in srgb, var(--block-ink) 12%, transparent); }
-  .nd-footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .nd-footer-brand span { font-family: 'Archivo',sans-serif; font-weight: 900; color: var(--block-ink); font-size: 14px; }
-  .nd-footer p.small { font-size: 13.5px; line-height: 1.6; max-width: 280px; }
-  .nd-footer h4 { font-family: 'Archivo',sans-serif; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--block-ink); margin-bottom: 16px; }
-  .nd-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  .nd-footer ul a { color: color-mix(in srgb, var(--block-ink) 68%, transparent); font-size: 14px; }
-  .nd-footer ul a:hover { color: var(--teal); }
-  .nd-footer-bottom { display: flex; justify-content: space-between; padding-top: 24px; font-size: 12.5px; flex-wrap: wrap; gap: 10px; }
+  .nd-footer { background: var(--block-bg); color: color-mix(in srgb, var(--block-ink) 70%, transparent); padding: 48px 48px 90px; }
+  .nd-footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; padding-bottom: 28px; }
+  .nd-footer-brand { display: flex; align-items: center; gap: 10px; }
+  .nd-footer-brand span { font-family: 'Archivo',sans-serif; font-weight: 900; color: var(--block-ink); font-size: 13px; }
+  .nd-footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+  .nd-footer .nd-footer-links a { color: color-mix(in srgb, var(--block-ink) 68%, transparent); font-size: 14px; }
+  .nd-footer .nd-footer-links a:hover { color: var(--teal); }
+  .nd-footer-bottom { display: flex; justify-content: space-between; font-size: 12.5px; border-top: 1px solid color-mix(in srgb, var(--block-ink) 12%, transparent); padding-top: 20px; flex-wrap: wrap; gap: 10px; }
 
   @media (max-width: 860px) {
-    .nd-navlinks { display: none; }
     .nd-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .nd-deliver-grid { grid-template-columns: 1fr; }
     .nd-pipe { flex-direction: column; gap: 28px; }
     .nd-pipe-line { display: none; }
     .nd-about { grid-template-columns: 1fr; }
-    .nd-footer-top { grid-template-columns: 1fr 1fr; }
+    .nd-cta-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }
     .nd-nav { padding: 14px 16px; }
-    .nd-nav-tools { gap: 10px; }
+    .nd-nav-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .nd-btn { padding: 11px 18px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {

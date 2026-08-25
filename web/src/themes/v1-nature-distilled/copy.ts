@@ -1,12 +1,10 @@
 import type { Locale } from '../../data/types';
 
 export interface V1Copy {
-  nav: { href: string; label: string }[];
   hero: {
     eyebrow: string;
     headline: string;
     lede: string;
-    ctaSecondary: string;
   };
   problem: {
     eyebrow: string;
@@ -26,17 +24,10 @@ export interface V1Copy {
 
 export const v1Copy: Record<Locale, V1Copy> = {
   es: {
-    nav: [
-      { href: '#plataforma', label: 'Plataforma' },
-      { href: '#proceso', label: 'Cómo funciona' },
-      { href: '#aplicaciones', label: 'Aplicaciones' },
-      { href: '#nosotros', label: 'Nosotros' },
-    ],
     hero: {
       eyebrow: 'Adaptation Latin America · NATURA 2030',
       headline: 'De los datos del {{océano}}\na las decisiones que protegen la {{costa}}.',
       lede: 'NATURA 2030 traduce modelos climáticos, mareas, oleaje y datos de campo en información clara para quienes cuidan el litoral latinoamericano.',
-      ctaSecondary: 'Ver cómo funciona',
     },
     problem: {
       eyebrow: 'El reto',
@@ -54,17 +45,10 @@ export const v1Copy: Record<Locale, V1Copy> = {
     },
   },
   en: {
-    nav: [
-      { href: '#plataforma', label: 'Platform' },
-      { href: '#proceso', label: 'How it works' },
-      { href: '#aplicaciones', label: 'Applications' },
-      { href: '#nosotros', label: 'About' },
-    ],
     hero: {
       eyebrow: 'Adaptation Latin America · NATURA 2030',
       headline: 'From ocean {{data}}\nto the decisions that protect the {{coast}}.',
       lede: 'NATURA 2030 turns climate models, tides, waves and field data into clear information for those who care for the Latin American coastline.',
-      ctaSecondary: 'See how it works',
     },
     problem: {
       eyebrow: 'The challenge',

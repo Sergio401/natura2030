@@ -98,12 +98,11 @@ export const es: SiteContent = {
     ],
   },
   cta: {
-    primary: 'Solicitar acceso a la plataforma',
-    secondary: 'Escribir al equipo',
+    initiatives: 'Ver iniciativas',
+    models: 'Ver modelos',
   },
   footer: {
-    tagline: 'NATURA 2030 es la plataforma de información climática costera de ALA para apoyar decisiones de adaptación en América Latina.',
-    email: 'correo@adaptationla.org',
+    email: 'algo@natura2030.com',
     copyright: '© 2026 Adaptation Latin America. Todos los derechos reservados.',
     note: 'NATURA 2030 es una iniciativa de ALA.',
   },
@@ -118,5 +117,7 @@ export const es: SiteContent = {
       v2: 'Motor de Datos',
       v3: 'La Costa',
     },
+    copyEmail: 'Copiar correo',
+    emailCopied: '¡Copiado!',
   },
 };
