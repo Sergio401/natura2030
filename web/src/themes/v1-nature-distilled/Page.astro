@@ -1,0 +1,393 @@
+---
+import { Image } from 'astro:assets';
+import isotipoColor from '../../assets/brand/isotipo-color.png';
+import ThemeToggle from '../../components/shared/ThemeToggle.astro';
+import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
+import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
+import { getContent } from '../../data';
+import type { Locale } from '../../data/types';
+import { parseHeadline } from '../../utils/headline';
+import './tokens.css';
+import { v1Copy } from './copy';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getContent(locale);
+const c = v1Copy[locale];
+const headlineLines = parseHeadline(c.hero.headline);
+let wordIndex = 0;
+---
+
+<div class="theme-v1" id="main">
+  <header class="nd-nav" data-natura-nav>
+    <div class="nd-brand">
+      <Image src={isotipoColor} alt="Adaptation Latin America" width={34} height={34} />
+      <span class="word">{t.meta.orgName.toUpperCase()}<small>{t.meta.siteName}</small></span>
+    </div>
+    <nav class="nd-navlinks" aria-label="Principal">
+      {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+    <div class="nd-nav-tools">
+      <LanguageSwitcher version="v1" locale={locale} label={t.ui.languageLabel} />
+      <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
+      <a href="#cta" class="nd-btn nd-btn-primary">{t.cta.primary.split(' ').slice(0, 2).join(' ')}</a>
+    </div>
+  </header>
+
+  <section class="nd-hero">
+    <div class="nd-hero-waves" aria-hidden="true">
+      <svg class="w1" viewBox="0 0 800 400" fill="none"><path d="M0 220C120 160 200 280 320 220C440 160 520 280 640 220C700 190 760 200 800 220" stroke="var(--ink)" stroke-width="3"/><path d="M0 280C120 220 200 340 320 280C440 220 520 340 640 280C700 250 760 260 800 280" stroke="var(--teal)" stroke-width="3"/></svg>
+      <svg class="w2" viewBox="0 0 800 400" fill="none"><path d="M0 140C120 200 200 80 320 140C440 200 520 80 640 140C700 170 760 160 800 140" stroke="var(--yellow)" stroke-width="4"/></svg>
+    </div>
+    <div class="nd-hero-inner">
+      <span class="nd-eyebrow nd-hero-eyebrow">{c.hero.eyebrow}</span>
+      <h1>
+        {headlineLines.map((line, li) => (
+          <>
+            {line.map((w) => {
+              wordIndex += 1;
+              return (
+                <>
+                  {w.spaceBefore && ' '}
+                  <span class:list={["w", { accent: w.accent }]} style={`animation-delay:${(wordIndex * 0.05).toFixed(2)}s`}>{w.text}</span>
+                </>
+              );
+            })}
+            {li < headlineLines.length - 1 && <br />}
+          </>
+        ))}
+      </h1>
+      <p class="lede">{c.hero.lede}</p>
+      <div class="nd-hero-cta">
+        <a href="#cta" class="nd-btn nd-btn-primary magnetic">{t.cta.primary}</a>
+        <a href="#proceso" class="nd-btn nd-btn-ghost">{c.hero.ctaSecondary}</a>
+      </div>
+      <div class="nd-hero-mark"><Image src={isotipoColor} alt="" width={108} height={108} /></div>
+      <div class="nd-scrollcue" aria-hidden="true"><span></span></div>
+    </div>
+  </section>
+
+  <div class="nd-divider" aria-hidden="true"><svg viewBox="0 0 1440 96" preserveAspectRatio="none"><path d="M0 40C240 90 480 0 720 30C960 60 1200 10 1440 50V96H0Z" fill="var(--block-bg)"/></svg></div>
+
+  <section class="nd-problem">
+    <div class="nd-wrap">
+      <span class="nd-eyebrow">{c.problem.eyebrow}</span>
+      <h2>{c.problem.title}</h2>
+      <p>{c.problem.body}</p>
+      <div class="nd-chiprow">
+        {c.problem.chips.map((chip) => <span class="nd-chip">{chip}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="nd-section" id="proceso">
+    <div class="nd-wrap">
+      <div class="nd-head">
+        <span class="nd-eyebrow">{c.sections.process.eyebrow}</span>
+        <h2>{c.sections.process.title}</h2>
+      </div>
+      <div class="nd-pipe">
+        <div class="nd-pipe-line" aria-hidden="true"><div class="nd-pipe-line-fill" data-pipe-fill></div></div>
+        {t.process.steps.map((step) => (
+          <div class="nd-step reveal">
+            <div class="nd-step-num">{step.n}</div>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="nd-section" id="plataforma" style="padding-top:0;">
+    <div class="nd-wrap">
+      <div class="nd-head">
+        <span class="nd-eyebrow">{c.sections.inputs.eyebrow}</span>
+        <h2>{c.sections.inputs.title}</h2>
+      </div>
+      <div class="nd-inputs-grid stagger">
+        {t.inputs.items.map((item) => (
+          <div class="nd-card reveal">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+      <div class="nd-marquee" aria-hidden="true">
+        <div class="nd-marquee-track">
+          {[...t.inputs.sources, ...t.inputs.sources].map((s) => <span>{s}</span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="nd-section nd-deliver">
+    <div class="nd-wrap">
+      <div class="nd-head">
+        <span class="nd-eyebrow">{c.sections.deliverables.eyebrow}</span>
+        <h2>{c.sections.deliverables.title}</h2>
+      </div>
+      <div class="nd-deliver-grid stagger">
+        {t.deliverables.items.map((item) => (
+          <div class="nd-deliver-card reveal">
+            <span class="tag">{item.tag}</span>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="nd-section" id="aplicaciones">
+    <div class="nd-wrap">
+      <div class="nd-head">
+        <span class="nd-eyebrow">{c.sections.applications.eyebrow}</span>
+        <h2>{c.sections.applications.title}</h2>
+      </div>
+      <div class="nd-apps-row">
+        {t.applications.items.map((label) => (
+          <div class="nd-apptag"><span class="dot" aria-hidden="true"></span><span>{label}</span></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="nd-section" id="nosotros">
+    <div class="nd-wrap nd-about">
+      <div class="nd-about-copy">
+        <span class="nd-eyebrow">{c.sections.about.eyebrow}</span>
+        <h2>{c.sections.about.title}</h2>
+        <p>{t.about.body}</p>
+        <div class="nd-pillars">
+          {t.about.pillars.map((p) => <div class="nd-pillar"><span>{p}</span></div>)}
+        </div>
+      </div>
+      <div class="nd-river" aria-hidden="true">
+        <svg viewBox="0 0 500 500" fill="none">
+          <path d="M-20 120C80 80 120 200 220 160C320 120 360 240 460 200" stroke="var(--teal)" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+          <path d="M-20 220C80 180 120 300 220 260C320 220 360 340 460 300" stroke="var(--yellow)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+          <path d="M-20 320C80 280 120 400 220 360C320 320 360 440 460 400" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="nd-cta" id="cta">
+    <span class="nd-eyebrow" style="color:var(--ink);">{c.sections.cta.eyebrow}</span>
+    <h2>{c.sections.cta.title}</h2>
+    <div class="row">
+      <a href="#" class="nd-btn nd-btn-primary magnetic">{t.cta.primary}</a>
+      <a href="#" class="nd-btn nd-btn-ghost">{t.cta.secondary}</a>
+    </div>
+  </section>
+
+  <footer class="nd-footer">
+    <div class="nd-footer-top">
+      <div>
+        <div class="nd-footer-brand"><Image src={isotipoColor} alt="" width={30} height={30} /><span>{t.meta.orgName}</span></div>
+        <p class="small">{t.footer.tagline}</p>
+      </div>
+      <div><h4>{c.sections.inputs.eyebrow}</h4><ul><li><a href="#proceso">{c.nav[1].label}</a></li><li><a href="#plataforma">{c.nav[0].label}</a></li><li><a href="#aplicaciones">{c.nav[2].label}</a></li></ul></div>
+      <div><h4>{t.meta.orgName}</h4><ul><li><a href="#nosotros">{c.sections.about.eyebrow}</a></li></ul></div>
+      <div><h4>Contacto</h4><ul><li><a href={`mailto:${t.footer.email}`}>{t.footer.email}</a></li></ul></div>
+    </div>
+    <div class="nd-footer-bottom">
+      <span>{t.footer.copyright}</span>
+      <span>{t.footer.note}</span>
+    </div>
+  </footer>
+
+  <VersionSwitcher version="v1" locale={locale} label={t.ui.versionLabel} names={t.ui.versionNames} />
+</div>
+
+<style>
+  .theme-v1 {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    width: 100%;
+    position: relative;
+  }
+  .theme-v1 * { box-sizing: border-box; }
+  .theme-v1 h1, .theme-v1 h2, .theme-v1 h3 { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; margin: 0; letter-spacing: -0.01em; }
+  .theme-v1 p { margin: 0; line-height: 1.6; }
+  .theme-v1 a:not(.nd-btn) { color: var(--ink); text-decoration: none; }
+  .theme-v1 a:not(.nd-btn):hover { color: var(--teal); }
+  .nd-eyebrow { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); }
+  .nd-wrap { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+
+  .nd-nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border); transition: box-shadow .3s ease, background .3s ease; }
+  .nd-nav.scrolled { background: color-mix(in srgb, var(--bg) 94%, transparent); box-shadow: 0 6px 24px color-mix(in srgb, var(--ink) 6%, transparent); }
+  .nd-brand { display: flex; align-items: center; gap: 10px; }
+  .nd-brand img { display: block; }
+  .nd-brand .word { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; font-size: 15px; line-height: 1.15; }
+  .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
+  .nd-navlinks { display: flex; align-items: center; gap: 28px; }
+  .nd-navlinks a { font-size: 14px; font-weight: 700; }
+  .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
+  .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
+    display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
+    transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
+  .nd-btn-primary { background: var(--teal); color: #0b1626; }
+  .nd-btn-primary:hover { color: #0b1626; box-shadow: 0 10px 28px color-mix(in srgb, var(--teal) 40%, transparent); }
+  .nd-btn-ghost { background: transparent; color: var(--ink); border-color: color-mix(in srgb, var(--ink) 25%, transparent); }
+  .nd-btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+  .nd-hero { position: relative; padding: 96px 48px 120px; overflow: hidden; }
+  .nd-hero-waves { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .nd-hero-waves svg { position: absolute; width: 140%; max-width: 1600px; opacity: 0.09; }
+  .nd-hero-waves .w1 { top: -60px; left: -140px; animation: driftA 46s ease-in-out infinite; }
+  .nd-hero-waves .w2 { bottom: -120px; right: -160px; opacity: 0.07; animation: driftB 60s ease-in-out infinite; }
+  @keyframes driftA { 0%,100% { transform: translate(0,0); } 50% { transform: translate(24px,14px); } }
+  @keyframes driftB { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-30px,-10px); } }
+  .nd-hero-inner { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; text-align: center; }
+  .nd-hero-eyebrow { display: inline-block; opacity: 0; transform: translateY(14px); animation: riseWord .8s cubic-bezier(.16,1,.3,1) forwards; }
+  .nd-hero h1 { font-size: clamp(38px,5.4vw,68px); line-height: 1.06; margin: 20px 0 26px; }
+  .nd-hero h1 .w { display: inline-block; opacity: 0; transform: translateY(18px); animation: riseWord .8s cubic-bezier(.16,1,.3,1) forwards; }
+  .nd-hero h1 .w.accent { color: var(--teal); }
+  @keyframes riseWord { to { opacity: 1; transform: translateY(0); } }
+  .nd-hero p.lede { max-width: 640px; margin: 0 auto; font-size: 18px; color: var(--ink-soft); }
+  .nd-hero-cta { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 38px; flex-wrap: wrap; }
+  .nd-hero-mark { display: flex; justify-content: center; margin-top: 72px; }
+  .nd-hero-mark img { animation: breathe 6s ease-in-out infinite; filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--ink) 18%, transparent)); }
+  @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+  .nd-scrollcue { display: flex; justify-content: center; margin-top: 28px; }
+  .nd-scrollcue span { width: 1px; height: 34px; background: linear-gradient(var(--ink), transparent); display: block; animation: cue 1.8s ease-in-out infinite; opacity: 0.4; }
+  @keyframes cue { 0%,100% { transform: translateY(0); opacity: 0.15; } 50% { transform: translateY(8px); opacity: 0.55; } }
+
+  .theme-v1 .reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .theme-v1 .reveal.in-view { opacity: 1; transform: translateY(0); }
+  .theme-v1 .stagger .reveal:nth-child(1) { transition-delay: .02s; }
+  .theme-v1 .stagger .reveal:nth-child(2) { transition-delay: .10s; }
+  .theme-v1 .stagger .reveal:nth-child(3) { transition-delay: .18s; }
+  .theme-v1 .stagger .reveal:nth-child(4) { transition-delay: .26s; }
+  .theme-v1 .stagger .reveal:nth-child(5) { transition-delay: .34s; }
+  .theme-v1 .stagger .reveal:nth-child(6) { transition-delay: .42s; }
+
+  .nd-divider { height: 96px; background: var(--bg); }
+  .nd-divider svg { display: block; width: 100%; height: 100%; }
+
+  .nd-problem { background: var(--block-bg); color: var(--block-ink); padding: 10px 48px 96px; }
+  .nd-problem .nd-wrap { text-align: center; }
+  .nd-problem .nd-eyebrow { color: var(--yellow); }
+  .nd-problem h2 { color: var(--block-ink); font-size: clamp(28px,3.6vw,42px); margin: 16px auto 22px; max-width: 760px; line-height: 1.16; }
+  .nd-problem p { max-width: 620px; margin: 0 auto; color: color-mix(in srgb, var(--block-ink) 75%, transparent); font-size: 17px; }
+  .nd-chiprow { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
+  .nd-chip { border: 1px solid color-mix(in srgb, var(--block-ink) 22%, transparent); color: var(--block-ink); font-size: 13px; font-weight: 700; border-radius: 999px; padding: 9px 18px; }
+
+  .nd-section { padding: 112px 48px; }
+  .nd-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
+  .nd-head h2 { font-size: clamp(28px,3.4vw,40px); margin-top: 14px; line-height: 1.15; }
+
+  .nd-pipe { display: flex; flex-wrap: wrap; gap: 32px 0; align-items: stretch; position: relative; }
+  .nd-pipe-line { position: absolute; top: 26px; left: 4%; right: 4%; height: 2px; background: var(--border); }
+  .nd-pipe-line-fill { height: 2px; width: 0; background: var(--teal); transition: width 1.4s cubic-bezier(.16,1,.3,1); }
+  .nd-pipe-line-fill.fill { width: 100%; }
+  .nd-step { flex: 1 1 18%; min-width: 180px; padding: 0 16px; text-align: left; position: relative; }
+  .nd-step-num { width: 52px; height: 52px; border-radius: 50%; background: var(--surface); border: 2px solid var(--teal); color: var(--ink);
+    display: flex; align-items: center; justify-content: center; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 18px; margin-bottom: 20px; position: relative; z-index: 2; }
+  .nd-step h3 { font-size: 17px; margin-bottom: 8px; }
+  .nd-step p { font-size: 14px; color: var(--ink-soft); }
+
+  .nd-inputs-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  .nd-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; box-shadow: var(--card-shadow); }
+  .nd-card h3 { font-size: 16px; margin-bottom: 8px; }
+  .nd-card p { font-size: 13.5px; color: var(--ink-soft); }
+
+  .nd-marquee { margin-top: 56px; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 16px 0; }
+  .nd-marquee-track { display: flex; gap: 56px; white-space: nowrap; width: max-content; animation: scrollLeft 26s linear infinite; }
+  .nd-marquee-track span { font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-softer); text-transform: uppercase; }
+  @keyframes scrollLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .nd-deliver { background: var(--block-bg); }
+  .nd-deliver .nd-eyebrow { color: var(--yellow); }
+  .nd-deliver .nd-head h2 { color: var(--block-ink); }
+  .nd-deliver-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
+  .nd-deliver-card { border: 1px solid color-mix(in srgb, var(--block-ink) 14%, transparent); border-radius: 18px; padding: 30px 26px; background: color-mix(in srgb, var(--block-ink) 4%, transparent); }
+  .nd-deliver-card .tag { display: inline-block; font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.1em; color: var(--block-bg); background: var(--teal); border-radius: 999px; padding: 5px 12px; margin-bottom: 16px; }
+  .nd-deliver-card h3 { color: var(--block-ink); font-size: 18px; margin-bottom: 10px; }
+  .nd-deliver-card p { color: color-mix(in srgb, var(--block-ink) 68%, transparent); font-size: 14px; }
+
+  .nd-apps-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  .nd-apptag { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 12px 20px 12px 14px; box-shadow: var(--card-shadow); transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
+  .nd-apptag:hover { transform: translateY(-4px); }
+  .nd-apptag .dot { width: 30px; height: 30px; border-radius: 50%; background: var(--yellow); flex: none; }
+  .nd-apptag span:last-child { font-size: 14px; font-weight: 700; }
+
+  .nd-about { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .nd-about-copy p { font-size: 16px; color: var(--ink-soft); margin-top: 16px; }
+  .nd-pillars { display: flex; gap: 28px; margin-top: 32px; }
+  .nd-pillar span { display: block; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.08em; }
+  .nd-river { position: relative; aspect-ratio: 1/1; border-radius: 28px; overflow: hidden; background: linear-gradient(160deg,#0f2038,#1c3a5e); }
+  .nd-river svg { position: absolute; inset: 0; width: 110%; height: 110%; margin: -5%; animation: riverDrift 34s ease-in-out infinite; }
+  @keyframes riverDrift { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-2%,1.5%) rotate(0.6deg); } }
+
+  .nd-cta { background: var(--teal); text-align: center; padding: 96px 48px; }
+  .nd-cta h2 { font-size: clamp(28px,3.6vw,44px); max-width: 640px; margin: 0 auto 30px; line-height: 1.15; color: #0b1626; }
+  .nd-cta .row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .nd-cta .nd-btn-primary { background: var(--block-bg); color: #fff; }
+  .nd-cta .nd-btn-primary:hover { color: #fff; box-shadow: 0 10px 30px color-mix(in srgb, var(--block-bg) 35%, transparent); }
+  .nd-cta .nd-btn-ghost { color: #0b1626; border-color: color-mix(in srgb, #0b1626 35%, transparent); }
+
+  .nd-footer { background: var(--block-bg); color: color-mix(in srgb, var(--block-ink) 70%, transparent); padding: 64px 48px 90px; }
+  .nd-footer-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; padding-bottom: 40px; border-bottom: 1px solid color-mix(in srgb, var(--block-ink) 12%, transparent); }
+  .nd-footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .nd-footer-brand span { font-family: 'Archivo',sans-serif; font-weight: 900; color: var(--block-ink); font-size: 14px; }
+  .nd-footer p.small { font-size: 13.5px; line-height: 1.6; max-width: 280px; }
+  .nd-footer h4 { font-family: 'Archivo',sans-serif; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--block-ink); margin-bottom: 16px; }
+  .nd-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .nd-footer ul a { color: color-mix(in srgb, var(--block-ink) 68%, transparent); font-size: 14px; }
+  .nd-footer ul a:hover { color: var(--teal); }
+  .nd-footer-bottom { display: flex; justify-content: space-between; padding-top: 24px; font-size: 12.5px; flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 860px) {
+    .nd-navlinks { display: none; }
+    .nd-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .nd-deliver-grid { grid-template-columns: 1fr; }
+    .nd-pipe { flex-direction: column; gap: 28px; }
+    .nd-pipe-line { display: none; }
+    .nd-about { grid-template-columns: 1fr; }
+    .nd-footer-top { grid-template-columns: 1fr 1fr; }
+    .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }
+    .nd-nav { padding: 14px 16px; }
+    .nd-nav-tools { gap: 10px; }
+    .nd-btn { padding: 11px 18px; font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .theme-v1 * { animation: none !important; transition: none !important; }
+    .theme-v1 .reveal { opacity: 1; transform: none; }
+    .nd-hero h1 .w, .nd-hero-eyebrow { opacity: 1 !important; transform: none !important; }
+  }
+</style>
+
+<script>
+  import { initCommonInteractions } from '../../scripts/common-interactions';
+  const page = document.getElementById('main');
+  if (page) {
+    const { reduced } = initCommonInteractions(page);
+    if (!reduced) {
+      const lineFill = page.querySelector('[data-pipe-fill]');
+      if (lineFill) {
+        const io2 = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                lineFill.classList.add('fill');
+                io2.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.3 },
+        );
+        const pipe = page.querySelector('.nd-pipe');
+        if (pipe) io2.observe(pipe);
+      }
+    }
+  }
+</script>

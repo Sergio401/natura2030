@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Page from '../../themes/v3-costa-interfaz/Page.astro';
+import { getContent } from '../../data';
+
+const t = getContent('es');
+---
+
+<BaseLayout lang="es" version="v3" title={`${t.meta.siteName} — La Costa como Interfaz`} description={t.meta.description}>
+  <Page locale="es" />
+</BaseLayout>

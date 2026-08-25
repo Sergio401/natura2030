@@ -1,0 +1,412 @@
+---
+import { Image } from 'astro:assets';
+import isotipoColor from '../../assets/brand/isotipo-color.png';
+import ThemeToggle from '../../components/shared/ThemeToggle.astro';
+import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
+import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
+import { getContent } from '../../data';
+import type { Locale } from '../../data/types';
+import { parseHeadline } from '../../utils/headline';
+import './tokens.css';
+import { v2Copy } from './copy';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getContent(locale);
+const c = v2Copy[locale];
+const headlineLines = parseHeadline(c.hero.headline);
+const stats = [
+  { value: String(t.inputs.items.length), label: c.hero.statsLabels[0] },
+  { value: String(t.process.steps.length), label: c.hero.statsLabels[1] },
+  { value: String(t.deliverables.items.length), label: c.hero.statsLabels[2] },
+];
+---
+
+<div class="theme-v2" id="main">
+  <header class="dv-nav" data-natura-nav>
+    <div class="dv-brand"><Image src={isotipoColor} alt="ALA" width={28} height={28} /><span class="word">{t.meta.orgName.toUpperCase()}</span></div>
+    <nav class="dv-navlinks" aria-label="Principal">
+      {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+    <div class="dv-tools">
+      <span class="dv-status"><span class="dot" aria-hidden="true"></span>{c.statusBadge}</span>
+      <LanguageSwitcher version="v2" locale={locale} label={t.ui.languageLabel} />
+      <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
+      <a href="#cta" class="dv-btn dv-btn-primary">{t.cta.primary.split(' ').slice(0, 2).join(' ')}</a>
+    </div>
+  </header>
+
+  <section class="dv-hero">
+    <div class="dv-hero-grid">
+      <div>
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.hero.eyebrow}</span>
+        <h1>
+          {headlineLines.map((line, li) => (
+            <>
+              {line.map((w) => (
+                <>
+                  {w.spaceBefore && ' '}
+                  <span class:list={[{ accent: w.accent }]}>{w.text}</span>
+                </>
+              ))}
+              {li < headlineLines.length - 1 && <br />}
+            </>
+          ))}
+        </h1>
+        <p class="lede">{c.hero.lede}</p>
+        <div class="dv-hero-cta">
+          <a href="#cta" class="dv-btn dv-btn-primary magnetic">{t.cta.primary}</a>
+          <a href="#motor" class="dv-btn dv-btn-ghost">{c.hero.ctaSecondary}</a>
+        </div>
+        <div class="dv-stats">
+          {stats.map((s) => (
+            <div class="dv-stat"><b class="counter" data-target={s.value}>0</b><span>{s.label}</span></div>
+          ))}
+        </div>
+      </div>
+      <div class="dv-console">
+        <div class="dv-console-inner">
+          <div class="dv-dial">
+            <div class="dv-sweep" aria-hidden="true"></div>
+            <div class="dv-ping-dot" style="top:18%; left:62%;" aria-hidden="true"></div>
+            <div class="dv-ping-dot" style="top:68%; left:28%; animation-delay:.9s;" aria-hidden="true"></div>
+          </div>
+          <Image class="dv-mark" src={isotipoColor} alt="" width={76} height={76} />
+        </div>
+        <div class="dv-console-label"><span>{c.hero.consoleLabels.left}</span><span>{c.hero.consoleLabels.right}</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-section">
+    <div class="dv-wrap">
+      <div class="dv-head">
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.problem.eyebrow}</span>
+        <h2>{c.problem.title}</h2>
+      </div>
+      <div class="dv-loglist">
+        {c.problem.logs.map((log) => <div class="dv-log"><b>{log.title}</b>{log.body}</div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-section" id="motor">
+    <div class="dv-wrap">
+      <div class="dv-head">
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.sections.process.eyebrow}</span>
+        <h2>{c.sections.process.title}</h2>
+      </div>
+      <div class="dv-pipe">
+        <svg viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true">
+          <path class="dv-pipe-path" d="M0 4H1000"></path>
+          <path class="dv-pipe-flow" data-pipe-fill d="M0 4H1000"></path>
+        </svg>
+        <div class="dv-nodes stagger">
+          {t.process.steps.map((step) => (
+            <div class="dv-node reveal"><div class="dv-node-dot"></div><h3>{step.title}</h3><p>{step.body}</p></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-section" id="datos">
+    <div class="dv-wrap">
+      <div class="dv-head">
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.sections.inputs.eyebrow}</span>
+        <h2>{c.sections.inputs.title}</h2>
+      </div>
+      <div class="dv-inputs-grid stagger">
+        {t.inputs.items.map((item, i) => (
+          <div class="dv-card reveal"><span class="idx">{String(i + 1).padStart(2, '0')}</span><h3>{item.title}</h3><p>{item.body}</p></div>
+        ))}
+      </div>
+      <div class="dv-sources">
+        {t.inputs.sources.map((s) => <span>{s}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-section">
+    <div class="dv-wrap">
+      <div class="dv-head">
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.sections.deliverables.eyebrow}</span>
+        <h2>{c.sections.deliverables.title}</h2>
+      </div>
+      <div class="dv-deliver-grid stagger">
+        {t.deliverables.items.map((item, i) => (
+          <div class="dv-deliver-card reveal"><span class="tag">{`OUT · ${String(i + 1).padStart(2, '0')}`}</span><h3>{item.title}</h3><p>{item.body}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-section" id="aplicaciones">
+    <div class="dv-wrap">
+      <div class="dv-head">
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.sections.applications.eyebrow}</span>
+        <h2>{c.sections.applications.title}</h2>
+      </div>
+      <div class="dv-apps-grid stagger">
+        {t.applications.items.map((label, i) => (
+          <div class="dv-app reveal"><span class="n">{String(i + 1).padStart(2, '0')}</span><span class="label">{label}</span></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-section" id="nosotros">
+    <div class="dv-wrap dv-about">
+      <div>
+        <span class="dv-eyebrow"><span class="dot" aria-hidden="true"></span>{c.sections.about.eyebrow}</span>
+        <h2>{c.sections.about.title}</h2>
+        <p>{t.about.body}</p>
+        <div class="dv-pillars">
+          {t.about.pillars.map((p) => <div class="dv-pillar"><span class="label">{p}</span></div>)}
+        </div>
+      </div>
+      <div class="dv-orgpanel">
+        {t.about.org.map((row) => (
+          <div class="row"><span>{row.label.toUpperCase()}</span><b>{row.value}</b></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="dv-cta" id="cta">
+    <span class="dv-eyebrow" style="justify-content:center;"><span class="dot" aria-hidden="true"></span>{c.sections.cta.eyebrow}</span>
+    <h2>{c.sections.cta.title}</h2>
+    <div class="row">
+      <a href="#" class="dv-btn dv-btn-primary magnetic">{t.cta.primary}</a>
+      <a href="#" class="dv-btn dv-btn-ghost">{t.cta.secondary}</a>
+    </div>
+  </section>
+
+  <footer class="dv-footer">
+    <div class="dv-footer-top">
+      <div class="dv-footer-brand"><Image src={isotipoColor} alt="" width={24} height={24} /><span>{t.meta.orgName}</span></div>
+      <div class="dv-footer-links">
+        {c.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        <a href={`mailto:${t.footer.email}`}>{t.footer.email}</a>
+      </div>
+    </div>
+    <div class="dv-footer-bottom">
+      <span>{t.footer.copyright}</span>
+      <span>{t.footer.note}</span>
+    </div>
+  </footer>
+
+  <VersionSwitcher version="v2" locale={locale} label={t.ui.versionLabel} names={t.ui.versionNames} />
+</div>
+
+<style>
+  .theme-v2 {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    width: 100%;
+    position: relative;
+    background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .theme-v2 * { box-sizing: border-box; }
+  .theme-v2 h1, .theme-v2 h2, .theme-v2 h3 { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+  .theme-v2 p { margin: 0; line-height: 1.65; color: var(--ink-soft); }
+  .theme-v2 a:not(.dv-btn) { color: var(--ink); text-decoration: none; }
+  .dv-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); display: inline-flex; align-items: center; gap: 8px; }
+  .dv-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); animation: ping 2.2s ease-out infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--teal) 55%, transparent); } 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .dv-wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+  .dv-nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px; background: color-mix(in srgb, var(--bg) 65%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border); transition: background .3s ease, box-shadow .3s ease; }
+  .dv-nav.scrolled { background: color-mix(in srgb, var(--bg) 92%, transparent); box-shadow: 0 10px 30px color-mix(in srgb, black 30%, transparent); }
+  .dv-brand { display: flex; align-items: center; gap: 10px; }
+  .dv-brand .word { font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 14px; }
+  .dv-navlinks { display: flex; align-items: center; gap: 24px; }
+  .dv-navlinks a { font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono',monospace; color: var(--ink-soft); text-transform: uppercase; }
+  .dv-navlinks a:hover { color: var(--teal); }
+  .dv-tools { display: flex; align-items: center; gap: 14px; }
+  .dv-status { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--ink-soft); border: 1px solid var(--border); padding: 6px 12px; border-radius: 999px; text-transform: uppercase; }
+  .dv-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: ping 2.2s ease-out infinite; }
+
+  .dv-btn { font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 14px; border-radius: 10px; padding: 14px 26px;
+    display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; cursor: pointer; text-decoration: none;
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, background .3s ease; }
+  .dv-btn-primary { background: var(--teal); color: #04120f; }
+  .dv-btn-primary:hover { box-shadow: 0 0 0 1px var(--teal), 0 14px 34px color-mix(in srgb, var(--teal) 28%, transparent); }
+  .dv-btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }
+  .dv-btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+  .dv-hero { padding: 90px 48px 60px; position: relative; }
+  .dv-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: center; max-width: 1200px; margin: 0 auto; }
+  .dv-hero h1 { font-size: clamp(34px,4.4vw,54px); line-height: 1.08; margin: 18px 0 22px; }
+  .dv-hero h1 .accent { color: var(--teal); }
+  .dv-hero p.lede { font-size: 17px; max-width: 520px; }
+  .dv-hero-cta { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+  .dv-stats { display: flex; gap: 28px; margin-top: 52px; flex-wrap: wrap; }
+  .dv-stat b { display: block; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 32px; color: var(--teal); }
+  .dv-stat span { font-family: 'JetBrains Mono',monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--ink-softer); text-transform: uppercase; }
+
+  .dv-console { position: relative; aspect-ratio: 1/1; border-radius: 20px; border: 1px solid var(--border);
+    background: linear-gradient(160deg, color-mix(in srgb, var(--ink) 5%, transparent), transparent); overflow: hidden; }
+  .dv-console-inner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .dv-dial { position: relative; width: 70%; aspect-ratio: 1/1; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent); }
+  .dv-dial::before { content: ''; position: absolute; inset: 16%; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--teal) 18%, transparent); }
+  .dv-sweep { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, color-mix(in srgb, var(--teal) 35%, transparent), transparent 28%); animation: spin 7s linear infinite; }
+  .dv-mark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 2; }
+  .dv-ping-dot { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); animation: ping 2.4s ease-out infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .dv-console-label { position: absolute; bottom: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono',monospace; font-size: 10.5px; color: var(--ink-softer); text-transform: uppercase; }
+
+  .theme-v2 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
+  .theme-v2 .reveal.in-view { opacity: 1; transform: translateY(0); }
+  .theme-v2 .stagger .reveal:nth-child(1){transition-delay:.02s}
+  .theme-v2 .stagger .reveal:nth-child(2){transition-delay:.09s}
+  .theme-v2 .stagger .reveal:nth-child(3){transition-delay:.16s}
+  .theme-v2 .stagger .reveal:nth-child(4){transition-delay:.23s}
+  .theme-v2 .stagger .reveal:nth-child(5){transition-delay:.30s}
+  .theme-v2 .stagger .reveal:nth-child(6){transition-delay:.37s}
+
+  .dv-section { padding: 100px 48px; border-top: 1px solid var(--border); }
+  .dv-head { max-width: 640px; margin: 0 auto 52px; text-align: center; }
+  .dv-head h2 { font-size: clamp(26px,3.2vw,38px); margin-top: 14px; line-height: 1.18; }
+
+  .dv-loglist { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; max-width: 900px; margin: 0 auto; }
+  .dv-log { font-family: 'JetBrains Mono',monospace; font-size: 12.5px; color: var(--ink-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: left; }
+  .dv-log b { display: block; color: var(--ink); font-family: Arial,sans-serif; font-size: 13.5px; font-weight: 700; margin-bottom: 4px; }
+
+  .dv-pipe { position: relative; padding-top: 20px; }
+  .dv-pipe svg { position: absolute; top: 38px; left: 5%; width: 90%; height: 8px; }
+  .dv-pipe-path { stroke: var(--border); stroke-width: 2; fill: none; }
+  .dv-pipe-flow { stroke: var(--teal); stroke-width: 2; fill: none; stroke-dasharray: 10 14; stroke-dashoffset: 0; opacity: 0; transition: opacity .6s ease; }
+  .dv-pipe-flow.fill { opacity: 1; animation: flow 1.6s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -48; } }
+  .dv-nodes { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 14px; position: relative; z-index: 1; }
+  .dv-node { text-align: center; }
+  .dv-node-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--teal); margin: 0 auto 18px; box-shadow: 0 0 0 6px var(--bg); }
+  .dv-node h3 { font-size: 13.5px; margin-bottom: 6px; }
+  .dv-node p { font-size: 11.5px; }
+
+  .dv-inputs-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
+  .dv-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 22px; transition: border-color .3s ease, transform .3s ease; }
+  .dv-card:hover { border-color: color-mix(in srgb, var(--teal) 40%, transparent); transform: translateY(-3px); }
+  .dv-card .idx { font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--ink-softer); display: block; margin-bottom: 10px; }
+  .dv-card h3 { font-size: 15px; margin-bottom: 8px; }
+  .dv-card p { font-size: 13px; }
+
+  .dv-sources { margin-top: 44px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .dv-sources span { font-family: 'JetBrains Mono',monospace; font-size: 11.5px; border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent); color: var(--teal); border-radius: 6px; padding: 6px 12px; }
+
+  .dv-deliver-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+  .dv-deliver-card { border: 1px solid var(--border); border-radius: 14px; padding: 26px 22px; background: linear-gradient(160deg, color-mix(in srgb, var(--teal) 6%, transparent), transparent); }
+  .dv-deliver-card .tag { font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--yellow); display: block; margin-bottom: 12px; }
+  .dv-deliver-card h3 { font-size: 16.5px; margin-bottom: 8px; }
+  .dv-deliver-card p { font-size: 13px; }
+
+  .dv-apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+  .dv-app { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
+  .dv-app .n { font-family: 'JetBrains Mono',monospace; color: var(--ink-softer); font-size: 12px; }
+  .dv-app span.label { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+
+  .dv-about { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .dv-about p { font-size: 15.5px; margin-top: 14px; }
+  .dv-pillars { display: flex; gap: 24px; margin-top: 28px; flex-wrap: wrap; }
+  .dv-pillar { border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; text-align: left; }
+  .dv-pillar span.label { display: block; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 12.5px; letter-spacing: 0.06em; color: var(--ink); }
+  .dv-orgpanel { border: 1px solid var(--border); border-radius: 16px; padding: 28px; background: var(--surface); font-family: 'JetBrains Mono',monospace; font-size: 12px; color: var(--ink-soft); }
+  .dv-orgpanel .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+  .dv-orgpanel .row:last-child { border-bottom: none; }
+  .dv-orgpanel .row b { color: var(--ink); font-family: Arial,sans-serif; font-size: 13px; }
+
+  .dv-cta { text-align: center; padding: 100px 48px; background: linear-gradient(180deg, color-mix(in srgb, var(--teal) 8%, transparent), transparent); }
+  .dv-cta h2 { font-size: clamp(28px,3.6vw,42px); max-width: 640px; margin: 0 auto 30px; line-height: 1.16; }
+  .dv-cta .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  .dv-footer { padding: 48px 48px 96px; border-top: 1px solid var(--border); }
+  .dv-footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; padding-bottom: 28px; }
+  .dv-footer-brand { display: flex; align-items: center; gap: 10px; }
+  .dv-footer-brand span { font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 13px; }
+  .dv-footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+  .dv-footer-links a { font-family: 'JetBrains Mono',monospace; font-size: 12px; color: var(--ink-soft); }
+  .dv-footer-links a:hover { color: var(--teal); }
+  .dv-footer-bottom { font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--ink-softer); border-top: 1px solid var(--border); padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 900px) {
+    .dv-navlinks, .dv-status { display: none; }
+    .dv-hero-grid, .dv-about { grid-template-columns: 1fr; }
+    .dv-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .dv-deliver-grid, .dv-apps-grid { grid-template-columns: 1fr; }
+    .dv-nodes { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .dv-pipe svg { display: none; }
+    .dv-loglist { grid-template-columns: 1fr; }
+    .dv-wrap, .dv-section, .dv-hero { padding-left: 22px; padding-right: 22px; }
+    .dv-nav { padding: 14px 16px; }
+    .dv-tools { gap: 8px; }
+    .dv-btn { padding: 11px 16px; font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .theme-v2 * { animation: none !important; transition: none !important; }
+    .theme-v2 .reveal { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  import { initCommonInteractions } from '../../scripts/common-interactions';
+  const page = document.getElementById('main');
+  if (page) {
+    const { reduced } = initCommonInteractions(page);
+
+    page.querySelectorAll<HTMLElement>('.counter').forEach((el) => {
+      const target = parseInt(el.getAttribute('data-target') ?? '0', 10) || 0;
+      if (reduced) {
+        el.textContent = String(target);
+        return;
+      }
+      let started = false;
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting && !started) {
+              started = true;
+              const start = performance.now();
+              const dur = 900;
+              const step = (now: number) => {
+                const p = Math.min(1, (now - start) / dur);
+                el.textContent = String(Math.round(p * target));
+                if (p < 1) requestAnimationFrame(step);
+              };
+              requestAnimationFrame(step);
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.5 },
+      );
+      io.observe(el);
+    });
+
+    if (!reduced) {
+      const flow = page.querySelector('[data-pipe-fill]');
+      if (flow) {
+        const io2 = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                flow.classList.add('fill');
+                io2.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.3 },
+        );
+        const pipe = page.querySelector('.dv-pipe');
+        if (pipe) io2.observe(pipe);
+      }
+    }
+  }
+</script>

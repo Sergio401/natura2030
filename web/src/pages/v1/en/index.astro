@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Page from '../../../themes/v1-nature-distilled/Page.astro';
+import { getContent } from '../../../data';
+
+const t = getContent('en');
+---
+
+<BaseLayout lang="en" version="v1" title={`${t.meta.siteName} — Nature Distilled`} description={t.meta.description}>
+  <Page locale="en" />
+</BaseLayout>

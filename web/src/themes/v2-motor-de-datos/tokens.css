@@ -1,0 +1,23 @@
+.theme-v2 {
+  --bg: #0c1b33;
+  --surface: rgba(255, 255, 255, 0.03);
+  --ink: #ffffff;
+  --teal: #35c3bb;
+  --yellow: #ffee9f;
+  --border: color-mix(in srgb, var(--ink) 10%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 68%, transparent);
+  --ink-softer: color-mix(in srgb, var(--ink) 40%, transparent);
+  --dot-grid: color-mix(in srgb, var(--teal) 10%, transparent);
+}
+
+html[data-theme='light'] .theme-v2 {
+  --bg: #f4f8f8;
+  --surface: #ffffff;
+  --ink: #0c1b33;
+  --teal: #1b9c94;
+  --yellow: #b98e00;
+  --border: color-mix(in srgb, var(--ink) 10%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 66%, transparent);
+  --ink-softer: color-mix(in srgb, var(--ink) 42%, transparent);
+  --dot-grid: color-mix(in srgb, var(--teal) 12%, transparent);
+}

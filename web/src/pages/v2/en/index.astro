@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Page from '../../../themes/v2-motor-de-datos/Page.astro';
+import { getContent } from '../../../data';
+
+const t = getContent('en');
+---
+
+<BaseLayout lang="en" version="v2" title={`${t.meta.siteName} — Data Engine`} description={t.meta.description}>
+  <Page locale="en" />
+</BaseLayout>

@@ -1,0 +1,29 @@
+.theme-v3 {
+  --bg-1: #fbf7ef;
+  --bg-2: #f1faf9;
+  --surface: #ffffff;
+  --ink: #122847;
+  --teal: #35c3bb;
+  --yellow: #ffee9f;
+  --map-bg-1: #0f2038;
+  --map-bg-2: #1c3a5e;
+  --border: color-mix(in srgb, var(--ink) 8%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 68%, transparent);
+  --ink-softer: color-mix(in srgb, var(--ink) 45%, transparent);
+  --card-shadow: 0 12px 30px color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+html[data-theme='dark'] .theme-v3 {
+  --bg-1: #0a1220;
+  --bg-2: #0b1a22;
+  --surface: #101b2e;
+  --ink: #eef2f7;
+  --teal: #4fd8cf;
+  --yellow: #ffe98f;
+  --map-bg-1: #060c17;
+  --map-bg-2: #0c1c30;
+  --border: color-mix(in srgb, var(--ink) 12%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 66%, transparent);
+  --ink-softer: color-mix(in srgb, var(--ink) 42%, transparent);
+  --card-shadow: 0 12px 30px color-mix(in srgb, black 45%, transparent);
+}

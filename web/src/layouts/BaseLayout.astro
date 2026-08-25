@@ -1,0 +1,78 @@
+---
+import '@fontsource/archivo/400.css';
+import '@fontsource/archivo/600.css';
+import '@fontsource/archivo/700.css';
+import '@fontsource/archivo/800.css';
+import '@fontsource/archivo/900.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/jetbrains-mono/700.css';
+import type { Locale } from '../data/types';
+import type { Version } from '../utils/routes';
+
+interface Props {
+  lang: Locale;
+  version: Version;
+  title: string;
+  description: string;
+}
+
+const { lang, version, title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} data-version={version}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('natura-theme');
+          var theme = stored === 'light' || stored === 'dark'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main"><slot name="skip-label">Skip to content</slot></a>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /*
+    Horizontal-scroll guard lives on html/body (the real root scroller), not on
+    each theme's page wrapper. Setting overflow-x on a nested element makes the
+    browser treat it as its own scroll container (overflow-y auto-computes),
+    which breaks `position: sticky` for every descendant — the nav bar and,
+    on v3, the scrollytelling ring panel silently stop sticking to the viewport.
+  */
+  html {
+    overflow-x: hidden;
+  }
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    color: #000;
+    padding: 12px 20px;
+    border-radius: 0 0 8px 0;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+  }
+  .skip-link:focus {
+    left: 0;
+  }
+</style>

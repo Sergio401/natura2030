@@ -1,0 +1,45 @@
+---
+import { pathFor, type Version } from '../../utils/routes';
+import type { Locale } from '../../data/types';
+
+interface Props {
+  version: Version;
+  locale: Locale;
+  label: string;
+}
+const { version, locale, label } = Astro.props;
+---
+
+<div class="natura-lang" role="group" aria-label={label}>
+  <a href={pathFor(version, 'es')} aria-current={locale === 'es' ? 'true' : undefined}>ES</a>
+  <span aria-hidden="true">/</span>
+  <a href={pathFor(version, 'en')} aria-current={locale === 'en' ? 'true' : undefined}>EN</a>
+</div>
+
+<style>
+  .natura-lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .natura-lang a {
+    opacity: 0.55;
+    text-decoration: none;
+    color: inherit;
+    padding: 4px 2px;
+  }
+  .natura-lang a:hover {
+    opacity: 0.85;
+  }
+  .natura-lang a[aria-current='true'] {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .natura-lang span {
+    opacity: 0.35;
+  }
+</style>
