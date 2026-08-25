@@ -1,0 +1,139 @@
+---
+import { Image } from 'astro:assets';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import isotipoColor from '../../assets/brand/isotipo-color.png';
+import ThemeToggle from '../../components/shared/ThemeToggle.astro';
+import { platformLocations } from '../../data/platform-locations';
+import { platformCopy } from '../../data/platform-copy';
+import type { Locale } from '../../data/types';
+import './platform.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = platformCopy[locale];
+const languageHref = locale === 'es' ? '/platform/en/' : '/platform/';
+const siteHref = locale === 'es' ? '/v2/' : '/v2/en/';
+---
+
+<main class="platform-shell theme-v2" id="main" data-platform-root data-locale={locale}>
+  <header class="platform-header">
+    <a class="platform-brand" href={siteHref} aria-label={copy.header.back}>
+      <Image src={isotipoColor} alt="" width={30} height={30} />
+      <span class="platform-brand-copy">
+        <strong>NATURA 2030</strong>
+        <small>{copy.header.eyebrow}</small>
+      </span>
+    </a>
+
+    <div class="platform-title" aria-hidden="true">
+      <span class="platform-pulse"></span>
+      <span>{copy.header.title}</span>
+    </div>
+
+    <div class="platform-header-tools">
+      <span class="platform-status"><span class="platform-pulse"></span>{copy.header.status}</span>
+      <a class="platform-language" href={languageHref}>{copy.header.language}</a>
+      <ThemeToggle
+        labelToLight={locale === 'es' ? 'Cambiar a modo claro' : 'Switch to light mode'}
+        labelToDark={locale === 'es' ? 'Cambiar a modo oscuro' : 'Switch to dark mode'}
+      />
+      <a class="platform-back" href={siteHref}><span aria-hidden="true">←</span>{copy.header.back}</a>
+    </div>
+  </header>
+
+  <section class="platform-map-region" aria-label={copy.map.ariaLabel}>
+    <div class="platform-map" data-platform-map></div>
+
+    <div class="platform-map-summary" aria-hidden="true">
+      <strong>{copy.map.locationCount}</strong>
+      <span>{copy.map.locationCountLabel}</span>
+    </div>
+
+    <div class="platform-map-toolbar" aria-label={copy.map.ariaLabel}>
+      <div class="platform-style-switch" role="group" aria-label={copy.map.ariaLabel}>
+        <button type="button" class="is-active" data-map-style="satellite" aria-pressed="true">
+          {copy.map.satellite}
+        </button>
+        <button type="button" data-map-style="streets" aria-pressed="false">
+          {copy.map.streets}
+        </button>
+      </div>
+      <button type="button" class="platform-home-button" data-map-home title={copy.map.resetView} aria-label={copy.map.resetView}>
+        <span aria-hidden="true">⌖</span>
+      </button>
+    </div>
+
+    <div class="platform-legend">
+      <span class="platform-legend-title">{copy.map.legendTitle}</span>
+      {Object.entries(copy.categories).map(([category, label]) => (
+        <span class="platform-legend-item">
+          <i class={`category-${category}`} aria-hidden="true"></i>{label}
+        </span>
+      ))}
+    </div>
+
+    <div class="platform-map-error" data-map-error hidden>
+      <span>{copy.map.loadError}</span>
+    </div>
+  </section>
+
+  <aside class="platform-panel" data-location-panel aria-hidden="true" aria-labelledby="location-title" inert>
+    <div class="platform-panel-bar">
+      <span><i class="platform-pulse" aria-hidden="true"></i>{copy.panel.demoLabel}</span>
+      <button type="button" data-panel-close aria-label={copy.panel.close}>×</button>
+    </div>
+    <div class="platform-panel-body">
+      <div class="platform-location-index" data-location-index>LOC · 01</div>
+      <p class="platform-location-region" data-location-region></p>
+      <h1 id="location-title" tabindex="-1" data-location-title></h1>
+      <p class="platform-location-summary" data-location-summary></p>
+
+      <dl class="platform-location-facts">
+        <div>
+          <dt>{copy.panel.category}</dt>
+          <dd data-location-category></dd>
+        </div>
+        <div>
+          <dt>{copy.panel.status}</dt>
+          <dd><span class="platform-pulse"></span><span data-location-status></span></dd>
+        </div>
+        <div>
+          <dt>{copy.panel.coordinates}</dt>
+          <dd data-location-coordinates></dd>
+        </div>
+      </dl>
+
+      <section class="platform-location-section">
+        <h2>{copy.panel.dataInputs}</h2>
+        <ul data-location-inputs></ul>
+      </section>
+
+      <section class="platform-location-section">
+        <h2>{copy.panel.outputs}</h2>
+        <ul data-location-outputs></ul>
+      </section>
+
+      <p class="platform-demo-note"><span aria-hidden="true">i</span>{copy.panel.demonstrationNote}</p>
+    </div>
+  </aside>
+
+  <div class="platform-mobile-scrim" data-panel-close aria-hidden="true"></div>
+
+  <div class="platform-sr-list" aria-label={copy.map.locationCountLabel}>
+    {platformLocations.map((location) => (
+      <button type="button" data-location-shortcut={location.id}>
+        {location.content[locale].title}
+      </button>
+    ))}
+  </div>
+</main>
+
+<script>
+  import { initPlatformMap } from './platform-map';
+
+  const roots = document.querySelectorAll<HTMLElement>('[data-platform-root]');
+  for (const root of roots) initPlatformMap(root);
+</script>

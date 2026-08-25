@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { platformCopy } from '../../data/platform-copy';
+import PlatformPage from '../../features/platform/PlatformPage.astro';
+
+const copy = platformCopy.es;
+---
+
+<BaseLayout lang="es" version="v2" title={copy.meta.title} description={copy.meta.description}>
+  <span slot="skip-label">Saltar al mapa</span>
+  <PlatformPage locale="es" />
+</BaseLayout>
