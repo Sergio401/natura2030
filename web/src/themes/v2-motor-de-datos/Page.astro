@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
-import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
 import type { Locale } from '../../data/types';
@@ -18,6 +17,7 @@ const { locale } = Astro.props;
 const t = getContent(locale);
 const c = v2Copy[locale];
 const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
+const modelsHref = '/models/';
 const headlineLines = parseHeadline(c.hero.headline);
 const stats = [
   { value: String(t.inputs.items.length), label: c.hero.statsLabels[0] },
@@ -34,7 +34,7 @@ const stats = [
       <LanguageSwitcher version="v2" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
       <a href={platformHref} class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
-      <a href="#" class="dv-btn dv-btn-primary">{t.cta.models}</a>
+      <a href={modelsHref} class="dv-btn dv-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
@@ -58,7 +58,7 @@ const stats = [
         <p class="lede">{c.hero.lede}</p>
         <div class="dv-hero-cta">
           <a href={platformHref} class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
-          <a href="#" class="dv-btn dv-btn-primary magnetic">{t.cta.models}</a>
+          <a href={modelsHref} class="dv-btn dv-btn-primary magnetic">{t.cta.models}</a>
         </div>
         <div class="dv-stats">
           {stats.map((s) => (
@@ -198,7 +198,6 @@ const stats = [
     </div>
   </footer>
 
-  <VersionSwitcher version="v2" locale={locale} label={t.ui.versionLabel} names={t.ui.versionNames} />
 </div>
 
 <style>
