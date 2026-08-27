@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
-import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
 import type { Locale } from '../../data/types';
@@ -16,6 +15,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const t = getContent(locale);
+const modelsHref = '/models/';
 const c = v3Copy[locale];
 const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
 const headlineLines = parseHeadline(c.hero.headline);
@@ -32,7 +32,7 @@ const ringRadii = [112, 96, 80, 64];
       <LanguageSwitcher version="v3" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
       <a href={platformHref} class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
-      <a href="#" class="co-btn co-btn-primary">{t.cta.models}</a>
+      <a href={modelsHref} class="co-btn co-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
@@ -54,7 +54,7 @@ const ringRadii = [112, 96, 80, 64];
     <p class="lede">{c.hero.lede}</p>
     <div class="co-hero-cta">
       <a href={platformHref} class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
-      <a href="#" class="co-btn co-btn-primary magnetic">{t.cta.models}</a>
+      <a href={modelsHref} class="co-btn co-btn-primary magnetic">{t.cta.models}</a>
     </div>
     <div class="co-coast" data-draw-trigger aria-hidden="true">
       <svg viewBox="0 0 1100 180" fill="none">
@@ -182,7 +182,6 @@ const ringRadii = [112, 96, 80, 64];
     </div>
   </footer>
 
-  <VersionSwitcher version="v3" locale={locale} label={t.ui.versionLabel} names={t.ui.versionNames} />
 </div>
 
 <style>

@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { modelsCopy } from '../../../data/models-copy';
+import ModelDetailPage from '../../../features/models/ModelDetailPage.astro';
+
+const copy = modelsCopy.es;
+---
+
+<BaseLayout lang="es" version="v2" title={copy.meta.modelTitle} description={copy.meta.modelDescription}>
+  <span slot="skip-label">Saltar a la simulación</span>
+  <ModelDetailPage locale="es" />
+</BaseLayout>

@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
-import VersionSwitcher from '../../components/shared/VersionSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
 import type { Locale } from '../../data/types';
@@ -16,6 +15,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const t = getContent(locale);
+const modelsHref = '/models/';
 const c = v1Copy[locale];
 const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
 const headlineLines = parseHeadline(c.hero.headline);
@@ -32,7 +32,7 @@ let wordIndex = 0;
       <LanguageSwitcher version="v1" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
       <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
-      <a href="#" class="nd-btn nd-btn-primary">{t.cta.models}</a>
+      <a href={modelsHref} class="nd-btn nd-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
@@ -62,7 +62,7 @@ let wordIndex = 0;
       <p class="lede">{c.hero.lede}</p>
       <div class="nd-hero-cta">
         <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
-        <a href="#" class="nd-btn nd-btn-primary magnetic">{t.cta.models}</a>
+        <a href={modelsHref} class="nd-btn nd-btn-primary magnetic">{t.cta.models}</a>
       </div>
       <div class="nd-hero-mark"><Image src={isotipoColor} alt="" width={108} height={108} /></div>
       <div class="nd-scrollcue" aria-hidden="true"><span></span></div>
@@ -205,7 +205,6 @@ let wordIndex = 0;
     </div>
   </footer>
 
-  <VersionSwitcher version="v1" locale={locale} label={t.ui.versionLabel} names={t.ui.versionNames} />
 </div>
 
 <style>

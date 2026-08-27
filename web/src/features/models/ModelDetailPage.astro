@@ -1,0 +1,35 @@
+---
+import { modelsCopy } from '../../data/models-copy';
+import type { Locale } from '../../data/types';
+import ModelLab from './ModelLab';
+import ModelsHeader from './ModelsHeader.astro';
+import './models.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = modelsCopy[locale];
+---
+
+<main class="models-shell model-detail" id="main">
+  <ModelsHeader locale={locale} page="model" />
+
+  <section class="model-intro">
+    <div class="model-intro-meta">
+      <a href={locale === 'es' ? '/models/' : '/models/en/'}><span aria-hidden="true">←</span>{copy.model.breadcrumb}</a>
+    </div>
+    <div class="model-intro-grid">
+      <div>
+        <span class="models-eyebrow"><i aria-hidden="true"></i>{copy.model.subtitle}</span>
+        <h1>{copy.model.title}</h1>
+      </div>
+      <p>{copy.model.description}</p>
+    </div>
+  </section>
+
+  <section class="model-workspace">
+    <ModelLab client:load copy={copy.model} />
+  </section>
+</main>

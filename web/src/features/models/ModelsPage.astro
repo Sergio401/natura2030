@@ -1,0 +1,51 @@
+---
+import { modelsCopy } from '../../data/models-copy';
+import type { Locale } from '../../data/types';
+import { modelRegistry } from './registry';
+import ModelsHeader from './ModelsHeader.astro';
+import './models.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = modelsCopy[locale];
+const model = modelRegistry[0];
+---
+
+<main class="models-shell models-catalog" id="main">
+  <ModelsHeader locale={locale} page="catalog" />
+
+  <section class="models-hero">
+    <div class="models-hero-copy">
+      <span class="models-eyebrow"><i aria-hidden="true"></i>{copy.catalog.eyebrow}</span>
+      <h1>{copy.catalog.title}</h1>
+      <p>{copy.catalog.lead}</p>
+    </div>
+    <div class="models-hero-readout" aria-hidden="true">
+      <span>LIBRARY_STATUS</span>
+      <strong>{copy.catalog.modelCount}</strong>
+      <div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <section class="models-library" aria-labelledby="models-library-title">
+    <div class="models-library-heading">
+      <div>
+        <span>{copy.catalog.available}</span>
+        <h2 id="models-library-title">{copy.header.catalog}</h2>
+      </div>
+      <span>01 / 01</span>
+    </div>
+
+    <article class="model-card">
+      <div class="model-card-body">
+        <div class="model-card-meta"><span>{model.category[locale]}</span></div>
+        <h3>{model.title[locale]}</h3>
+        <p>{model.description[locale]}</p>
+        <a class="model-card-action" href={model.route[locale]}>{copy.catalog.openModel}<span aria-hidden="true">↗</span></a>
+      </div>
+    </article>
+  </section>
+</main>

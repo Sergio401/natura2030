@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import isotipoColor from '../../assets/brand/isotipo-color.png';
+import ThemeToggle from '../../components/shared/ThemeToggle.astro';
+import { getContent } from '../../data';
+import { modelsCopy } from '../../data/models-copy';
+import type { Locale } from '../../data/types';
+import { v2Copy } from '../../themes/v2-motor-de-datos/copy';
+
+interface Props {
+  locale: Locale;
+  page: 'catalog' | 'model';
+}
+
+const { locale, page } = Astro.props;
+const copy = modelsCopy[locale];
+const t = getContent(locale);
+const v2 = v2Copy[locale];
+const spanishHref = page === 'catalog' ? '/models/' : '/models/two-sided-channel/';
+const englishHref = page === 'catalog' ? '/models/en/' : '/models/en/two-sided-channel/';
+const siteHref = locale === 'es' ? '/v2/' : '/v2/en/';
+---
+
+<header class="models-header">
+  <a class="models-brand" href={siteHref} aria-label={t.meta.orgName}>
+    <Image src={isotipoColor} alt="" width={28} height={28} />
+    <strong>{t.meta.orgName.toUpperCase()}</strong>
+  </a>
+
+  <nav class="models-header-tools" aria-label={copy.header.catalog}>
+    <span class="models-status"><i aria-hidden="true"></i>{v2.statusBadge}</span>
+    <div class="models-language" role="group" aria-label={t.ui.languageLabel}>
+      <a href={spanishHref} aria-current={locale === 'es' ? 'true' : undefined}>ES</a>
+      <span aria-hidden="true">/</span>
+      <a href={englishHref} aria-current={locale === 'en' ? 'true' : undefined}>EN</a>
+    </div>
+    <ThemeToggle
+      labelToLight={t.ui.themeToggleToLight}
+      labelToDark={t.ui.themeToggleToDark}
+    />
+    <a href={siteHref} class="models-site-link">{copy.header.site}</a>
+  </nav>
+</header>
