@@ -17,6 +17,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = getContent(locale);
 const c = v3Copy[locale];
+const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
 const headlineLines = parseHeadline(c.hero.headline);
 const ringRadii = [112, 96, 80, 64];
 ---
@@ -30,7 +31,7 @@ const ringRadii = [112, 96, 80, 64];
     <div class="co-nav-tools">
       <LanguageSwitcher version="v3" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href="#" class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
+      <a href={platformHref} class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
       <a href="#" class="co-btn co-btn-primary">{t.cta.models}</a>
     </div>
   </header>
@@ -52,7 +53,7 @@ const ringRadii = [112, 96, 80, 64];
     </h1>
     <p class="lede">{c.hero.lede}</p>
     <div class="co-hero-cta">
-      <a href="#" class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
+      <a href={platformHref} class="co-btn co-btn-ghost">{t.cta.initiatives}</a>
       <a href="#" class="co-btn co-btn-primary magnetic">{t.cta.models}</a>
     </div>
     <div class="co-coast" data-draw-trigger aria-hidden="true">

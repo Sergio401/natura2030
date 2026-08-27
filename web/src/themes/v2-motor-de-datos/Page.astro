@@ -17,6 +17,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = getContent(locale);
 const c = v2Copy[locale];
+const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
 const headlineLines = parseHeadline(c.hero.headline);
 const stats = [
   { value: String(t.inputs.items.length), label: c.hero.statsLabels[0] },
@@ -32,7 +33,7 @@ const stats = [
       <span class="dv-status"><span class="dot" aria-hidden="true"></span>{c.statusBadge}</span>
       <LanguageSwitcher version="v2" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href="#" class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
+      <a href={platformHref} class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
       <a href="#" class="dv-btn dv-btn-primary">{t.cta.models}</a>
     </div>
   </header>
@@ -56,7 +57,7 @@ const stats = [
         </h1>
         <p class="lede">{c.hero.lede}</p>
         <div class="dv-hero-cta">
-          <a href="#" class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
+          <a href={platformHref} class="dv-btn dv-btn-ghost">{t.cta.initiatives}</a>
           <a href="#" class="dv-btn dv-btn-primary magnetic">{t.cta.models}</a>
         </div>
         <div class="dv-stats">

@@ -46,7 +46,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     meta: {
       title: 'NATURA 2030 — Plataforma regional',
       description:
-        'Mapa demostrativo de iniciativas de información climática costera de NATURA 2030 en América Latina.',
+        'Mapa demostrativo de iniciativas de información climática costera de NATURA 2030 en América Latina',
     },
     header: {
       eyebrow: 'INTELIGENCIA CLIMÁTICA COSTERA',
@@ -63,7 +63,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       satellite: 'Satélite',
       streets: 'Calles',
       resetView: 'Restablecer vista regional',
-      loadError: 'El mapa no pudo cargarse. Revisa tu conexión e inténtalo de nuevo.',
+      loadError: 'El mapa no pudo cargarse. Revisa tu conexión e inténtalo de nuevo',
     },
     panel: {
       demoLabel: 'Ubicación demostrativa',
@@ -74,7 +74,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       dataInputs: 'Datos integrados',
       outputs: 'Productos esperados',
       demonstrationNote:
-        'Este caso es ilustrativo. Su ubicación y alcance se utilizan para mostrar cómo funcionará la plataforma con proyectos reales.',
+        'Este caso es ilustrativo. Su ubicación y alcance se utilizan para mostrar cómo funcionará la plataforma con proyectos reales',
     },
     categories: {
       'coastal-adaptation': 'Adaptación costera',
@@ -87,7 +87,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     meta: {
       title: 'NATURA 2030 — Regional platform',
       description:
-        'Demonstration map of NATURA 2030 coastal climate information initiatives across Latin America.',
+        'Demonstration map of NATURA 2030 coastal climate information initiatives across Latin America',
     },
     header: {
       eyebrow: 'COASTAL CLIMATE INTELLIGENCE',
@@ -104,7 +104,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       satellite: 'Satellite',
       streets: 'Streets',
       resetView: 'Reset regional view',
-      loadError: 'The map could not load. Check your connection and try again.',
+      loadError: 'The map could not load. Check your connection and try again',
     },
     panel: {
       demoLabel: 'Demonstration location',
@@ -115,7 +115,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       dataInputs: 'Integrated data',
       outputs: 'Expected products',
       demonstrationNote:
-        'This is an illustrative case. Its location and scope are used to demonstrate how the platform will work with real projects.',
+        'This is an illustrative case. Its location and scope are used to demonstrate how the platform will work with real projects',
     },
     categories: {
       'coastal-adaptation': 'Coastal adaptation',

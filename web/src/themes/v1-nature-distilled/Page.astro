@@ -17,6 +17,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = getContent(locale);
 const c = v1Copy[locale];
+const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
 const headlineLines = parseHeadline(c.hero.headline);
 let wordIndex = 0;
 ---
@@ -30,7 +31,7 @@ let wordIndex = 0;
     <div class="nd-nav-tools">
       <LanguageSwitcher version="v1" locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href="#" class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
+      <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
       <a href="#" class="nd-btn nd-btn-primary">{t.cta.models}</a>
     </div>
   </header>
@@ -60,7 +61,7 @@ let wordIndex = 0;
       </h1>
       <p class="lede">{c.hero.lede}</p>
       <div class="nd-hero-cta">
-        <a href="#" class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
+        <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
         <a href="#" class="nd-btn nd-btn-primary magnetic">{t.cta.models}</a>
       </div>
       <div class="nd-hero-mark"><Image src={isotipoColor} alt="" width={108} height={108} /></div>
@@ -243,9 +244,9 @@ let wordIndex = 0;
 
   .nd-hero { position: relative; padding: 96px 48px 120px; overflow: hidden; }
   .nd-hero-waves { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .nd-hero-waves svg { position: absolute; width: 140%; max-width: 1600px; opacity: 0.22; }
-  .nd-hero-waves .w1 { top: -60px; left: -140px; animation: driftA 18s ease-in-out infinite; }
-  .nd-hero-waves .w2 { bottom: -120px; right: -160px; opacity: 0.18; animation: driftB 24s ease-in-out infinite; }
+  .nd-hero-waves svg { position: absolute; width: 140%; max-width: 1600px; opacity: 0.16; }
+  .nd-hero-waves .w1 { top: -60px; left: -140px; animation: driftA 30s ease-in-out infinite; }
+  .nd-hero-waves .w2 { bottom: -120px; right: -160px; opacity: 0.12; animation: driftB 38s ease-in-out infinite; }
   @keyframes driftA { 0%,100% { transform: translate(0,0); } 50% { transform: translate(100px,50px); } }
   @keyframes driftB { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-110px,-36px); } }
   .nd-hero-inner { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; text-align: center; }
@@ -274,7 +275,7 @@ let wordIndex = 0;
 
   .nd-divider { height: 96px; background: var(--bg); overflow: hidden; }
   .nd-divider svg { display: block; width: 100%; height: 100%; }
-  .nd-divider-track { animation: waveDrift 22s linear infinite; }
+  .nd-divider-track { animation: waveDrift 38s linear infinite; }
   @keyframes waveDrift { from { transform: translateX(0); } to { transform: translateX(-1440px); } }
 
   .nd-problem { background: var(--block-bg); color: var(--block-ink); padding: 10px 48px 96px; }

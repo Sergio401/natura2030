@@ -28,7 +28,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Cartagena de Indias · Colombia',
         status: 'Escenario conceptual',
         summary:
-          'Integración de información de nivel del mar, oleaje y exposición urbana para orientar prioridades de adaptación en sectores costeros.',
+          'Integración de información de nivel del mar, oleaje y exposición urbana para orientar prioridades de adaptación en sectores costeros',
         dataInputs: ['Nivel del mar histórico y proyectado', 'Oleaje y marea', 'Topografía costera'],
         outputs: ['Diagnóstico climático', 'Mapas de exposición', 'Indicadores de adaptación'],
       },
@@ -37,7 +37,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Cartagena de Indias · Colombia',
         status: 'Conceptual scenario',
         summary:
-          'Integration of sea-level, wave and urban exposure information to guide adaptation priorities in coastal districts.',
+          'Integration of sea-level, wave and urban exposure information to guide adaptation priorities in coastal districts',
         dataInputs: ['Historical and projected sea level', 'Waves and tides', 'Coastal topography'],
         outputs: ['Climate diagnosis', 'Exposure maps', 'Adaptation indicators'],
       },
@@ -53,7 +53,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Magdalena · Colombia',
         status: 'Escenario conceptual',
         summary:
-          'Lectura conjunta de variables climáticas, hidrológicas y ecológicas para apoyar la restauración y el seguimiento de ecosistemas de manglar.',
+          'Lectura conjunta de variables climáticas, hidrológicas y ecológicas para apoyar la restauración y el seguimiento de ecosistemas de manglar',
         dataInputs: ['Precipitación y temperatura', 'Imágenes satelitales', 'Variables ecológicas locales'],
         outputs: ['Línea base ambiental', 'Indicadores de restauración', 'Reporte de tendencias'],
       },
@@ -62,7 +62,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Magdalena · Colombia',
         status: 'Conceptual scenario',
         summary:
-          'Combined climate, hydrological and ecological analysis to support mangrove restoration and ecosystem monitoring.',
+          'Combined climate, hydrological and ecological analysis to support mangrove restoration and ecosystem monitoring',
         dataInputs: ['Precipitation and temperature', 'Satellite imagery', 'Local ecological variables'],
         outputs: ['Environmental baseline', 'Restoration indicators', 'Trend report'],
       },
@@ -78,7 +78,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Buenaventura · Colombia',
         status: 'Escenario conceptual',
         summary:
-          'Análisis de precipitación extrema, oleaje y sobreelevación por tormenta para fortalecer la gestión local del riesgo costero.',
+          'Análisis de precipitación extrema, oleaje y sobreelevación por tormenta para fortalecer la gestión local del riesgo costero',
         dataInputs: ['Precipitación extrema', 'Oleaje', 'Sobreelevación por tormenta'],
         outputs: ['Mapas de amenaza', 'Series temporales', 'Recomendaciones de gestión'],
       },
@@ -87,7 +87,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Buenaventura · Colombia',
         status: 'Conceptual scenario',
         summary:
-          'Analysis of extreme rainfall, waves and storm surge to strengthen local coastal risk management.',
+          'Analysis of extreme rainfall, waves and storm surge to strengthen local coastal risk management',
         dataInputs: ['Extreme precipitation', 'Wave conditions', 'Storm surge'],
         outputs: ['Hazard maps', 'Time series', 'Management recommendations'],
       },
@@ -103,7 +103,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Guayas · Ecuador',
         status: 'Escenario conceptual',
         summary:
-          'Integración de observaciones costeras y datos ecológicos para identificar condiciones favorables para la recuperación de humedales.',
+          'Integración de observaciones costeras y datos ecológicos para identificar condiciones favorables para la recuperación de humedales',
         dataInputs: ['Observaciones satelitales', 'Marea y nivel del mar', 'Datos ecológicos de campo'],
         outputs: ['Cartografía procesada', 'Diagnóstico ecosistémico', 'Indicadores de seguimiento'],
       },
@@ -112,7 +112,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Guayas · Ecuador',
         status: 'Conceptual scenario',
         summary:
-          'Integration of coastal observations and ecological data to identify favorable conditions for wetland recovery.',
+          'Integration of coastal observations and ecological data to identify favorable conditions for wetland recovery',
         dataInputs: ['Satellite observations', 'Tides and sea level', 'Field ecology data'],
         outputs: ['Processed mapping', 'Ecosystem diagnosis', 'Monitoring indicators'],
       },
@@ -128,7 +128,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Callao · Perú',
         status: 'Escenario conceptual',
         summary:
-          'Evaluación de condiciones oceánicas actuales y futuras para apoyar decisiones de resiliencia en infraestructura costera estratégica.',
+          'Evaluación de condiciones oceánicas actuales y futuras para apoyar decisiones de resiliencia en infraestructura costera estratégica',
         dataInputs: ['Oleaje y viento', 'Batimetría', 'Escenarios climáticos'],
         outputs: ['Estadísticas resumidas', 'Escenarios de exposición', 'Soporte a decisiones'],
       },
@@ -137,7 +137,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Callao · Peru',
         status: 'Conceptual scenario',
         summary:
-          'Assessment of present and future ocean conditions to support resilience decisions for strategic coastal infrastructure.',
+          'Assessment of present and future ocean conditions to support resilience decisions for strategic coastal infrastructure',
         dataInputs: ['Waves and wind', 'Bathymetry', 'Climate scenarios'],
         outputs: ['Summary statistics', 'Exposure scenarios', 'Decision support'],
       },
@@ -153,7 +153,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Pernambuco · Brasil',
         status: 'Escenario conceptual',
         summary:
-          'Síntesis de tendencias climáticas y exposición urbana para explorar medidas de adaptación en una costa metropolitana de alta densidad.',
+          'Síntesis de tendencias climáticas y exposición urbana para explorar medidas de adaptación en una costa metropolitana de alta densidad',
         dataInputs: ['Nivel del mar', 'Temperatura y precipitación', 'Información territorial'],
         outputs: ['Tendencias climáticas', 'Indicadores de incertidumbre', 'Opciones de adaptación'],
       },
@@ -162,7 +162,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Pernambuco · Brazil',
         status: 'Conceptual scenario',
         summary:
-          'Synthesis of climate trends and urban exposure to explore adaptation measures for a high-density metropolitan coastline.',
+          'Synthesis of climate trends and urban exposure to explore adaptation measures for a high-density metropolitan coastline',
         dataInputs: ['Sea level', 'Temperature and precipitation', 'Territorial information'],
         outputs: ['Climate trends', 'Uncertainty indicators', 'Adaptation options'],
       },
@@ -178,7 +178,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Montevideo · Uruguay',
         status: 'Escenario conceptual',
         summary:
-          'Combinación de viento, nivel del agua y escenarios futuros para apoyar la planificación ante eventos extremos en el borde urbano.',
+          'Combinación de viento, nivel del agua y escenarios futuros para apoyar la planificación ante eventos extremos en el borde urbano',
         dataInputs: ['Viento', 'Nivel del agua', 'Escenarios futuros'],
         outputs: ['Análisis de extremos', 'Mapas de riesgo', 'Recomendaciones de planificación'],
       },
@@ -187,7 +187,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Montevideo · Uruguay',
         status: 'Conceptual scenario',
         summary:
-          'Combination of wind, water-level and future-scenario data to support planning for extreme events along the urban waterfront.',
+          'Combination of wind, water-level and future-scenario data to support planning for extreme events along the urban waterfront',
         dataInputs: ['Wind', 'Water level', 'Future scenarios'],
         outputs: ['Extreme-event analysis', 'Risk maps', 'Planning recommendations'],
       },
@@ -203,7 +203,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'Distrito Nacional · República Dominicana',
         status: 'Escenario conceptual',
         summary:
-          'Lectura integrada de tormentas, oleaje e infraestructura expuesta para priorizar acciones de resiliencia en el frente costero.',
+          'Lectura integrada de tormentas, oleaje e infraestructura expuesta para priorizar acciones de resiliencia en el frente costero',
         dataInputs: ['Trayectorias de tormentas', 'Oleaje y sobreelevación', 'Inventario de infraestructura'],
         outputs: ['Diagnóstico de exposición', 'Indicadores de resiliencia', 'Prioridades de intervención'],
       },
@@ -212,7 +212,7 @@ export const platformLocations: PlatformLocation[] = [
         region: 'National District · Dominican Republic',
         status: 'Conceptual scenario',
         summary:
-          'Integrated analysis of storms, waves and exposed infrastructure to prioritize resilience actions along the waterfront.',
+          'Integrated analysis of storms, waves and exposed infrastructure to prioritize resilience actions along the waterfront',
         dataInputs: ['Storm tracks', 'Waves and storm surge', 'Infrastructure inventory'],
         outputs: ['Exposure diagnosis', 'Resilience indicators', 'Intervention priorities'],
       },

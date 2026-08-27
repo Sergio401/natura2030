@@ -5,34 +5,34 @@ export const en: SiteContent = {
     siteName: 'NATURA 2030',
     orgName: 'Adaptation Latin America',
     description:
-      'NATURA 2030 brings together climate and ocean data from multiple sources into inputs local teams can use for coastal adaptation decisions across Latin America.',
+      'NATURA 2030 brings together climate and ocean data from multiple sources into inputs local teams can use for coastal adaptation decisions across Latin America',
   },
   process: {
     steps: [
       {
         n: '1',
         title: 'Site and objective definition',
-        body: 'Identifying the problem, location, time horizon and needs of the project.',
+        body: 'Identifying the problem, location, time horizon and needs of the project',
       },
       {
         n: '2',
         title: 'Selection, download and ingestion',
-        body: 'Gathering relevant data from models, observations and local sources.',
+        body: 'Gathering relevant data from models, observations and local sources',
       },
       {
         n: '3',
         title: 'Harmonization and quality control',
-        body: 'Checking coverage, consistency, units, coordinates and datums.',
+        body: 'Checking coverage, consistency, units, coordinates and datums',
       },
       {
         n: '4',
         title: 'Integration and analysis',
-        body: 'Physical-statistical combination of sources, trends, climatologies and scenarios.',
+        body: 'Physical-statistical combination of sources, trends, climatologies and scenarios',
       },
       {
         n: '5',
         title: 'Interpretation for adaptation',
-        body: 'Translating the results into information useful for planning and decision-making.',
+        body: 'Translating the results into information useful for planning and decision-making',
       },
     ],
   },
@@ -40,19 +40,19 @@ export const en: SiteContent = {
     items: [
       {
         title: 'Climate and ocean models',
-        body: 'Historical and projected sea level, tides, waves, storm surge, wind, precipitation, temperature and climate scenarios.',
+        body: 'Historical and projected sea level, tides, waves, storm surge, wind, precipitation, temperature and climate scenarios',
       },
       {
         title: 'Historical observations',
-        body: 'Tide gauges, buoys, weather stations, satellite data and instrumental records along the coast.',
+        body: 'Tide gauges, buoys, weather stations, satellite data and instrumental records along the coast',
       },
       {
         title: 'Local project data',
-        body: 'Field campaigns, topography and bathymetry, sensors, cameras or drones, and ecological variables.',
+        body: 'Field campaigns, topography and bathymetry, sensors, cameras or drones, and ecological variables',
       },
       {
         title: 'Project information',
-        body: 'Location, objective, time horizon, analysis scenario, ecosystem or infrastructure type and risk level.',
+        body: 'Location, objective, time horizon, analysis scenario, ecosystem or infrastructure type and risk level',
       },
     ],
     sources: ['GTSM', 'CMIP6', 'UHSLC', 'WAVERYS', 'In-situ data'],
@@ -62,17 +62,17 @@ export const en: SiteContent = {
       {
         tag: 'A',
         title: 'Processed data',
-        body: 'Time series, maps, summary statistics and files ready for further analysis.',
+        body: 'Time series, maps, summary statistics and files ready for further analysis',
       },
       {
         tag: 'B',
         title: 'Climate diagnosis',
-        body: 'Trends, variability, extremes, future scenarios and uncertainty indicators.',
+        body: 'Trends, variability, extremes, future scenarios and uncertainty indicators',
       },
       {
         tag: 'C',
         title: 'Decision support',
-        body: 'Technical reports, infographics, adaptation indicators and recommendations.',
+        body: 'Technical reports, infographics, adaptation indicators and recommendations',
       },
     ],
   },
@@ -87,7 +87,7 @@ export const en: SiteContent = {
     ],
   },
   about: {
-    body: 'ALA is a non-profit organization working toward a more sustainable relationship with water and nature in Latin America, promoting efficient collaboration between governments, the private sector, NGOs and local communities.',
+    body: 'ALA is a non-profit organization working toward a more sustainable relationship with water and nature in Latin America, promoting efficient collaboration between governments, the private sector, NGOs and local communities',
     pillars: ['Water', 'Climate', 'Nature'],
     org: [
       { label: 'Organization', value: 'Adaptation Latin America' },
@@ -103,8 +103,8 @@ export const en: SiteContent = {
   },
   footer: {
     email: 'algo@natura2030.com',
-    copyright: '© 2026 Adaptation Latin America. All rights reserved.',
-    note: 'NATURA 2030 is an initiative of ALA.',
+    copyright: '© 2026 Adaptation Latin America. All rights reserved',
+    note: 'NATURA 2030 is an initiative of ALA',
   },
   ui: {
     skipToContent: 'Skip to content',
