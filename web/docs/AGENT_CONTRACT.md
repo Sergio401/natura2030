@@ -140,7 +140,7 @@ Estados terminales: `done`, `failed`, `discarded`.
 | `deploying_dev` | falla | `failed` | worker |
 | `preview` | `action: approve` | `deploying_prod` | web escribe action, worker transiciona |
 | `preview` | `action: feedback` | `running` (ronda `feedback`, con `--resume`) | idem |
-| `preview` | `action: discard` | `discarded` (worker resetea dev a `origin/<prod>`, push forzado de dev, restart dev) | idem |
+| `preview` | `action: discard` | `discarded` (worker resetea dev a `origin/<prod>`, push forzado de dev, rebuild y restart dev) | idem |
 | `deploying_prod` | `git pull --ff-only` + `git merge --ff-only dev` (rama local, mismo repo) + push + install + build + pm2 restart prod OK | `done` | worker |
 | `deploying_prod` | falla (por ejemplo prod avanzó y ff no es posible) | `failed` | worker |
 

@@ -472,6 +472,7 @@ async function handlePreviewAction(job, config) {
   if (!action) return job; // idle; the caller stops the loop here
 
   if (action.type === 'discard') {
+    const deployLog = path.join(logsDir(job.id), 'deploy.log');
     try {
       await resetWorktreeToProd({ cwd: config.devDir, prodBranch: config.prodBranch, env: process.env });
       await pushBranch({
@@ -481,7 +482,17 @@ async function handlePreviewAction(job, config) {
         push: config.gitPush,
         env: process.env,
       });
-      await restartPm2Dev(config, path.join(logsDir(job.id), 'deploy.log'));
+      // dist/ still holds the discarded change; rebuild so the dev site shows
+      // the same content as prod again before restarting.
+      const build = await run(config.pnpmBin, ['build'], {
+        cwd: devWebDir(config),
+        env: { ...process.env, SELF_HOSTED: 'true' },
+        logFile: deployLog,
+      });
+      if (build.code !== 0) {
+        throw new Error(tailLines(`${build.stdout || ''}${build.stderr || ''}`, 40) || 'pnpm build falló.');
+      }
+      await restartPm2Dev(config, deployLog);
     } catch (error) {
       return failJob(job, config, `No se pudo descartar el cambio limpiamente: ${shellErrorTail(error)}`);
     }
@@ -630,6 +641,10 @@ export async function processOnce(config) {
 
   let job = await findOpenJob();
   if (!job) return null;
+
+  // A job parked in `preview` with nothing to do is the normal idle state
+  // while the admin decides; don't log it on every poll.
+  if (job.status === 'preview' && !job.action) return job;
 
   if (IN_FLIGHT_STATES.includes(job.status)) {
     log(job.id, `Encontrado en estado "${job.status}" al arrancar; el worker se reinició a mitad de un cambio.`);
