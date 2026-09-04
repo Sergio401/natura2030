@@ -1,57 +1,105 @@
 # Agente administrador de NATURA 2030
 
-## Estado actual: prototipo sin ejecutor
+## Estado actual: ejecutor de texto/estructura en la VPS
 
-La ruta `/admin/` incluye:
+La ruta `/admin/` ya no es solo un prototipo de propuestas: en la VPS ejecuta cambios de
+verdad a través de un pipeline dev → prod. La especificación completa (máquina de estados,
+esquema de job, allowlist, prompt exacto, endpoints) vive en
+[`AGENT_CONTRACT.md`](./AGENT_CONTRACT.md) — este documento es el resumen orientado a
+operación y a los límites de seguridad; ante cualquier discrepancia gana el contrato.
+
+Resumen del flujo: el chat de `/admin/` (OpenAI, Responses API) entiende la solicitud y, tras
+una primera confirmación del usuario, crea un *job*. El worker (`agent/worker.mjs`, proceso
+pm2 `natura-agent` corriendo como el usuario `sergio`) lo toma, invoca `claude -p` **sin
+shell** sobre un worktree separado (rama `dev`), verifica (`pnpm check` + `pnpm build`),
+despliega ese worktree en `natura-dev` para previsualizar, y solo tras una segunda
+confirmación (`approve`) hace merge `--ff-only` a la rama de producción, reconstruye y reinicia
+`natura`. Cada paso queda en `~/natura-agent/jobs/<id>.json` y en `logs/<id>/`.
+
+Piezas que ya existen:
 
 - login con credenciales configuradas por variables de entorno;
 - sesión firmada, `HttpOnly`, `SameSite=Strict` y con expiración de ocho horas;
 - chat conectado a la Responses API mediante una API key exclusivamente del lado servidor;
 - carga controlada de imágenes, PDF, Word, Excel, CSV, JSON, GeoJSON y texto;
-- política restrictiva visible en la interfaz y repetida en las instrucciones del servidor;
-- ausencia total de herramientas de escritura o shell durante esta fase.
+- una tool `submit_change_request` que convierte una solicitud entendida en una propuesta con
+  resumen e instrucción, mostrada en la UI antes de cualquier ejecución (confirmación 1);
+- un worker (`agent/worker.mjs`) que aplica el cambio en un worktree `dev` aislado, con Claude
+  restringido a `Read,Glob,Grep,Edit,Write` (sin Bash) y un hook `PreToolUse` que rechaza
+  cualquier ruta fuera de la allowlist de `agent/lib/allowlist.mjs`;
+- verificación determinista (`pnpm check`, `pnpm build`) y un chequeo posterior de
+  `git status --porcelain` contra la misma allowlist antes de aceptar el resultado;
+- preview pública en `natura-dev` con banner rojo de "versión de desarrollo" (ver
+  `AGENT_CONTRACT.md`), y una segunda confirmación explícita antes de tocar producción;
+- historial auditable: cada job queda en `~/natura-agent/jobs/<id>.json`, sus logs en
+  `~/natura-agent/logs/<id>/`, y cada cambio publicado es un commit `[agent] <resumen>`
+  firmado por `NATURA Agent <agent@natura2030.local>`.
 
-La arquitectura final está pensada para una VPS con un ejecutor privado y aislado. Mientras el frontend continú temporalmente en Vercel y ese ejecutor no existe, el administrador solo permite analizar y preparar propuestas: una modificación en el filesystem efímero de Vercel no cambiaría el repositorio ni produciría un despliegue durable.
+## Operaciones permitidas hoy
 
-## Operaciones permitidas en la fase VPS
+Solo texto y estructura de la landing existente, vía la allowlist fija del contrato:
 
-El futuro ejecutor debe exponer operaciones estructuradas y limitadas, no una terminal genérica:
+- `src/data/content.es.ts` / `content.en.ts` (copy factual, ambos idiomas);
+- `src/data/platform-copy.ts`, `src/data/models-copy.ts`;
+- `src/themes/v1-nature-distilled/copy.ts`, `tokens.css`, `Page.astro`.
 
-1. `update_landing_content`: modificar exclusivamente los archivos de contenido y la estructura del theme existente.
-2. `add_map_location`: validar el esquema y agregar una entrada a `src/data/platform-locations.ts` junto con activos permitidos.
-3. `add_model`: registrar un modelo dentro de `src/features/models/models/` y `registry.ts`, sujeto a validación y límites de ejecución.
+Cualquier ruta fuera de esa lista es rechazada dos veces: por el hook `PreToolUse` mientras
+Claude edita, y por el chequeo de `git status` del worker después de la corrida. Un intento
+fuera de la allowlist termina el job en `failed`, nunca en `preview` ni `done`.
 
-El ejecutor debe rechazar cualquier ruta de archivo fuera de las allowlists de cada operación. La política del prompt ayuda a orientar al modelo, pero la seguridad real debe vivir en validadores deterministas del servidor.
+## Operaciones futuras (no implementadas)
 
-## Flujo recomendado en la VPS
+Quedan fuera del ejecutor actual y requieren su propio diseño de validación antes de
+habilitarse:
 
-1. El agente recopila y valida la solicitud y los archivos.
-2. Genera un plan y una vista previa del diff sin escribir en producción.
-3. El usuario confirma el cambio de forma explícita.
-4. Un worker crea una copia de trabajo aislada a partir de un commit conocido.
-5. Aplica solo una operación allowlisted y verifica rutas, tamaños y tipos de archivo.
-6. Ejecuta `pnpm check`, `pnpm build` y validaciones específicas de datos.
-7. Muestra el diff final y requiere una segunda confirmación para publicar.
-8. Crea un commit auditable y despliega de forma atómica.
-9. Conserva el release anterior para rollback inmediato.
+1. **Puntos del mapa** (`add_map_location`): agregar una entrada a
+   `src/data/platform-locations.ts` con activos asociados — necesita esquema estricto de
+   coordenadas/activos, no solo texto libre.
+2. **Modelos** (`add_model`): registrar un modelo en `src/features/models/models/` y
+   `registry.ts` — implica ejecutar o al menos cargar código/datos aportados por el cliente,
+   lo que necesita un sandbox real, separado del worker de texto.
 
-El proceso web del sitio no debería tener permisos directos de escritura sobre el checkout de producción. El worker debe ejecutarse con un usuario del sistema separado, sin privilegios, sin acceso general a secretos y con timeouts, cuotas de CPU/memoria y red restringida.
+Mientras no existan, el chat de `/admin/` debe seguir explicando que esas operaciones no están
+disponibles en vez de intentar forzarlas por la ruta de texto.
 
-## Controles necesarios antes de habilitar escritura
+## Controles de seguridad vigentes
 
-- autenticación multiusuario o SSO, MFA y recuperación de acceso;
-- rate limiting persistente y bloqueo de intentos fuera de memoria;
-- protección CSRF y rotación de sesiones;
-- almacenamiento privado de archivos con antivirus y eliminación programada;
-- logs de auditoría inmutables con usuario, solicitud, diff, resultado y rollback;
-- esquema estricto para puntos del mapa y manifiesto estricto para modelos;
-- sandbox real para ejecutar modelos aportados por usuarios;
-- backups, health checks y despliegues atómicos;
-- límites de gasto, tokens, tamaño de archivos y concurrencia de la API;
-- pruebas de prompt injection, especialmente sobre instrucciones ocultas dentro de documentos.
+- **Un solo cambio abierto a la vez**: `POST /api/admin/jobs` responde `409` si ya hay un job
+  no terminal, así que no hay dos ejecuciones de Claude escribiendo sobre el mismo worktree.
+- **Claude corre sin shell**: el worker invoca `claude -p` con `--tools Read,Glob,Grep,Edit,Write`
+  y `--allowedTools` igual; no hay `Bash` ni acceso a red disponible para el modelo. Verificación,
+  build, git y pm2 los ejecuta el worker de forma determinista, nunca Claude.
+- **Allowlist de archivos aplicada dos veces**: hook `PreToolUse` (bloquea en el momento) y
+  `git status --porcelain` posterior (red de seguridad si el hook fallara).
+- **Dos confirmaciones humanas**: crear el job (confirmación 1) y aprobar `preview → prod`
+  (confirmación 2) son acciones separadas y explícitas del usuario autenticado en `/admin/`.
+- **Preview antes de producción**: todo cambio se ve primero en `natura-dev` (banner rojo) y
+  solo pasa a `natura` con un `git merge --ff-only`, que falla limpio si producción avanzó
+  mientras tanto en vez de forzar un merge inesperado.
+- **Traza de auditoría**: job JSON completo (instrucción, rondas, resultado de Claude, diff,
+  commits) + logs crudos de cada paso + los commits `[agent]` mismos en el historial de git.
+- **Nadie más hace commits**: solo el worker, y solo con prefijo `[agent]` — ver
+  `AGENT_CONTRACT.md`.
 
-## Limitaciones principales
+## Limitaciones y controles pendientes
 
-La limitación más importante no es el chat, sino ejecutar código aportado por el cliente. Un modelo nuevo puede contener Python malicioso, consumir recursos indefinidamente o acceder a red y secretos. Debe ejecutarse en un sandbox efímero separado; nunca dentro del proceso web ni directamente en el host de producción.
+- **Una sola contraseña compartida** para `/admin/`: suficiente para el operador único actual,
+  no para multiusuario. Antes de sumar operadores hace falta autenticación por persona (SSO o
+  usuarios separados), MFA y rotación/recuperación de acceso.
+- **Rate limiting solo en memoria**: no persiste entre reinicios ni escala a más de un proceso.
+- **Sin sandbox de ejecución de código de terceros**: el worker actual solo edita archivos de
+  texto; el día que se habilite `add_model` (código/datos del cliente), ese código no puede
+  correr en este mismo proceso ni en el host de producción — necesita un sandbox efímero
+  separado, con red restringida y sin acceso a secretos.
+- **Backups y rollback**: hoy el único rollback es git (`git revert` del commit `[agent]` en
+  `main`/`chatbot` + redeploy manual); no hay snapshot de release ni health check automático
+  antes de servir el nuevo build.
+- **Límites de gasto/tokens**: `AGENT_CLAUDE_TIMEOUT_MS` y `AGENT_MAX_FIX_ROUNDS` acotan tiempo
+  de ejecución, pero no hay un tope de costo mensual ni alertas si el uso de la API se dispara.
+- **Prompt injection vía contenido cargado**: el chat de `/admin/` acepta adjuntos (PDF, Word,
+  CSV, etc.); no hay pruebas sistemáticas de instrucciones ocultas dentro de esos archivos
+  influyendo en la instrucción que termina llegando a Claude.
 
-Una contraseña compartida es suficiente para un prototipo privado, pero no para operación real. Tampoco basta un prompt restrictivo: las acciones deben estar limitadas por código, esquemas, permisos del sistema y confirmaciones humanas.
+Un prompt restrictivo por sí solo nunca fue ni es suficiente: las acciones reales están
+limitadas por la allowlist en código, la ausencia de Bash, las verificaciones deterministas del
+worker y las dos confirmaciones humanas — no por buena voluntad del modelo.

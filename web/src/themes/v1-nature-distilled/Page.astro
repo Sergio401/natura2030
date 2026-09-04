@@ -224,7 +224,7 @@ let wordIndex = 0;
   .nd-eyebrow { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); }
   .nd-wrap { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
 
-  .nd-nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+  .nd-nav { position: sticky; top: var(--dev-banner-h, 0px); z-index: 40; display: flex; align-items: center; justify-content: space-between;
     padding: 18px 48px; background: transparent;
     transition: background .3s ease, backdrop-filter .3s ease; }
   .nd-nav.scrolled { background: color-mix(in srgb, var(--bg) 45%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }

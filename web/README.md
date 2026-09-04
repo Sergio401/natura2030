@@ -34,11 +34,19 @@ El sitio conserva una sola dirección visual y ofrece un toggle de modo oscuro c
 
 ## Centro de edición asistida
 
-`/admin/` ofrece un login y un chat privado para preparar cambios de contenido, puntos del mapa y modelos. En Vercel funciona en **modo propuesta**: analiza solicitudes y archivos con la API de OpenAI, pero no modifica el repositorio ni despliega cambios.
+`/admin/` ofrece un login y un chat privado para preparar y aplicar cambios de contenido de la
+landing. En Vercel funciona en **modo propuesta**: analiza solicitudes y archivos con la API de
+OpenAI, pero no modifica el repositorio ni despliega cambios. En la VPS, en cambio, el chat
+puede *ejecutar* el cambio: tras una primera confirmación crea un job que un worker aplica en
+una rama `dev` separada (con Claude, sin acceso a shell, restringido a una allowlist fija de
+archivos de texto/estructura), lo verifica con `pnpm check`/`pnpm build`, lo publica en una
+preview (`natura-dev`, con banner de "no publicado") y, solo tras una segunda confirmación, lo
+promueve a producción con un commit `[agent]`. Puntos del mapa y modelos no están cubiertos
+todavía por este ejecutor.
 
-Para configurarlo localmente, copia `.env.example` a `.env` y define `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `OPENAI_API_KEY` y, opcionalmente, `OPENAI_MODEL`. En Vercel, configura los mismos secretos como variables de entorno; nunca uses el prefijo `PUBLIC_` para la API key.
+Para configurarlo localmente, copia `.env.example` a `.env` y define `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `OPENAI_API_KEY` y, opcionalmente, `OPENAI_MODEL`. En Vercel, configura los mismos secretos como variables de entorno; nunca uses el prefijo `PUBLIC_` para la API key. Las variables `DEPLOY_ENV` y `AGENT_*` (worker de la VPS) están documentadas en `.env.example` pero solo aplican al despliegue self-hosted — ver [`DEPLOY.md`](./DEPLOY.md).
 
-La arquitectura prevista para aplicar cambios de forma segura en la VPS está documentada en [`docs/ADMIN_AGENT.md`](./docs/ADMIN_AGENT.md).
+El contrato completo del ejecutor (esquema de job, máquina de estados, allowlist, endpoints) vive en [`docs/AGENT_CONTRACT.md`](./docs/AGENT_CONTRACT.md); el resumen operativo y de seguridad está en [`docs/ADMIN_AGENT.md`](./docs/ADMIN_AGENT.md).
 
 ## Dirección visual
 

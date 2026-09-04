@@ -1,8 +1,36 @@
 import type { APIRoute } from 'astro';
 import { hasValidSession, isSameOrigin } from '../../../lib/admin/auth';
 import { ADMIN_SYSTEM_PROMPT } from '../../../lib/admin/policy';
+import { findOpenJob, LIMITS } from '../../../../agent/lib/store.mjs';
 
 export const prerender = false;
+
+const SUBMIT_CHANGE_TOOL = {
+  type: 'function',
+  name: 'submit_change_request',
+  description: 'Enviar una solicitud de cambio de texto o estructura de la landing al ejecutor, una vez entendida y validada con el usuario.',
+  parameters: {
+    type: 'object',
+    properties: {
+      summary: { type: 'string', description: 'Una línea para el historial, máximo 140 caracteres.' },
+      instruction: { type: 'string', description: 'Instrucción completa y autocontenida para el agente de código: qué archivos tocar, qué texto cambiar, en qué idioma(s), y qué no tocar.' },
+    },
+    required: ['summary', 'instruction'],
+    additionalProperties: false,
+  },
+  strict: true,
+} as const;
+
+const DEFAULT_PROPOSAL_MESSAGE = 'Preparé una propuesta de cambio. Revísala y confírmala para ejecutarla.';
+
+const STATUS_LABELS: Record<string, string> = {
+  queued: 'en cola',
+  running: 'en ejecución',
+  verifying: 'en verificación',
+  deploying_dev: 'desplegándose a desarrollo',
+  preview: 'en vista previa esperando tu confirmación',
+  deploying_prod: 'publicándose a producción',
+};
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -62,8 +90,15 @@ function validAttachments(value: unknown): value is Attachment[] {
   return total <= MAX_TOTAL_FILE_BYTES;
 }
 
+interface ResponsesOutputItem {
+  type?: string;
+  content?: Array<{ type?: string; text?: string }>;
+  name?: string;
+  arguments?: string;
+}
+
 function extractOutputText(payload: unknown): string {
-  const response = payload as { output_text?: unknown; output?: Array<{ content?: Array<{ type?: string; text?: string }> }> };
+  const response = payload as { output_text?: unknown; output?: ResponsesOutputItem[] };
   if (typeof response.output_text === 'string' && response.output_text.trim()) return response.output_text.trim();
   return (response.output ?? [])
     .flatMap((item) => item.content ?? [])
@@ -71,6 +106,20 @@ function extractOutputText(payload: unknown): string {
     .map((item) => item.text)
     .join('\n')
     .trim();
+}
+
+function extractChangeRequestArgs(payload: unknown): { summary: unknown; instruction: unknown } | null {
+  const response = payload as { output?: ResponsesOutputItem[] };
+  const call = (response.output ?? []).find(
+    (item) => item.type === 'function_call' && item.name === 'submit_change_request' && typeof item.arguments === 'string',
+  );
+  if (!call) return null;
+  try {
+    const parsed = JSON.parse(call.arguments as string) as { summary?: unknown; instruction?: unknown };
+    return { summary: parsed.summary, instruction: parsed.instruction };
+  } catch {
+    return null;
+  }
 }
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -98,6 +147,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const apiKey = (import.meta.env.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY)?.trim();
   if (!apiKey) return Response.json({ error: 'La API key del asistente todavía no está configurada.' }, { status: 503 });
 
+  let openJob: Awaited<ReturnType<typeof findOpenJob>> = null;
+  try {
+    openJob = await findOpenJob();
+  } catch (error) {
+    console.error('[admin/chat] findOpenJob failed', error);
+  }
+  const statusLine = openJob
+    ? `Cambio abierto ${openJob.id} en estado ${STATUS_LABELS[openJob.status] ?? openJob.status}: ${openJob.summary}`
+    : 'Sin cambios abiertos.';
+  const instructions = `${ADMIN_SYSTEM_PROMPT}\n\nEstado actual del ejecutor de cambios: ${statusLine}`;
+
   const input = messages.slice(-12).map((message, index, visibleMessages) => {
     const isLatest = index === visibleMessages.length - 1;
     if (!isLatest) return { role: message.role, content: message.content };
@@ -118,8 +178,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
       body: JSON.stringify({
         model: (import.meta.env.OPENAI_MODEL ?? process.env.OPENAI_MODEL)?.trim() || 'gpt-5.4-mini',
-        instructions: ADMIN_SYSTEM_PROMPT,
+        instructions,
         input,
+        tools: [SUBMIT_CHANGE_TOOL],
+        tool_choice: 'auto',
         store: false,
         max_output_tokens: 1800,
       }),
@@ -132,9 +194,30 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       return Response.json({ error: 'El asistente no pudo procesar la solicitud.' }, { status: 502 });
     }
     const payload = await response.json();
-    const message = extractOutputText(payload);
-    if (!message) return Response.json({ error: 'El asistente devolvió una respuesta vacía.' }, { status: 502 });
-    return Response.json({ message, mode: 'proposal' }, { headers: { 'cache-control': 'no-store' } });
+    const outputText = extractOutputText(payload);
+    const changeRequest = extractChangeRequestArgs(payload);
+
+    if (changeRequest) {
+      const { summary, instruction } = changeRequest;
+      if (
+        typeof summary !== 'string' || !summary.trim() || summary.length > LIMITS.summary ||
+        typeof instruction !== 'string' || !instruction.trim() || instruction.length > LIMITS.instruction
+      ) {
+        console.error('[admin/chat] submit_change_request returned an invalid proposal', { summary, instruction });
+        return Response.json({ error: 'El asistente generó una propuesta inválida. Intenta reformular tu pedido.' }, { status: 502 });
+      }
+      return Response.json(
+        {
+          message: outputText || DEFAULT_PROPOSAL_MESSAGE,
+          proposal: { summary: summary.trim(), instruction: instruction.trim() },
+          mode: 'proposal',
+        },
+        { headers: { 'cache-control': 'no-store' } },
+      );
+    }
+
+    if (!outputText) return Response.json({ error: 'El asistente devolvió una respuesta vacía.' }, { status: 502 });
+    return Response.json({ message: outputText, mode: 'proposal' }, { headers: { 'cache-control': 'no-store' } });
   } catch (error) {
     console.error('[admin/chat] Request failed', error);
     return Response.json({ error: 'El asistente tardó demasiado o no está disponible.' }, { status: 504 });

@@ -42,6 +42,11 @@ export function isAdminConfigured(): boolean {
   return Boolean(env('ADMIN_USERNAME') && env('ADMIN_PASSWORD') && env('SESSION_SECRET').length >= 32);
 }
 
+/** The configured admin username, used as `requestedBy` on jobs created from the session. */
+export function adminUsername(): string {
+  return env('ADMIN_USERNAME');
+}
+
 export async function verifyCredentials(username: string, password: string): Promise<boolean> {
   if (!isAdminConfigured()) return false;
   const [validUser, validPassword] = await Promise.all([
