@@ -111,12 +111,6 @@ export const en: SiteContent = {
     themeToggleToLight: 'Switch to light mode',
     themeToggleToDark: 'Switch to dark mode',
     languageLabel: 'Language',
-    versionLabel: 'Style',
-    versionNames: {
-      v1: 'Nature Distilled',
-      v2: 'Data Engine',
-      v3: 'The Coastline',
-    },
     copyEmail: 'Copy email',
     emailCopied: 'Copied!',
   },

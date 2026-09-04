@@ -28,8 +28,7 @@ export interface OrgFact {
 }
 
 /**
- * Facts shared verbatim across v1/v2/v3 — the source of truth for what
- * NATURA 2030 is, independent of how each visual theme frames it.
+ * Facts used by the NATURA 2030 site — the source of truth for its content.
  */
 export interface SiteContent {
   meta: {
@@ -69,8 +68,6 @@ export interface SiteContent {
     themeToggleToLight: string;
     themeToggleToDark: string;
     languageLabel: string;
-    versionLabel: string;
-    versionNames: Record<'v1' | 'v2' | 'v3', string>;
     copyEmail: string;
     emailCopied: string;
   };

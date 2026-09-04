@@ -1,13 +1,13 @@
 .platform-shell {
-  --bg: #0c1b33;
-  --surface: rgba(12, 27, 51, 0.94);
-  --surface-raised: rgba(18, 38, 67, 0.96);
-  --ink: #ffffff;
+  --bg: #f7faf9;
+  --surface: rgba(247, 250, 249, 0.96);
+  --surface-raised: rgba(255, 255, 255, 0.98);
+  --ink: #122847;
   --teal: #35c3bb;
   --yellow: #ffee9f;
-  --border: rgba(255, 255, 255, 0.12);
-  --ink-soft: rgba(255, 255, 255, 0.7);
-  --ink-softer: rgba(255, 255, 255, 0.45);
+  --border: color-mix(in srgb, var(--ink) 8%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 68%, transparent);
+  --ink-softer: color-mix(in srgb, var(--ink) 45%, transparent);
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -16,16 +16,16 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-html[data-theme='light'] .platform-shell {
-  --bg: #f4f8f8;
-  --surface: rgba(244, 248, 248, 0.96);
-  --surface-raised: rgba(255, 255, 255, 0.98);
-  --ink: #0c1b33;
-  --teal: #1b9c94;
-  --yellow: #b98e00;
-  --border: rgba(12, 27, 51, 0.14);
-  --ink-soft: rgba(12, 27, 51, 0.7);
-  --ink-softer: rgba(12, 27, 51, 0.48);
+html[data-theme='dark'] .platform-shell {
+  --bg: #0a1220;
+  --surface: rgba(10, 18, 32, 0.96);
+  --surface-raised: rgba(16, 27, 46, 0.98);
+  --ink: #eef2f7;
+  --teal: #4fd8cf;
+  --yellow: #ffe98f;
+  --border: color-mix(in srgb, var(--ink) 12%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 66%, transparent);
+  --ink-softer: color-mix(in srgb, var(--ink) 42%, transparent);
 }
 
 .platform-shell *,
@@ -87,7 +87,7 @@ html[data-theme='light'] .platform-shell {
 
 .platform-brand-copy small {
   color: var(--teal);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 8.5px;
   font-weight: 700;
   letter-spacing: 0.11em;
@@ -120,7 +120,7 @@ html[data-theme='light'] .platform-shell {
 .platform-status,
 .platform-language,
 .platform-back {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -146,7 +146,7 @@ html[data-theme='light'] .platform-shell {
 .platform-language,
 .platform-back {
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 999px;
   transition: color 180ms ease, background 180ms ease;
 }
 
@@ -293,7 +293,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 .platform-map-summary span,
 .platform-legend,
 .platform-map-toolbar button {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
 }
 
 .platform-map-summary span {
@@ -444,7 +444,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 .platform-location-index,
 .platform-location-facts dt,
 .platform-location-section h2 {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -491,7 +491,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 .platform-location-region {
   margin: 0 0 7px;
   color: var(--teal);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -603,7 +603,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   padding-top: 19px;
   border-top: 1px solid var(--border);
   color: var(--ink-softer);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 9px;
   line-height: 1.55;
 }

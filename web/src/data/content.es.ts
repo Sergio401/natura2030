@@ -111,12 +111,6 @@ export const es: SiteContent = {
     themeToggleToLight: 'Cambiar a modo claro',
     themeToggleToDark: 'Cambiar a modo oscuro',
     languageLabel: 'Idioma',
-    versionLabel: 'Estilo',
-    versionNames: {
-      v1: 'Nature Distilled',
-      v2: 'Motor de Datos',
-      v3: 'La Costa',
-    },
     copyEmail: 'Copiar correo',
     emailCopied: '¡Copiado!',
   },

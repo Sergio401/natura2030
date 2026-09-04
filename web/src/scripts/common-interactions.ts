@@ -1,8 +1,7 @@
 /**
- * Behavior shared by all three visual themes: sticky-nav shadow on scroll,
+ * Shared page behavior: sticky-nav shadow on scroll,
  * reveal-on-scroll for `.reveal` elements, and a magnetic hover effect for
- * `.magnetic` CTAs. Each theme's own script layers its bespoke bits
- * (counters, pipe fills, coast drawing, scrollytelling) on top of this.
+ * `.magnetic` CTAs. The page script layers its bespoke interactions on top.
  */
 export function initCommonInteractions(root: ParentNode = document) {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

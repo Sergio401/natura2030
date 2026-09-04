@@ -1,18 +1,11 @@
 ---
-import { pathFor } from '../utils/routes';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Page from '../themes/v1-nature-distilled/Page.astro';
+import { getContent } from '../data';
 
-const target = pathFor('v1', 'es');
+const t = getContent('es');
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content={`0; url=${target}`} />
-    <link rel="canonical" href={target} />
-    <title>NATURA 2030</title>
-  </head>
-  <body>
-    <p>Redirigiendo a <a href={target}>{target}</a>…</p>
-  </body>
-</html>
+<BaseLayout lang="es" title={`${t.meta.siteName} — Nature Distilled`} description={t.meta.description}>
+  <Page locale="es" />
+</BaseLayout>

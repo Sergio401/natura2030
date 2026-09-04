@@ -15,10 +15,10 @@ interface Props {
 const { locale } = Astro.props;
 const copy = platformCopy[locale];
 const languageHref = locale === 'es' ? '/platform/en/' : '/platform/';
-const siteHref = locale === 'es' ? '/v2/' : '/v2/en/';
+const siteHref = locale === 'es' ? '/' : '/en/';
 ---
 
-<main class="platform-shell theme-v2" id="main" data-platform-root data-locale={locale}>
+<main class="platform-shell" id="main" data-platform-root data-locale={locale}>
   <header class="platform-header">
     <a class="platform-brand" href={siteHref} aria-label={copy.header.back}>
       <Image src={isotipoColor} alt="" width={30} height={30} />

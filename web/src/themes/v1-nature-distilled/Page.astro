@@ -15,9 +15,9 @@ interface Props {
 }
 const { locale } = Astro.props;
 const t = getContent(locale);
-const modelsHref = '/models/';
 const c = v1Copy[locale];
 const platformHref = locale === 'en' ? '/platform/en/' : '/platform/';
+const modelsHref = locale === 'en' ? '/models/en/' : '/models/';
 const headlineLines = parseHeadline(c.hero.headline);
 let wordIndex = 0;
 ---
@@ -29,7 +29,7 @@ let wordIndex = 0;
       <span class="word">{t.meta.orgName.toUpperCase()}<small>{t.meta.siteName}</small></span>
     </div>
     <div class="nd-nav-tools">
-      <LanguageSwitcher version="v1" locale={locale} label={t.ui.languageLabel} />
+      <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
       <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
       <a href={modelsHref} class="nd-btn nd-btn-primary">{t.cta.models}</a>
@@ -286,6 +286,7 @@ let wordIndex = 0;
   .nd-chip { border: 1px solid color-mix(in srgb, var(--block-ink) 22%, transparent); color: var(--block-ink); font-size: 13px; font-weight: 700; border-radius: 999px; padding: 9px 18px; }
 
   .nd-section { padding: 112px 48px; }
+  .nd-section[id] { scroll-margin-top: 88px; }
   .nd-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
   .nd-head h2 { font-size: clamp(28px,3.4vw,40px); margin-top: 14px; line-height: 1.15; }
 

@@ -1,33 +1,32 @@
 .models-shell {
-  --models-bg: #0c1b33;
-  --models-surface: rgba(255, 255, 255, 0.035);
-  --models-surface-raised: #122843;
-  --models-ink: #ffffff;
+  --models-bg: #f7faf9;
+  --models-surface: #ffffff;
+  --models-surface-raised: #ffffff;
+  --models-ink: #122847;
   --models-teal: #35c3bb;
   --models-yellow: #ffee9f;
   --models-coral: #ff9b6a;
-  --models-border: rgba(255, 255, 255, 0.12);
-  --models-ink-soft: rgba(255, 255, 255, 0.7);
-  --models-ink-softer: rgba(255, 255, 255, 0.44);
+  --models-border: color-mix(in srgb, var(--models-ink) 8%, transparent);
+  --models-ink-soft: color-mix(in srgb, var(--models-ink) 68%, transparent);
+  --models-ink-softer: color-mix(in srgb, var(--models-ink) 45%, transparent);
   min-height: 100vh;
   color: var(--models-ink);
   background-color: var(--models-bg);
-  background-image: radial-gradient(rgba(53, 195, 187, 0.1) 1px, transparent 1px);
-  background-size: 26px 26px;
+  background-image: radial-gradient(color-mix(in srgb, var(--models-teal) 8%, transparent) 1px, transparent 1px);
+  background-size: 30px 30px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-html[data-theme='light'] .models-shell {
-  --models-bg: #f4f8f8;
-  --models-surface: rgba(12, 27, 51, 0.035);
-  --models-surface-raised: #ffffff;
-  --models-ink: #0c1b33;
-  --models-teal: #1b9c94;
-  --models-yellow: #b98e00;
-  --models-coral: #d56e3a;
-  --models-border: rgba(12, 27, 51, 0.14);
-  --models-ink-soft: rgba(12, 27, 51, 0.7);
-  --models-ink-softer: rgba(12, 27, 51, 0.48);
+html[data-theme='dark'] .models-shell {
+  --models-bg: #0a1220;
+  --models-surface: #101b2e;
+  --models-surface-raised: #101b2e;
+  --models-ink: #eef2f7;
+  --models-teal: #4fd8cf;
+  --models-yellow: #ffe98f;
+  --models-border: color-mix(in srgb, var(--models-ink) 12%, transparent);
+  --models-ink-soft: color-mix(in srgb, var(--models-ink) 66%, transparent);
+  --models-ink-softer: color-mix(in srgb, var(--models-ink) 42%, transparent);
 }
 
 .models-shell *,
@@ -110,7 +109,7 @@ html[data-theme='light'] .models-shell {
 
 .models-header-tools > a {
   padding: 12px 20px;
-  border-radius: 10px;
+  border-radius: 999px;
   font-family: 'Archivo', Arial, sans-serif;
   font-size: 13px;
   font-weight: 800;
@@ -138,7 +137,7 @@ html[data-theme='light'] .models-shell {
   color: var(--models-ink-soft);
   border: 1px solid var(--models-border);
   border-radius: 999px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 11px;
   text-transform: uppercase;
 }
@@ -195,7 +194,7 @@ html[data-theme='light'] .models-shell {
   align-items: center;
   gap: 10px;
   color: var(--models-teal);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.11em;
@@ -238,7 +237,7 @@ html[data-theme='light'] .models-shell {
 .models-hero-readout > span,
 .models-library-heading span,
 .model-card-meta {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   text-transform: uppercase;
 }
 
@@ -376,7 +375,7 @@ html[data-theme='light'] .models-shell {
   padding-bottom: 10px;
   border-bottom: 1px solid var(--models-border);
   color: var(--models-ink-softer);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -441,7 +440,7 @@ html[data-theme='light'] .models-shell {
   align-items: center;
   min-height: 24px;
   color: rgba(255, 255, 255, 0.48);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 8.5px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -485,7 +484,7 @@ html[data-theme='light'] .models-shell {
   position: absolute;
   z-index: 2;
   color: rgba(255, 255, 255, 0.36);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 8px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -504,7 +503,7 @@ html[data-theme='light'] .models-shell {
   gap: 10px;
   margin: 7px 0 0 18px;
   color: rgba(255, 255, 255, 0.36);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 8px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -519,7 +518,7 @@ html[data-theme='light'] .models-shell {
   align-items: center;
   gap: 5px;
   color: rgba(255, 255, 255, 0.64);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 7px;
   letter-spacing: 0.08em;
 }
@@ -589,7 +588,7 @@ html[data-theme='light'] .models-shell {
 .model-loading small {
   max-width: 520px;
   color: rgba(255, 255, 255, 0.48);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 8px;
   line-height: 1.5;
   letter-spacing: 0.08em;
@@ -617,7 +616,7 @@ html[data-theme='light'] .models-shell {
   gap: 9px;
   margin: 10px 0 0 18px;
   color: rgba(255, 255, 255, 0.42);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 7.5px;
 }
 
@@ -655,7 +654,7 @@ html[data-theme='light'] .models-shell {
 
 .model-metrics span {
   color: rgba(255, 255, 255, 0.4);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 7.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -684,7 +683,7 @@ html[data-theme='light'] .models-shell {
 .model-control-group label,
 .model-control-title,
 .model-range-labels {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Archivo', Arial, sans-serif;
   font-size: 8.5px;
   font-weight: 700;
   letter-spacing: 0.06em;

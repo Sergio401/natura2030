@@ -3,9 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Page from '../../themes/v1-nature-distilled/Page.astro';
 import { getContent } from '../../data';
 
-const t = getContent('es');
+const t = getContent('en');
 ---
 
-<BaseLayout lang="es" version="v1" title={`${t.meta.siteName} — Nature Distilled`} description={t.meta.description}>
-  <Page locale="es" />
+<BaseLayout lang="en" title={`${t.meta.siteName} — Nature Distilled`} description={t.meta.description}>
+  <Page locale="en" />
 </BaseLayout>

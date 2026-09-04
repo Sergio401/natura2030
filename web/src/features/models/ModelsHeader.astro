@@ -5,7 +5,6 @@ import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import { getContent } from '../../data';
 import { modelsCopy } from '../../data/models-copy';
 import type { Locale } from '../../data/types';
-import { v2Copy } from '../../themes/v2-motor-de-datos/copy';
 
 interface Props {
   locale: Locale;
@@ -15,10 +14,9 @@ interface Props {
 const { locale, page } = Astro.props;
 const copy = modelsCopy[locale];
 const t = getContent(locale);
-const v2 = v2Copy[locale];
 const spanishHref = page === 'catalog' ? '/models/' : '/models/two-sided-channel/';
 const englishHref = page === 'catalog' ? '/models/en/' : '/models/en/two-sided-channel/';
-const siteHref = locale === 'es' ? '/v2/' : '/v2/en/';
+const siteHref = locale === 'es' ? '/' : '/en/';
 ---
 
 <header class="models-header">
@@ -28,7 +26,7 @@ const siteHref = locale === 'es' ? '/v2/' : '/v2/en/';
   </a>
 
   <nav class="models-header-tools" aria-label={copy.header.catalog}>
-    <span class="models-status"><i aria-hidden="true"></i>{v2.statusBadge}</span>
+    <span class="models-status"><i aria-hidden="true"></i>{copy.catalog.status}</span>
     <div class="models-language" role="group" aria-label={t.ui.languageLabel}>
       <a href={spanishHref} aria-current={locale === 'es' ? 'true' : undefined}>ES</a>
       <span aria-hidden="true">/</span>

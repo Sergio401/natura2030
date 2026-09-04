@@ -1,19 +1,17 @@
 ---
-import { pathFor, type Version } from '../../utils/routes';
 import type { Locale } from '../../data/types';
 
 interface Props {
-  version: Version;
   locale: Locale;
   label: string;
 }
-const { version, locale, label } = Astro.props;
+const { locale, label } = Astro.props;
 ---
 
 <div class="natura-lang" role="group" aria-label={label}>
-  <a href={pathFor(version, 'es')} aria-current={locale === 'es' ? 'true' : undefined}>ES</a>
+  <a href="/" aria-current={locale === 'es' ? 'true' : undefined}>ES</a>
   <span aria-hidden="true">/</span>
-  <a href={pathFor(version, 'en')} aria-current={locale === 'en' ? 'true' : undefined}>EN</a>
+  <a href="/en/" aria-current={locale === 'en' ? 'true' : undefined}>EN</a>
 </div>
 
 <style>

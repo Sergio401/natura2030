@@ -6,7 +6,7 @@ import PlatformPage from '../../../features/platform/PlatformPage.astro';
 const copy = platformCopy.en;
 ---
 
-<BaseLayout lang="en" version="v2" title={copy.meta.title} description={copy.meta.description}>
+<BaseLayout lang="en" title={copy.meta.title} description={copy.meta.description}>
   <span slot="skip-label">Skip to map</span>
   <PlatformPage locale="en" />
 </BaseLayout>
