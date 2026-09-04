@@ -9,9 +9,11 @@
 //   with a bare PATH. The `claude` CLI lives in ~/.local/bin.
 // - `pnpm build` (with SELF_HOSTED=true) emits a standalone Astro Node server
 //   at dist/server/entry.mjs — no dev deps needed at runtime.
-// - `natura` (prod, port 3001) reads ADMIN_USERNAME, ADMIN_PASSWORD,
-//   SESSION_SECRET, OPENAI_API_KEY, OPENAI_MODEL, HOST, PORT from
-//   ~/code/natura2030/web/.env at startup.
+// - `natura` (prod, port 3001) gets ADMIN_USERNAME, ADMIN_PASSWORD,
+//   SESSION_SECRET, ANTHROPIC_API_KEY, ANTHROPIC_MODEL from
+//   ~/code/natura2030/web/.env — baked in at BUILD time by Astro, so after
+//   editing .env run deploy/update.sh (or `SELF_HOSTED=true pnpm build`) and
+//   restart; a bare `pm2 restart` is not enough.
 // - `natura-dev` (port 3002) is the same app running from the `dev` branch
 //   worktree at ~/code/natura2030-dev/web, with its own .env (PORT=3002,
 //   DEPLOY_ENV=dev so BaseLayout shows the red "not published yet" banner).

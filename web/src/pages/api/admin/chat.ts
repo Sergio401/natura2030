@@ -1,15 +1,22 @@
 import type { APIRoute } from 'astro';
+import Anthropic from '@anthropic-ai/sdk';
 import { hasValidSession, isSameOrigin } from '../../../lib/admin/auth';
 import { ADMIN_SYSTEM_PROMPT } from '../../../lib/admin/policy';
 import { findOpenJob, LIMITS } from '../../../../agent/lib/store.mjs';
 
 export const prerender = false;
 
-const SUBMIT_CHANGE_TOOL = {
-  type: 'function',
+// The chat ("processing" block) talks to the Claude API with a server-side
+// API key. This is independent from the executor: agent/worker.mjs drives
+// `claude -p` with the operator's claude.ai login and deliberately strips
+// ANTHROPIC_API_KEY from that process's environment.
+const DEFAULT_MODEL = 'claude-opus-5';
+
+const SUBMIT_CHANGE_TOOL: Anthropic.Tool = {
   name: 'submit_change_request',
   description: 'Enviar una solicitud de cambio de texto o estructura de la landing al ejecutor, una vez entendida y validada con el usuario.',
-  parameters: {
+  strict: true,
+  input_schema: {
     type: 'object',
     properties: {
       summary: { type: 'string', description: 'Una línea para el historial, máximo 140 caracteres.' },
@@ -18,8 +25,7 @@ const SUBMIT_CHANGE_TOOL = {
     required: ['summary', 'instruction'],
     additionalProperties: false,
   },
-  strict: true,
-} as const;
+};
 
 const DEFAULT_PROPOSAL_MESSAGE = 'Preparé una propuesta de cambio. Revísala y confírmala para ejecutarla.';
 
@@ -47,14 +53,10 @@ interface Attachment {
 const MAX_BODY_BYTES = 6 * 1024 * 1024;
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const MAX_TOTAL_FILE_BYTES = 4 * 1024 * 1024;
-const ALLOWED_TYPES = new Set([
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+const IMAGE_TYPES = new Set<Anthropic.Base64ImageSource['media_type']>(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+// Text-like files are sent as plain-text documents (decoded from the data URL).
+const TEXT_TYPES = new Set([
   'text/plain',
   'text/markdown',
   'text/csv',
@@ -62,6 +64,8 @@ const ALLOWED_TYPES = new Set([
   'application/json',
   'application/geo+json',
 ]);
+// Word/Excel are not accepted by the Claude API as documents; the UI no longer offers them.
+const ALLOWED_TYPES = new Set<string>([...IMAGE_TYPES, 'application/pdf', ...TEXT_TYPES]);
 
 function validMessages(value: unknown): value is ChatMessage[] {
   return Array.isArray(value) && value.length <= 20 && value.every((message) =>
@@ -90,36 +94,32 @@ function validAttachments(value: unknown): value is Attachment[] {
   return total <= MAX_TOTAL_FILE_BYTES;
 }
 
-interface ResponsesOutputItem {
-  type?: string;
-  content?: Array<{ type?: string; text?: string }>;
-  name?: string;
-  arguments?: string;
+function base64Payload(dataUrl: string): string {
+  return dataUrl.slice(dataUrl.indexOf(',') + 1);
 }
 
-function extractOutputText(payload: unknown): string {
-  const response = payload as { output_text?: unknown; output?: ResponsesOutputItem[] };
-  if (typeof response.output_text === 'string' && response.output_text.trim()) return response.output_text.trim();
-  return (response.output ?? [])
-    .flatMap((item) => item.content ?? [])
-    .filter((item) => item.type === 'output_text' && typeof item.text === 'string')
-    .map((item) => item.text)
-    .join('\n')
-    .trim();
-}
-
-function extractChangeRequestArgs(payload: unknown): { summary: unknown; instruction: unknown } | null {
-  const response = payload as { output?: ResponsesOutputItem[] };
-  const call = (response.output ?? []).find(
-    (item) => item.type === 'function_call' && item.name === 'submit_change_request' && typeof item.arguments === 'string',
-  );
-  if (!call) return null;
-  try {
-    const parsed = JSON.parse(call.arguments as string) as { summary?: unknown; instruction?: unknown };
-    return { summary: parsed.summary, instruction: parsed.instruction };
-  } catch {
-    return null;
+function attachmentBlock(file: Attachment): Anthropic.ContentBlockParam {
+  const data = base64Payload(file.data);
+  if (IMAGE_TYPES.has(file.type as Anthropic.Base64ImageSource['media_type'])) {
+    return { type: 'image', source: { type: 'base64', media_type: file.type as Anthropic.Base64ImageSource['media_type'], data } };
   }
+  if (file.type === 'application/pdf') {
+    return { type: 'document', title: file.name, source: { type: 'base64', media_type: 'application/pdf', data } };
+  }
+  return {
+    type: 'document',
+    title: file.name,
+    source: { type: 'text', media_type: 'text/plain', data: Buffer.from(data, 'base64').toString('utf8') },
+  };
+}
+
+function classifyError(error: unknown): { status: number; message: string } {
+  if (error instanceof Anthropic.AuthenticationError) return { status: 502, message: 'La API key del asistente no es válida.' };
+  if (error instanceof Anthropic.RateLimitError) return { status: 503, message: 'El asistente está saturado, intenta de nuevo en un momento.' };
+  if (error instanceof Anthropic.BadRequestError) return { status: 502, message: 'El asistente rechazó la solicitud (revisa los archivos adjuntos).' };
+  if (error instanceof Anthropic.APIConnectionTimeoutError) return { status: 504, message: 'El asistente tardó demasiado.' };
+  if (error instanceof Anthropic.APIError) return { status: 502, message: 'El asistente no pudo procesar la solicitud.' };
+  return { status: 504, message: 'El asistente tardó demasiado o no está disponible.' };
 }
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -144,8 +144,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return Response.json({ error: 'Uno de los archivos no está permitido o supera el límite.' }, { status: 400 });
   }
 
-  const apiKey = (import.meta.env.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY)?.trim();
+  const apiKey = (import.meta.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY)?.trim();
   if (!apiKey) return Response.json({ error: 'La API key del asistente todavía no está configurada.' }, { status: 503 });
+  const model = (import.meta.env.ANTHROPIC_MODEL ?? process.env.ANTHROPIC_MODEL)?.trim() || DEFAULT_MODEL;
 
   let openJob: Awaited<ReturnType<typeof findOpenJob>> = null;
   try {
@@ -156,49 +157,49 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const statusLine = openJob
     ? `Cambio abierto ${openJob.id} en estado ${STATUS_LABELS[openJob.status] ?? openJob.status}: ${openJob.summary}`
     : 'Sin cambios abiertos.';
-  const instructions = `${ADMIN_SYSTEM_PROMPT}\n\nEstado actual del ejecutor de cambios: ${statusLine}`;
+  const system = `${ADMIN_SYSTEM_PROMPT}\n\nEstado actual del ejecutor de cambios: ${statusLine}`;
 
-  const input = messages.slice(-12).map((message, index, visibleMessages) => {
+  const history: Anthropic.MessageParam[] = messages.slice(-12).map((message, index, visibleMessages) => {
     const isLatest = index === visibleMessages.length - 1;
     if (!isLatest) return { role: message.role, content: message.content };
-    const content: Array<Record<string, unknown>> = [{ type: 'input_text', text: message.content }];
-    for (const file of attachments) {
-      if (file.type.startsWith('image/')) {
-        content.push({ type: 'input_image', image_url: file.data, detail: 'auto' });
-      } else {
-        content.push({ type: 'input_file', filename: file.name, file_data: file.data });
-      }
-    }
+    const content: Anthropic.ContentBlockParam[] = [
+      ...attachments.map(attachmentBlock),
+      { type: 'text', text: message.content },
+    ];
     return { role: message.role, content };
   });
 
+  const client = new Anthropic({ apiKey, timeout: 90_000, maxRetries: 1 });
+
   try {
-    const response = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model: (import.meta.env.OPENAI_MODEL ?? process.env.OPENAI_MODEL)?.trim() || 'gpt-5.4-mini',
-        instructions,
-        input,
-        tools: [SUBMIT_CHANGE_TOOL],
-        tool_choice: 'auto',
-        store: false,
-        max_output_tokens: 1800,
-      }),
-      signal: AbortSignal.timeout(90_000),
+    // Opus 5 may decline a request via its safety classifiers; `fallbacks: 'default'`
+    // re-runs a declined request on Anthropic's recommended fallback model server-side.
+    const response = await client.beta.messages.create({
+      model,
+      max_tokens: 4000,
+      betas: ['server-side-fallback-2026-07-01'],
+      fallbacks: 'default',
+      system,
+      messages: history,
+      tools: [SUBMIT_CHANGE_TOOL],
     });
 
-    if (!response.ok) {
-      const detail = await response.text();
-      console.error('[admin/chat] OpenAI error', response.status, detail.slice(0, 800));
-      return Response.json({ error: 'El asistente no pudo procesar la solicitud.' }, { status: 502 });
+    if (response.stop_reason === 'refusal') {
+      console.error('[admin/chat] refusal', response.stop_details);
+      return Response.json({ error: 'El asistente no pudo atender esta solicitud.' }, { status: 502 });
     }
-    const payload = await response.json();
-    const outputText = extractOutputText(payload);
-    const changeRequest = extractChangeRequestArgs(payload);
 
-    if (changeRequest) {
-      const { summary, instruction } = changeRequest;
+    const outputText = response.content
+      .filter((block): block is Anthropic.Beta.BetaTextBlock => block.type === 'text')
+      .map((block) => block.text)
+      .join('\n')
+      .trim();
+    const toolUse = response.content.find(
+      (block): block is Anthropic.Beta.BetaToolUseBlock => block.type === 'tool_use' && block.name === SUBMIT_CHANGE_TOOL.name,
+    );
+
+    if (toolUse) {
+      const { summary, instruction } = (toolUse.input ?? {}) as { summary?: unknown; instruction?: unknown };
       if (
         typeof summary !== 'string' || !summary.trim() || summary.length > LIMITS.summary ||
         typeof instruction !== 'string' || !instruction.trim() || instruction.length > LIMITS.instruction
@@ -220,6 +221,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return Response.json({ message: outputText, mode: 'proposal' }, { headers: { 'cache-control': 'no-store' } });
   } catch (error) {
     console.error('[admin/chat] Request failed', error);
-    return Response.json({ error: 'El asistente tardó demasiado o no está disponible.' }, { status: 504 });
+    const { status, message } = classifyError(error);
+    return Response.json({ error: message }, { status });
   }
 };

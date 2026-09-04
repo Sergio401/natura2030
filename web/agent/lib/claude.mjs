@@ -90,7 +90,13 @@ export async function runClaude(opts) {
     args.push('--max-turns', '40');
   }
 
-  const runEnv = env ?? process.env;
+  // The executor must run with the operator's claude.ai login, never with the
+  // chat's API key: Claude Code gives ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN
+  // precedence over the stored login, so strip them here regardless of what
+  // pm2 or a sourced .env put in the environment.
+  const runEnv = { ...(env ?? process.env) };
+  delete runEnv.ANTHROPIC_API_KEY;
+  delete runEnv.ANTHROPIC_AUTH_TOKEN;
 
   const child = spawn(bin, args, {
     cwd,

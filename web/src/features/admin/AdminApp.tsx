@@ -24,7 +24,7 @@ interface Proposal {
   instruction: string;
 }
 
-const ACCEPTED_TYPES = '.png,.jpg,.jpeg,.webp,.gif,.pdf,.docx,.xlsx,.csv,.tsv,.txt,.md,.json,.geojson';
+const ACCEPTED_TYPES = '.png,.jpg,.jpeg,.webp,.gif,.pdf,.csv,.tsv,.txt,.md,.json,.geojson';
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 4 * 1024 * 1024;
 const POLL_INTERVAL_MS = 3000;
@@ -64,8 +64,6 @@ function inferMime(name: string): string {
   const types: Record<string, string> = {
     csv: 'text/csv', tsv: 'text/tab-separated-values', txt: 'text/plain', md: 'text/markdown',
     json: 'application/json', geojson: 'application/geo+json', pdf: 'application/pdf',
-    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   };
   return types[extension ?? ''] ?? 'application/octet-stream';
 }

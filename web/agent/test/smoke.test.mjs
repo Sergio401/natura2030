@@ -1,4 +1,4 @@
-// Smoke test for the change executor state machine (agent/worker.mjs).
+// Smoke test for the change executor state machine (agent/lib/machine.mjs).
 // Run with: node --test agent/test/
 //
 // Builds a throwaway git "origin" bare repo, a prod clone and a dev worktree
@@ -11,7 +11,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
-import { processOnce, generateSettings } from '../worker.mjs';
+import { processOnce, generateSettings } from '../lib/machine.mjs';
 import { createJob, setAction } from '../lib/store.mjs';
 
 const SCRATCH_ROOT =

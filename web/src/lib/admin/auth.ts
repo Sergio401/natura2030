@@ -87,7 +87,20 @@ export async function hasValidSession(cookies: AstroCookies): Promise<boolean> {
   return safeEqual(providedSignature, expectedSignature);
 }
 
+/**
+ * Same-origin check for state-changing requests. Behind nginx (VPS) the app
+ * sees `http://` in `request.url` while the browser sends an `https://`
+ * Origin, so the expected origin is rebuilt from the proxy headers when
+ * present. Only nginx on 127.0.0.1 can reach the app, so trusting
+ * X-Forwarded-Proto / X-Forwarded-Host is safe.
+ */
 export function isSameOrigin(request: Request): boolean {
   const origin = request.headers.get('origin');
-  return Boolean(origin && origin === new URL(request.url).origin);
+  if (!origin) return false;
+  const url = new URL(request.url);
+  const forwardedProto = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim();
+  const forwardedHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim();
+  const host = forwardedHost || request.headers.get('host') || url.host;
+  const proto = forwardedProto || url.protocol.replace(':', '');
+  return origin === url.origin || origin === `${proto}://${host}`;
 }

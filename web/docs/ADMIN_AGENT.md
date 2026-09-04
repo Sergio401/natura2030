@@ -8,7 +8,7 @@ esquema de job, allowlist, prompt exacto, endpoints) vive en
 [`AGENT_CONTRACT.md`](./AGENT_CONTRACT.md) — este documento es el resumen orientado a
 operación y a los límites de seguridad; ante cualquier discrepancia gana el contrato.
 
-Resumen del flujo: el chat de `/admin/` (OpenAI, Responses API) entiende la solicitud y, tras
+Resumen del flujo: el chat de `/admin/` (API de Claude con una API key del lado servidor) entiende la solicitud y, tras
 una primera confirmación del usuario, crea un *job*. El worker (`agent/worker.mjs`, proceso
 pm2 `natura-agent` corriendo como el usuario `sergio`) lo toma, invoca `claude -p` **sin
 shell** sobre un worktree separado (rama `dev`), verifica (`pnpm check` + `pnpm build`),
@@ -20,7 +20,7 @@ Piezas que ya existen:
 
 - login con credenciales configuradas por variables de entorno;
 - sesión firmada, `HttpOnly`, `SameSite=Strict` y con expiración de ocho horas;
-- chat conectado a la Responses API mediante una API key exclusivamente del lado servidor;
+- chat conectado a la API de Claude mediante una API key exclusivamente del lado servidor (el ejecutor no usa esa key: corre con el login de claude.ai del operador);
 - carga controlada de imágenes, PDF, Word, Excel, CSV, JSON, GeoJSON y texto;
 - una tool `submit_change_request` que convierte una solicitud entendida en una propuesta con
   resumen e instrucción, mostrada en la UI antes de cualquier ejecución (confirmación 1);

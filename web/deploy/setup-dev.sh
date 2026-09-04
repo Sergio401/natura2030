@@ -63,7 +63,7 @@ else
     cp "$REPO_DIR/web/.env" .env
   else
     echo "-- WARNING: $REPO_DIR/web/.env not found, starting from .env.example"
-    echo "-- TODO(operator): fill in ADMIN_USERNAME/ADMIN_PASSWORD/SESSION_SECRET/OPENAI_API_KEY"
+    echo "-- TODO(operator): fill in ADMIN_USERNAME/ADMIN_PASSWORD/SESSION_SECRET/ANTHROPIC_API_KEY"
     cp .env.example .env
   fi
   # rewrite/append PORT and DEPLOY_ENV so the dev instance is distinct from prod

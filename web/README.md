@@ -44,7 +44,7 @@ preview (`natura-dev`, con banner de "no publicado") y, solo tras una segunda co
 promueve a producción con un commit `[agent]`. Puntos del mapa y modelos no están cubiertos
 todavía por este ejecutor.
 
-Para configurarlo localmente, copia `.env.example` a `.env` y define `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `OPENAI_API_KEY` y, opcionalmente, `OPENAI_MODEL`. En Vercel, configura los mismos secretos como variables de entorno; nunca uses el prefijo `PUBLIC_` para la API key. Las variables `DEPLOY_ENV` y `AGENT_*` (worker de la VPS) están documentadas en `.env.example` pero solo aplican al despliegue self-hosted — ver [`DEPLOY.md`](./DEPLOY.md).
+Para configurarlo localmente, copia `.env.example` a `.env` y define `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `ANTHROPIC_API_KEY` y, opcionalmente, `ANTHROPIC_MODEL` (por defecto `claude-opus-5`). En Vercel, configura los mismos secretos como variables de entorno; nunca uses el prefijo `PUBLIC_` para la API key. Las variables `DEPLOY_ENV` y `AGENT_*` (worker de la VPS) están documentadas en `.env.example` pero solo aplican al despliegue self-hosted — ver [`DEPLOY.md`](./DEPLOY.md).
 
 El contrato completo del ejecutor (esquema de job, máquina de estados, allowlist, endpoints) vive en [`docs/AGENT_CONTRACT.md`](./docs/AGENT_CONTRACT.md); el resumen operativo y de seguridad está en [`docs/ADMIN_AGENT.md`](./docs/ADMIN_AGENT.md).
 

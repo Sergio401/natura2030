@@ -6,7 +6,7 @@ de ejecución (`agent/`). Cualquier cambio de esquema o de transiciones se hace 
 ## Visión general
 
 ```
-cliente ──chat──▶ /admin (OpenAI, key del cliente)
+cliente ──chat──▶ /admin (API de Claude, ANTHROPIC_API_KEY del servidor)
                     │  tool call submit_change_request → propuesta
                     │  confirmación 1 (usuario) → POST /api/admin/jobs
                     ▼
@@ -205,14 +205,17 @@ Reglas del `--append-system-prompt` (el texto exacto vive en `agent/lib/prompt.m
 
 ## Prompt del chat (web) y tool calling
 
-El chat de `/admin` sigue en OpenAI (Responses API). Se añade una tool:
+El chat de `/admin` usa la API de Claude (`@anthropic-ai/sdk`, modelo `ANTHROPIC_MODEL`, por defecto
+`claude-opus-5`) con `ANTHROPIC_API_KEY` leída en el servidor. Esa key es solo del chat: el worker la
+elimina del entorno antes de lanzar `claude -p`, que sigue usando el login de claude.ai del operador.
+Se añade una tool:
 
 ```json
 {
-  "type": "function",
   "name": "submit_change_request",
   "description": "Enviar una solicitud de cambio de texto o estructura de la landing al ejecutor, una vez entendida y validada con el usuario.",
-  "parameters": {
+  "strict": true,
+  "input_schema": {
     "type": "object",
     "properties": {
       "summary":     { "type": "string", "description": "Una línea para el historial, máximo 140 caracteres." },
@@ -220,15 +223,14 @@ El chat de `/admin` sigue en OpenAI (Responses API). Se añade una tool:
     },
     "required": ["summary", "instruction"],
     "additionalProperties": false
-  },
-  "strict": true
+  }
 }
 ```
 
-Cuando OpenAI devuelve un `function_call` con ese nombre, el endpoint responde
+Cuando la respuesta trae un bloque `tool_use` con ese nombre, el endpoint responde
 `{ message, proposal: { summary, instruction } }` y la UI muestra la propuesta con el botón
-"Confirmar y ejecutar" (confirmación 1). No se envía `function_call_output` de vuelta: la propuesta
-se cierra en la UI. El endpoint inyecta en `instructions` una línea con el estado actual
+"Confirmar y ejecutar" (confirmación 1). No se envía `tool_result` de vuelta: la propuesta
+se cierra en la UI. El endpoint inyecta en el `system` una línea con el estado actual
 (`Sin cambios abiertos.` o `Cambio abierto <id> en estado <status>: <summary>`) para que el modelo
 no proponga un segundo cambio mientras hay uno abierto.
 

@@ -7,7 +7,8 @@ the admin UI — merges dev into prod and deploys there.
 
 ## Files
 
-- `worker.mjs` — the long-running process (pm2 app `natura-agent`). Polls for the single open
+- `worker.mjs` — pm2 entry point (app `natura-agent`); just calls `main()` from `lib/machine.mjs`.
+- `lib/machine.mjs` — the state machine and poll loop. Polls for the single open
   job every `AGENT_POLL_INTERVAL_MS` (default 3 s) and drives it through the state machine.
   Exports `processOnce(config)`, `resolveConfig()`, `generateSettings(config)`, `acquireLock`,
   `releaseLock` for reuse/testing; running the file directly (`node agent/worker.mjs`) starts
@@ -81,7 +82,7 @@ scripts:
 - `AGENT_PNPM_BIN` / `AGENT_PM2_BIN` — log their args to a file and exit 0.
 
 It then calls `processOnce(config)` directly (no lock, no poll loop — those are gated behind
-`if (import.meta.url === pathToFileURL(process.argv[1]).href)` in `worker.mjs`) and asserts:
+the entry point is a separate file, `worker.mjs`, so importing `lib/machine.mjs` has no side effects) and asserts:
 
 1. a queued job reaches `preview` with a dev commit in one pass, then `approve` reaches `done`
    with a prod commit equal to the dev commit (the worktree is a real `git worktree add` off the

@@ -15,7 +15,7 @@ pnpm install --frozen-lockfile
 
 cp .env.example .env
 # edit .env: ADMIN_USERNAME, ADMIN_PASSWORD, SESSION_SECRET (32+ chars),
-# OPENAI_API_KEY, OPENAI_MODEL, plus HOST=127.0.0.1 and PORT=3001
+# ANTHROPIC_API_KEY, ANTHROPIC_MODEL, plus HOST=127.0.0.1 and PORT=3001
 
 SELF_HOSTED=true pnpm build
 pm2 start ecosystem.config.cjs
@@ -42,9 +42,11 @@ Node adapter instead of the Vercel one), and restarts the pm2 process.
 - `SELF_HOSTED=true` picks the `@astrojs/node` standalone adapter in
   `astro.config.mjs`; without it, `pnpm build` still targets Vercel — the
   Vercel deploy from `main` is unaffected by any of this.
+- `.env` values are baked into `dist/` at build time (Astro `import.meta.env`), so
+  after changing `.env` rebuild (`deploy/update.sh` does) — a restart alone keeps the old values.
 - The server binds `127.0.0.1` only (`HOST` in `.env` / `ecosystem.config.cjs`);
   nginx is the only public entry point.
-- `/admin` (the private chat) needs `OPENAI_API_KEY` set — until then it just
+- `/admin` (the private chat) needs `ANTHROPIC_API_KEY` set — until then it just
   reports itself as unconfigured, the rest of the site works normally.
 
 ## Dev preview + change-request agent
