@@ -53,7 +53,7 @@ pnpm add -w -D <paquete>
 
 ```sh
 pnpm check   # astro check — debe dar 0 errores/warnings
-pnpm build   # build estático de todas las rutas, sin errores
+pnpm build   # build de producción para Vercel, sin errores
 ```
 
 Para verificación visual: `pnpm dev` (puerto 4321) + chrome-devtools MCP. El perfil de Chrome del MCP es compartido entre sesiones de este usuario en esta máquina — si otra sesión lo tiene abierto, `list_pages`/`navigate_page` fallan con "browser already running for ... Use --isolated". No es un error propio del sitio; esperá a que se libere o avisá al usuario en vez de forzar una segunda instancia.

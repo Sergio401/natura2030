@@ -4,7 +4,7 @@ Landing page de **NATURA 2030**, la plataforma de información climática coster
 
 ## Stack
 
-- **[Astro](https://astro.build)** (`output: 'static'`) + **pnpm**. Sin React/Vue/Svelte, sin Tailwind; el CSS es scoped y usa variables de diseño.
+- **[Astro](https://astro.build)** con adaptador de Vercel + **pnpm**. React se usa solo en las interfaces interactivas del laboratorio y `/admin/`; no se usa Tailwind.
 - **TypeScript** estricto (`astro check` da 0 errores/warnings).
 - **[@fontsource](https://fontsource.org/)** para self-host de Archivo (en vez de cargar Google Fonts por CDN).
 - **astro:assets + sharp** para optimizar el isotipo de marca.
@@ -15,7 +15,7 @@ Landing page de **NATURA 2030**, la plataforma de información climática coster
 ```sh
 pnpm install       # instalar dependencias
 pnpm dev           # localhost:4321
-pnpm build         # build estático a ./dist
+pnpm build         # build de producción para Vercel
 pnpm preview       # previsualizar el build
 pnpm check         # astro check — type-check del proyecto
 ```
@@ -28,8 +28,17 @@ pnpm check         # astro check — type-check del proyecto
 | `/en/` | Nature Distilled | Inglés |
 | `/platform/` · `/platform/en/` | Mapa de iniciativas | ES · EN |
 | `/models/` · `/models/en/` | Laboratorio de modelos | ES · EN |
+| `/admin/` | Centro de edición asistida | Acceso privado |
 
 El sitio conserva una sola dirección visual y ofrece un toggle de modo oscuro cuya preferencia se guarda en `localStorage`.
+
+## Centro de edición asistida
+
+`/admin/` ofrece un login y un chat privado para preparar cambios de contenido, puntos del mapa y modelos. En Vercel funciona en **modo propuesta**: analiza solicitudes y archivos con la API de OpenAI, pero no modifica el repositorio ni despliega cambios.
+
+Para configurarlo localmente, copia `.env.example` a `.env` y define `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `OPENAI_API_KEY` y, opcionalmente, `OPENAI_MODEL`. En Vercel, configura los mismos secretos como variables de entorno; nunca uses el prefijo `PUBLIC_` para la API key.
+
+La arquitectura prevista para aplicar cambios de forma segura en la VPS está documentada en [`docs/ADMIN_AGENT.md`](./docs/ADMIN_AGENT.md).
 
 ## Dirección visual
 

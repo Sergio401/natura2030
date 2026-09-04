@@ -1,0 +1,15 @@
+---
+import AdminApp from '../../features/admin/AdminApp';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../themes/v1-nature-distilled/tokens.css';
+---
+
+<BaseLayout
+  lang="es"
+  title="Centro de edición — NATURA 2030"
+  description="Acceso privado al asistente editorial y de datos de NATURA 2030."
+>
+  <meta slot="head" name="robots" content="noindex, nofollow, noarchive" />
+  <span slot="skip-label">Saltar al centro de edición</span>
+  <AdminApp client:load />
+</BaseLayout>

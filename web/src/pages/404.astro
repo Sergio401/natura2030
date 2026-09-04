@@ -1,0 +1,225 @@
+---
+import { Image } from 'astro:assets';
+import isotipoColor from '../assets/brand/isotipo-color.png';
+import ThemeToggle from '../components/shared/ThemeToggle.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../themes/v1-nature-distilled/tokens.css';
+---
+
+<BaseLayout
+  lang="es"
+  title="Página no encontrada — NATURA 2030"
+  description="La página que buscas no existe o cambió de ubicación."
+>
+  <span slot="skip-label">Saltar al contenido</span>
+
+  <main class="not-found theme-v1" id="main">
+    <header class="not-found-nav">
+      <a class="not-found-brand" href="/" aria-label="NATURA 2030 — Inicio">
+        <Image src={isotipoColor} alt="" width={34} height={34} />
+        <span>ADAPTATION LATIN AMERICA<small>NATURA 2030</small></span>
+      </a>
+      <ThemeToggle labelToLight="Cambiar a modo claro" labelToDark="Cambiar a modo oscuro" />
+    </header>
+
+    <section class="not-found-content" aria-labelledby="not-found-title">
+      <div class="not-found-code" aria-hidden="true">404</div>
+      <p class="not-found-eyebrow">Coordenadas no encontradas</p>
+      <h1 id="not-found-title">Esta ruta se perdió entre las olas.</h1>
+      <p class="not-found-lede">
+        La página que buscas no existe o cambió de ubicación. Puedes volver al inicio o continuar explorando NATURA 2030.
+      </p>
+
+      <nav class="not-found-actions" aria-label="Destinos disponibles">
+        <a class="not-found-primary" href="/">Volver al inicio</a>
+        <a href="/platform/">Explorar el mapa</a>
+        <a href="/models/">Ver modelos</a>
+      </nav>
+
+      <p class="not-found-english" lang="en">
+        Lost at sea? <a href="/en/">Return to the English site.</a>
+      </p>
+    </section>
+
+    <p class="not-found-footnote">NATURA 2030 · Información climática para proteger la costa</p>
+  </main>
+</BaseLayout>
+
+<style>
+  :global(body) { margin: 0; }
+
+  .not-found {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 18% 82%, color-mix(in srgb, var(--teal) 16%, transparent), transparent 34%),
+      radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--yellow) 42%, transparent), transparent 28%),
+      var(--bg);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .not-found * { box-sizing: border-box; }
+
+  .not-found-nav {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+  }
+
+  .not-found-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .not-found-brand img { display: block; }
+
+  .not-found-brand span {
+    font-family: 'Archivo', Arial, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 900;
+    line-height: 1.15;
+  }
+
+  .not-found-brand small {
+    display: block;
+    margin-top: 2px;
+    color: var(--teal);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+  }
+
+  .not-found-content {
+    position: relative;
+    z-index: 1;
+    width: min(760px, calc(100% - 48px));
+    margin: auto;
+    padding: 64px 0;
+    text-align: center;
+  }
+
+  .not-found-code {
+    margin-bottom: -0.18em;
+    color: color-mix(in srgb, var(--teal) 16%, transparent);
+    font-family: 'Archivo', Arial, sans-serif;
+    font-size: clamp(8rem, 24vw, 15rem);
+    font-weight: 900;
+    line-height: 0.72;
+    letter-spacing: -0.09em;
+    user-select: none;
+  }
+
+  .not-found-eyebrow {
+    margin: 0 0 16px;
+    color: var(--teal);
+    font-family: 'Archivo', Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .not-found h1 {
+    max-width: 680px;
+    margin: 0 auto;
+    font-family: 'Archivo', Arial, sans-serif;
+    font-size: clamp(2.25rem, 6vw, 4.25rem);
+    font-weight: 900;
+    line-height: 1.03;
+    letter-spacing: -0.03em;
+  }
+
+  .not-found-lede {
+    max-width: 590px;
+    margin: 24px auto 0;
+    color: var(--ink-soft);
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 34px;
+  }
+
+  .not-found-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 22px;
+    border: 2px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink);
+    font-family: 'Archivo', Arial, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .not-found-actions a:hover {
+    transform: translateY(-2px);
+    border-color: var(--teal);
+  }
+
+  .not-found-actions .not-found-primary {
+    border-color: var(--teal);
+    background: var(--teal);
+    color: #0b1626;
+  }
+
+  .not-found-actions .not-found-primary:hover {
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--teal) 35%, transparent);
+  }
+
+  .not-found-english {
+    margin: 28px 0 0;
+    color: var(--ink-softer);
+    font-size: 0.88rem;
+  }
+
+  .not-found-english a {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+
+  .not-found-english a:hover { color: var(--teal); }
+
+  .not-found-footnote {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 24px 48px;
+    color: var(--ink-softer);
+    font-size: 0.78rem;
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .not-found-nav { padding: 16px 18px; }
+    .not-found-brand span { font-size: 0.74rem; }
+    .not-found-content { padding: 44px 0; }
+    .not-found-actions { flex-direction: column; }
+    .not-found-actions a { width: 100%; }
+    .not-found-footnote { padding: 20px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .not-found-actions a { transition: none; }
+  }
+</style>
