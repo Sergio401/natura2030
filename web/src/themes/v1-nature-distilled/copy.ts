@@ -26,7 +26,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
   es: {
     hero: {
       eyebrow: 'Adaptation Latin America · NATURA 2030',
-      headline: 'De los datos del {{océano}}\na las decisiones que protegen la {{costa}}',
+      headline: 'De los datos del {{océano}}\na las decisiones que protegen la {{costa}} colombiana',
       lede: 'NATURA 2030 traduce modelos climáticos, mareas, oleaje y datos de campo en información clara para quienes cuidan el litoral latinoamericano',
     },
     problem: {
@@ -47,7 +47,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
   en: {
     hero: {
       eyebrow: 'Adaptation Latin America · NATURA 2030',
-      headline: 'From ocean {{data}}\nto the decisions that protect the {{coast}}',
+      headline: "From ocean {{data}}\nto decisions that protect Colombia's {{coast}}",
       lede: 'NATURA 2030 turns climate models, tides, waves and field data into clear information for those who care for the Latin American coastline',
     },
     problem: {
