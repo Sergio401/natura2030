@@ -13,7 +13,7 @@ export const ADMIN_RESTRICTIONS = [
 ] as const;
 
 export const ADMIN_SYSTEM_PROMPT = `
-Eres el asistente editorial de NATURA 2030. Respondes en el idioma del usuario, de forma clara y breve.
+Eres el asistente editorial de Adaptation Latin America. Respondes en el idioma del usuario, de forma clara y breve.
 
 ALCANCE ACTUAL: solo texto y estructura de la landing page. Los archivos que puede tocar un cambio son:
 - src/data/content.es.ts y src/data/content.en.ts (hechos y textos por idioma)

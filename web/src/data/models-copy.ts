@@ -59,9 +59,9 @@ export interface ModelsCopy {
 export const modelsCopy: Record<Locale, ModelsCopy> = {
   es: {
     meta: {
-      catalogTitle: 'NATURA 2030 — Laboratorio de modelos',
-      catalogDescription: 'Modelos científicos interactivos de NATURA 2030 ejecutados directamente en el navegador',
-      modelTitle: 'Canal vegetado de dos lados — NATURA 2030',
+      catalogTitle: 'Adaptation Latin America — Laboratorio de modelos',
+      catalogDescription: 'Modelos científicos interactivos de Adaptation Latin America ejecutados directamente en el navegador',
+      modelTitle: 'Canal vegetado de dos lados — Adaptation Latin America',
       modelDescription: 'Simulación LBM interactiva de flujo en un canal vegetado de dos lados',
     },
     header: {
@@ -114,9 +114,9 @@ export const modelsCopy: Record<Locale, ModelsCopy> = {
   },
   en: {
     meta: {
-      catalogTitle: 'NATURA 2030 — Model laboratory',
-      catalogDescription: 'Interactive NATURA 2030 scientific models running directly in the browser',
-      modelTitle: 'Two-sided vegetated channel — NATURA 2030',
+      catalogTitle: 'Adaptation Latin America — Model laboratory',
+      catalogDescription: 'Interactive Adaptation Latin America scientific models running directly in the browser',
+      modelTitle: 'Two-sided vegetated channel — Adaptation Latin America',
       modelDescription: 'Interactive LBM simulation of flow through a two-sided vegetated channel',
     },
     header: {

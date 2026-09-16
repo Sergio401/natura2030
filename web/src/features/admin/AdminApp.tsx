@@ -396,12 +396,12 @@ export default function AdminApp() {
     return (
       <main className="admin-login" id="main">
         <section className="admin-login-card">
-          <a className="admin-brand" href="/"><img src="/favicon.svg" alt="" /><span>ADAPTATION LATIN AMERICA<small>NATURA 2030</small></span></a>
+          <a className="admin-brand" href="/"><img src="/favicon-32.png" alt="" /><span>ADAPTATION LATIN AMERICA</span></a>
           <button className="admin-login-theme" type="button" onClick={toggleTheme} aria-label="Cambiar entre modo claro y oscuro">◐</button>
           <div className="admin-login-heading">
             <span className="admin-kicker">Acceso restringido</span>
             <h1>Centro de edición</h1>
-            <p>Ingresa para conversar con el asistente editorial de NATURA 2030.</p>
+            <p>Ingresa para conversar con el asistente editorial.</p>
           </div>
           {!configured && <div className="admin-alert">El administrador todavía no está configurado. Agrega las variables de entorno indicadas en <code>.env.example</code>.</div>}
           <form onSubmit={login}>
@@ -420,7 +420,7 @@ export default function AdminApp() {
   return (
     <main className="admin-shell" id="main">
       <header className="admin-header">
-        <a className="admin-brand" href="/"><img src="/favicon.svg" alt="" /><span>ADAPTATION LATIN AMERICA<small>NATURA 2030 · ADMIN</small></span></a>
+        <a className="admin-brand" href="/"><img src="/favicon-32.png" alt="" /><span>ADAPTATION LATIN AMERICA<small>ADMIN</small></span></a>
         <div className="admin-header-actions">
           <span className="admin-mode"><i />Modo propuesta</span>
           <button className="admin-status-toggle" type="button" onClick={() => setShowStatus(true)}>
@@ -440,26 +440,26 @@ export default function AdminApp() {
 
       <section className="admin-chat">
         <div className="admin-chat-topline">
-          <div><span className="admin-kicker">Asistente editorial</span><h1>Conversa con NATURA</h1></div>
+          <div><span className="admin-kicker">Asistente editorial</span><h1>Conversa con el asistente</h1></div>
           <button type="button" onClick={() => setShowPolicy(true)}>Ver reglas</button>
         </div>
 
         <div className="admin-messages" aria-live="polite">
           {messages.length === 0 ? (
             <div className="admin-welcome">
-              <div className="admin-agent-mark"><img src="/favicon.svg" alt="" /></div>
+              <div className="admin-agent-mark"><img src="/favicon-32.png" alt="" /></div>
               <h2>¿Qué quieres actualizar?</h2>
               <p>Puedo ayudarte a preparar cambios de texto y estructura para la landing page. El mapa y los modelos todavía no están disponibles.</p>
               <div className="admin-quick-actions">{QUICK_ACTIONS.map((action) => <button type="button" key={action.label} onClick={() => void send(action.prompt)}>{action.label}<span>↗</span></button>)}</div>
             </div>
           ) : messages.map((message, index) => (
             <article className={`admin-message is-${message.role}`} key={`${message.role}-${index}`}>
-              <span className="admin-message-role">{message.role === 'user' ? 'Tú' : 'NATURA'}</span>
+              <span className="admin-message-role">{message.role === 'user' ? 'Tú' : 'Asistente'}</span>
               <div>{message.content.split('\n').map((line, lineIndex) => <p key={lineIndex}>{line || <br />}</p>)}</div>
               {message.files && message.files.length > 0 && <div className="admin-message-files">{message.files.map((file) => <span key={file}>{file}</span>)}</div>}
             </article>
           ))}
-          {isSending && <article className="admin-message is-assistant"><span className="admin-message-role">NATURA</span><div className="admin-thinking"><i /><i /><i /></div></article>}
+          {isSending && <article className="admin-message is-assistant"><span className="admin-message-role">Asistente</span><div className="admin-thinking"><i /><i /><i /></div></article>}
           <div ref={messagesEndRef} />
         </div>
 

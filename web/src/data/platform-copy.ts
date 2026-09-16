@@ -53,9 +53,9 @@ export interface PlatformCopy {
 export const platformCopy: Record<Locale, PlatformCopy> = {
   es: {
     meta: {
-      title: 'NATURA 2030 — Plataforma regional',
+      title: 'Adaptation Latin America — Plataforma regional',
       description:
-        'Mapa demostrativo de iniciativas de información climática costera de NATURA 2030 en América Latina',
+        'Mapa demostrativo de iniciativas de información climática costera de Adaptation Latin America en América Latina',
     },
     header: {
       eyebrow: 'INTELIGENCIA CLIMÁTICA COSTERA',
@@ -65,7 +65,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       language: 'English',
     },
     map: {
-      ariaLabel: 'Mapa de iniciativas demostrativas de NATURA 2030',
+      ariaLabel: 'Mapa de iniciativas demostrativas de Adaptation Latin America',
       locationCount: '08',
       locationCountLabel: 'Ubicaciones demostrativas',
       legendTitle: 'Aplicaciones',
@@ -91,7 +91,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       collaborateTitle: '¿Te interesa colaborar?',
       collaborateBody: 'Buscamos aliados técnicos y financieros para implementar este proyecto',
       collaborateCta: 'Conversemos sobre este proyecto',
-      heroAlt: 'Imagen ilustrativa del monitoreo ambiental de NATURA 2030',
+      heroAlt: 'Imagen ilustrativa del monitoreo ambiental de Adaptation Latin America',
     },
     categories: {
       'coastal-adaptation': 'Adaptación costera',
@@ -124,9 +124,9 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
   },
   en: {
     meta: {
-      title: 'NATURA 2030 — Regional platform',
+      title: 'Adaptation Latin America — Regional platform',
       description:
-        'Demonstration map of NATURA 2030 coastal climate information initiatives across Latin America',
+        'Demonstration map of Adaptation Latin America coastal climate information initiatives across Latin America',
     },
     header: {
       eyebrow: 'COASTAL CLIMATE INTELLIGENCE',
@@ -136,7 +136,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       language: 'Español',
     },
     map: {
-      ariaLabel: 'Map of NATURA 2030 demonstration initiatives',
+      ariaLabel: 'Map of Adaptation Latin America demonstration initiatives',
       locationCount: '08',
       locationCountLabel: 'Demonstration locations',
       legendTitle: 'Applications',
@@ -162,7 +162,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       collaborateTitle: 'Interested in collaborating?',
       collaborateBody: "We're looking for technical and financial partners to implement this project",
       collaborateCta: "Let's talk about this project",
-      heroAlt: 'Illustrative image of NATURA 2030 environmental monitoring',
+      heroAlt: 'Illustrative image of Adaptation Latin America environmental monitoring',
     },
     categories: {
       'coastal-adaptation': 'Coastal adaptation',
