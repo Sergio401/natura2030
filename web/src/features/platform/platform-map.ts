@@ -194,7 +194,7 @@ export function initPlatformMap(root: HTMLElement): void {
     map.easeTo({
       center: location.coordinates,
       zoom: Math.max(map.getZoom(), 5.2),
-      offset: window.innerWidth >= 760 ? [190, 0] : [0, -90],
+      offset: window.innerWidth >= 760 ? [245, 0] : [0, -90],
       duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700,
     });
     if (updateHistory) updateUrl(location.id);
