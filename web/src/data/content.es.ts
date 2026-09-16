@@ -108,7 +108,7 @@ export const es: SiteContent = {
     models: 'Ver modelos',
   },
   footer: {
-    email: 'algo@natura2030.com',
+    email: 'info@adaptationla.org',
     copyright: '© 2026 Adaptation Latin America. Todos los derechos reservados',
     note: 'NATURA 2030 es una iniciativa de ALA',
   },
