@@ -160,11 +160,22 @@ export function initPlatformMap(root: HTMLElement): void {
     });
   };
 
+  // Reserve screen space for the panel via `padding` (not `offset`). `padding` keeps
+  // `map.getCenter()` at the location's real coordinates and adjusts what maplibre treats
+  // as the visible viewport — so zoom controls, scroll-wheel zoom, etc. all scale around the
+  // pin the user actually sees. `offset` instead moves the *true* center to a point hidden
+  // behind the panel, so any later zoom (which pivots on that true center) makes markers
+  // visibly swim across the screen. This was the cause of "los puntos se mueven al hacer zoom".
   const focusMapOnLocation = (location: PlatformLocation): void => {
+    const isDesktop = window.innerWidth >= 760;
+    const panelRect = panel.getBoundingClientRect();
+    const padding = isDesktop
+      ? { top: 70, right: 60, bottom: 70, left: panelRect.width + 40 }
+      : { top: 60, right: 40, bottom: panelRect.height + 30, left: 40 };
     map.easeTo({
       center: location.coordinates,
       zoom: Math.max(map.getZoom(), 5.2),
-      offset: window.innerWidth >= 760 ? [280, 0] : [0, -90],
+      padding,
       duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700,
     });
   };
@@ -237,6 +248,10 @@ export function initPlatformMap(root: HTMLElement): void {
     panel.inert = true;
     updateSelectedMarker();
     updateUrl(null);
+    map.easeTo({
+      padding: { top: 0, right: 0, bottom: 0, left: 0 },
+      duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400,
+    });
   };
 
   const renderMarkers = (): void => {
