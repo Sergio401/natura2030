@@ -7,6 +7,7 @@ import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import { platformLocations } from '../../data/platform-locations';
 import { platformCopy } from '../../data/platform-copy';
 import type { Locale } from '../../data/types';
+import { ICONS } from './icons';
 import './platform.css';
 
 interface Props {
@@ -91,9 +92,21 @@ const siteHref = locale === 'es' ? '/' : '/en/';
         <Image src={panelHeroImg} alt={copy.panel.heroAlt} width={640} height={480} />
       </div>
 
-      <div class="platform-location-index" data-location-index>LOC · 01</div>
-      <p class="platform-location-region" data-location-region></p>
-      <h1 id="location-title" tabindex="-1" data-location-title></h1>
+      <div class="platform-location-meta">
+        <p class="platform-location-region" data-location-region></p>
+        <div class="platform-location-meta-right">
+          <span class="platform-location-coords">
+            <span class="platform-icon platform-icon-inline" set:html={ICONS.mapPin} />
+            <span data-location-coordinates></span>
+          </span>
+          <button type="button" class="platform-view-map-btn" data-location-view-map>
+            <span class="platform-icon platform-icon-inline" set:html={ICONS.compass} />
+            {copy.panel.viewOnMap}
+          </button>
+        </div>
+      </div>
+
+      <h1 id="location-title" class="platform-location-title" tabindex="-1" data-location-title></h1>
 
       <div class="platform-badge-row">
         <span class="platform-badge" data-location-category-badge></span>
@@ -103,38 +116,45 @@ const siteHref = locale === 'es' ? '/' : '/en/';
       </div>
 
       <p class="platform-location-summary" data-location-summary></p>
-      <p class="platform-location-coords"><span aria-hidden="true">⌖</span><span data-location-coordinates></span></p>
 
       <div class="platform-mini-grid" data-location-challenge-block hidden>
         <div class="platform-mini-block platform-mini-block-challenge">
-          <span class="platform-mini-label">{copy.panel.challenge}</span>
+          <span class="platform-mini-label">
+            <span class="platform-icon" set:html={ICONS.triangleAlert} />{copy.panel.challenge}
+          </span>
           <p data-location-challenge></p>
         </div>
         <div class="platform-mini-block platform-mini-block-response">
-          <span class="platform-mini-label">{copy.panel.response}</span>
+          <span class="platform-mini-label">
+            <span class="platform-icon" set:html={ICONS.leaf} />{copy.panel.response}
+          </span>
           <p data-location-response></p>
+        </div>
+        <div class="platform-mini-block platform-mini-block-applications">
+          <span class="platform-mini-label">
+            <span class="platform-icon" set:html={ICONS.grid2x2} />{copy.panel.applications}
+          </span>
+          <ul data-location-applications></ul>
         </div>
       </div>
 
       <section class="platform-location-section">
-        <h2>{copy.panel.applications}</h2>
-        <ul data-location-applications></ul>
-      </section>
-
-      <section class="platform-location-section">
         <h2>{copy.panel.dataInputs}</h2>
-        <ul data-location-inputs></ul>
+        <ul class="platform-icon-grid" data-location-inputs></ul>
       </section>
 
       <section class="platform-location-section">
         <h2>{copy.panel.outputs}</h2>
-        <ul data-location-outputs></ul>
+        <ul class="platform-icon-grid" data-location-outputs></ul>
       </section>
 
       <div class="platform-collaborate">
         <div class="platform-collaborate-copy">
-          <strong>{copy.panel.collaborateTitle}</strong>
-          <p>{copy.panel.collaborateBody}</p>
+          <span class="platform-icon platform-icon-collaborate" set:html={ICONS.usersRound} />
+          <div>
+            <strong>{copy.panel.collaborateTitle}</strong>
+            <p>{copy.panel.collaborateBody}</p>
+          </div>
         </div>
         <a class="platform-collaborate-cta" data-location-cta href="#">
           {copy.panel.collaborateCta}<span aria-hidden="true">→</span>

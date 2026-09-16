@@ -2,6 +2,10 @@ import * as maplibregl from 'maplibre-gl';
 import type { StyleSpecification } from 'maplibre-gl';
 import { platformLocations, type PlatformLocation } from '../../data/platform-locations';
 import { platformCopy } from '../../data/platform-copy';
+import { ICONS } from './icons';
+
+const DATA_INPUT_ICONS = [ICONS.satellite, ICONS.waves, ICONS.sprout];
+const OUTPUT_ICONS = [ICONS.map, ICONS.barChart, ICONS.trendingUp];
 
 const CATEGORY_COLORS = {
   'coastal-adaptation': '#35c3bb',
@@ -73,6 +77,23 @@ function fillList(element: HTMLElement | null, values: string[]): void {
   );
 }
 
+/** Same as `fillList`, but prefixes each row with an icon (cycling through `icons`). */
+function fillIconList(element: HTMLElement | null, values: string[], icons: readonly string[]): void {
+  if (!element) return;
+  element.replaceChildren(
+    ...values.map((value, index) => {
+      const item = document.createElement('li');
+      const icon = document.createElement('span');
+      icon.className = 'platform-icon';
+      icon.innerHTML = icons[index % icons.length] ?? '';
+      const text = document.createElement('span');
+      text.textContent = value;
+      item.append(icon, text);
+      return item;
+    }),
+  );
+}
+
 export function initPlatformMap(root: HTMLElement): void {
   if (root.dataset.initialized === 'true') return;
   root.dataset.initialized = 'true';
@@ -93,6 +114,7 @@ export function initPlatformMap(root: HTMLElement): void {
   }
 
   let selectedLocationId: string | null = null;
+  let selectedLocation: PlatformLocation | null = null;
 
   let map: maplibregl.Map;
   try {
@@ -138,10 +160,19 @@ export function initPlatformMap(root: HTMLElement): void {
     });
   };
 
+  const focusMapOnLocation = (location: PlatformLocation): void => {
+    map.easeTo({
+      center: location.coordinates,
+      zoom: Math.max(map.getZoom(), 5.2),
+      offset: window.innerWidth >= 760 ? [280, 0] : [0, -90],
+      duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700,
+    });
+  };
+
   const showLocation = (location: PlatformLocation, updateHistory = true): void => {
     const details = location.content[locale];
-    const locationIndex = platformLocations.findIndex((item) => item.id === location.id) + 1;
     selectedLocationId = location.id;
+    selectedLocation = location;
     root.classList.add('is-panel-open');
     panel.setAttribute('aria-hidden', 'false');
     panel.inert = false;
@@ -151,7 +182,6 @@ export function initPlatformMap(root: HTMLElement): void {
       if (element) element.textContent = value;
     };
 
-    setText('[data-location-index]', `LOC · ${String(locationIndex).padStart(2, '0')}`);
     setText('[data-location-region]', details.region);
     setText('[data-location-title]', details.title);
     setText('[data-location-summary]', details.summary);
@@ -181,8 +211,8 @@ export function initPlatformMap(root: HTMLElement): void {
       panel.querySelector<HTMLElement>('[data-location-applications]'),
       copy.applicationsByCategory[location.category],
     );
-    fillList(panel.querySelector<HTMLElement>('[data-location-inputs]'), details.dataInputs);
-    fillList(panel.querySelector<HTMLElement>('[data-location-outputs]'), details.outputs);
+    fillIconList(panel.querySelector<HTMLElement>('[data-location-inputs]'), details.dataInputs, DATA_INPUT_ICONS);
+    fillIconList(panel.querySelector<HTMLElement>('[data-location-outputs]'), details.outputs, OUTPUT_ICONS);
 
     const collaborateCta = panel.querySelector<HTMLAnchorElement>('[data-location-cta]');
     if (collaborateCta) {
@@ -191,12 +221,7 @@ export function initPlatformMap(root: HTMLElement): void {
     }
 
     updateSelectedMarker();
-    map.easeTo({
-      center: location.coordinates,
-      zoom: Math.max(map.getZoom(), 5.2),
-      offset: window.innerWidth >= 760 ? [245, 0] : [0, -90],
-      duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700,
-    });
+    focusMapOnLocation(location);
     if (updateHistory) updateUrl(location.id);
 
     window.setTimeout(() => {
@@ -206,6 +231,7 @@ export function initPlatformMap(root: HTMLElement): void {
 
   const closePanel = (): void => {
     selectedLocationId = null;
+    selectedLocation = null;
     root.classList.remove('is-panel-open');
     panel.setAttribute('aria-hidden', 'true');
     panel.inert = true;
@@ -245,6 +271,10 @@ export function initPlatformMap(root: HTMLElement): void {
 
   root.querySelectorAll<HTMLElement>('[data-panel-close]').forEach((button) => {
     button.addEventListener('click', closePanel);
+  });
+
+  panel.querySelector<HTMLButtonElement>('[data-location-view-map]')?.addEventListener('click', () => {
+    if (selectedLocation) focusMapOnLocation(selectedLocation);
   });
 
   root.querySelectorAll<HTMLButtonElement>('[data-map-style]').forEach((button) => {

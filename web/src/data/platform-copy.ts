@@ -34,6 +34,7 @@ export interface PlatformCopy {
     category: string;
     status: string;
     coordinates: string;
+    viewOnMap: string;
     challenge: string;
     response: string;
     applications: string;
@@ -79,6 +80,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       category: 'Aplicación',
       status: 'Estado',
       coordinates: 'Coordenadas',
+      viewOnMap: 'Ver en mapa',
       challenge: 'El reto',
       response: 'Nuestra respuesta',
       applications: 'Aplicaciones',
@@ -149,6 +151,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       category: 'Application',
       status: 'Status',
       coordinates: 'Coordinates',
+      viewOnMap: 'View on map',
       challenge: 'The challenge',
       response: 'Our response',
       applications: 'Applications',

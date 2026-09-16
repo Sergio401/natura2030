@@ -378,7 +378,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 }
 
 .is-panel-open .platform-legend {
-  left: 540px;
+  left: 620px;
 }
 
 .platform-legend-title {
@@ -414,7 +414,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   top: 66px;
   bottom: 0;
   left: 0;
-  width: min(520px, calc(100vw - 40px));
+  width: min(600px, calc(100vw - 40px));
   overflow: hidden;
   color: var(--ink);
   border-right: 1px solid var(--border);
@@ -482,14 +482,8 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   scrollbar-color: var(--teal) transparent;
 }
 
-.platform-location-index {
-  margin-bottom: 18px;
-  color: var(--yellow);
-  font-size: 10px;
-}
-
 .platform-location-region {
-  margin: 0 0 7px;
+  margin: 0;
   color: var(--teal);
   font-family: 'Archivo', Arial, sans-serif;
   font-size: 10px;
@@ -498,7 +492,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   text-transform: uppercase;
 }
 
-.platform-location-region + h1 {
+.platform-location-title {
   margin: 0;
   color: var(--ink);
   font-family: 'Archivo', Arial, sans-serif;
@@ -521,6 +515,66 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.platform-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  color: var(--teal);
+}
+
+.platform-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  stroke-width: 2.1px;
+}
+
+.platform-icon-inline {
+  width: 13px;
+  height: 13px;
+}
+
+.platform-location-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 4px;
+}
+
+.platform-location-meta-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.platform-view-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px 6px 10px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: 'Archivo', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.platform-view-map-btn:hover {
+  color: var(--teal);
+  border-color: color-mix(in srgb, var(--teal) 50%, transparent);
 }
 
 .platform-badge-row {
@@ -566,19 +620,23 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 }
 
 .platform-location-coords {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin: 0 0 26px;
   color: var(--ink-softer);
   font-size: 11px;
   letter-spacing: 0.02em;
 }
 
+.platform-location-coords .platform-icon {
+  color: var(--ink-softer);
+}
+
 .platform-mini-grid {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 27px;
+  margin: 22px 0 27px;
 }
 
 .platform-mini-block {
@@ -597,10 +655,22 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   --mini-color: var(--teal);
 }
 
+.platform-mini-block-applications {
+  --mini-color: var(--yellow);
+}
+
 .platform-mini-label {
-  display: block;
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
   font-size: 9px;
+  color: var(--mini-color, var(--ink-softer));
+}
+
+.platform-mini-label .platform-icon {
+  width: 14px;
+  height: 14px;
   color: var(--mini-color, var(--ink-softer));
 }
 
@@ -611,44 +681,76 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   line-height: 1.55;
 }
 
-.platform-location-section {
-  margin-top: 27px;
-}
-
-.platform-location-section h2 {
-  margin: 0 0 11px;
-  color: var(--teal);
-  font-size: 10px;
-}
-
-.platform-location-section ul {
+.platform-mini-block-applications ul {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.platform-location-section li {
+.platform-mini-block-applications li {
   position: relative;
-  padding: 11px 12px 11px 30px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  padding-left: 13px;
   color: var(--ink-soft);
-  background: color-mix(in srgb, var(--ink) 2.5%, transparent);
   font-size: 12px;
   line-height: 1.4;
 }
 
-.platform-location-section li::before {
+.platform-mini-block-applications li::before {
   content: '';
   position: absolute;
-  top: 16px;
-  left: 13px;
-  width: 6px;
-  height: 6px;
+  top: 6px;
+  left: 0;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--yellow);
+  background: var(--mini-color, var(--yellow));
+}
+
+.platform-location-section {
+  margin-top: 27px;
+}
+
+.platform-location-section h2 {
+  margin: 0 0 14px;
+  color: var(--teal);
+  font-size: 10px;
+}
+
+.platform-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.platform-icon-grid li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.platform-icon-grid .platform-icon {
+  width: 21px;
+  height: 21px;
+}
+
+.platform-icon-grid li span:last-child {
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+[data-location-inputs] .platform-icon {
+  color: var(--teal);
+}
+
+[data-location-outputs] .platform-icon {
+  color: var(--yellow);
 }
 
 .platform-collaborate {
@@ -661,6 +763,19 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   border-radius: 14px;
   background: color-mix(in srgb, var(--teal) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+}
+
+.platform-collaborate-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.platform-icon-collaborate {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--teal);
 }
 
 .platform-collaborate-copy strong {
@@ -781,7 +896,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   }
 
   .is-panel-open .platform-legend {
-    left: 540px;
+    left: 620px;
   }
 }
 
@@ -896,8 +1011,13 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
     margin: -23px -21px 18px;
   }
 
-  .platform-location-region + h1 {
-    font-size: 28px;
+  .platform-location-title {
+    font-size: 26px;
+  }
+
+  .platform-mini-grid,
+  .platform-icon-grid {
+    grid-template-columns: 1fr;
   }
 
   .platform-collaborate {
