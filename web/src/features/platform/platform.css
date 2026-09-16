@@ -635,20 +635,14 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 .platform-mini-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 22px 20px;
   margin: 22px 0 27px;
-}
-
-.platform-mini-block {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-  border-left: 3px solid var(--mini-color, var(--ink-softer));
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
 }
 
 .platform-mini-block-challenge {
-  --mini-color: #ff9b6a;
+  --mini-color: #e2823f;
 }
 
 .platform-mini-block-response {
@@ -656,7 +650,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 }
 
 .platform-mini-block-applications {
-  --mini-color: var(--yellow);
+  --mini-color: var(--ink);
 }
 
 .platform-mini-label {
@@ -750,7 +744,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 }
 
 [data-location-outputs] .platform-icon {
-  color: var(--yellow);
+  color: var(--ink);
 }
 
 .platform-collaborate {
