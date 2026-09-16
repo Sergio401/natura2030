@@ -155,14 +155,40 @@ export function initPlatformMap(root: HTMLElement): void {
     setText('[data-location-region]', details.region);
     setText('[data-location-title]', details.title);
     setText('[data-location-summary]', details.summary);
-    setText('[data-location-category]', copy.categories[location.category]);
     setText('[data-location-status]', details.status);
     setText(
       '[data-location-coordinates]',
       `${location.coordinates[1].toFixed(4)}°, ${location.coordinates[0].toFixed(4)}°`,
     );
+
+    const categoryBadge = panel.querySelector<HTMLElement>('[data-location-category-badge]');
+    if (categoryBadge) {
+      categoryBadge.textContent = copy.categories[location.category];
+      categoryBadge.style.setProperty('--badge-color', CATEGORY_COLORS[location.category]);
+    }
+
+    const challengeBlock = panel.querySelector<HTMLElement>('[data-location-challenge-block]');
+    if (challengeBlock) {
+      const hasChallenge = Boolean(details.challenge && details.response);
+      challengeBlock.hidden = !hasChallenge;
+      if (hasChallenge) {
+        setText('[data-location-challenge]', details.challenge ?? '');
+        setText('[data-location-response]', details.response ?? '');
+      }
+    }
+
+    fillList(
+      panel.querySelector<HTMLElement>('[data-location-applications]'),
+      copy.applicationsByCategory[location.category],
+    );
     fillList(panel.querySelector<HTMLElement>('[data-location-inputs]'), details.dataInputs);
     fillList(panel.querySelector<HTMLElement>('[data-location-outputs]'), details.outputs);
+
+    const collaborateCta = panel.querySelector<HTMLAnchorElement>('[data-location-cta]');
+    if (collaborateCta) {
+      const subject = locale === 'es' ? `Colaboración — ${details.title}` : `Collaboration — ${details.title}`;
+      collaborateCta.href = `mailto:info@adaptationla.org?subject=${encodeURIComponent(subject)}`;
+    }
 
     updateSelectedMarker();
     map.easeTo({

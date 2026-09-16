@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
+import panelHeroImg from '../../assets/landing/manglar-gopro-velocidad.jpg';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import { platformLocations } from '../../data/platform-locations';
 import { platformCopy } from '../../data/platform-copy';
@@ -86,25 +87,39 @@ const siteHref = locale === 'es' ? '/' : '/en/';
       <button type="button" data-panel-close aria-label={copy.panel.close}>×</button>
     </div>
     <div class="platform-panel-body">
+      <div class="platform-hero">
+        <Image src={panelHeroImg} alt={copy.panel.heroAlt} width={640} height={480} />
+      </div>
+
       <div class="platform-location-index" data-location-index>LOC · 01</div>
       <p class="platform-location-region" data-location-region></p>
       <h1 id="location-title" tabindex="-1" data-location-title></h1>
-      <p class="platform-location-summary" data-location-summary></p>
 
-      <dl class="platform-location-facts">
-        <div>
-          <dt>{copy.panel.category}</dt>
-          <dd data-location-category></dd>
+      <div class="platform-badge-row">
+        <span class="platform-badge" data-location-category-badge></span>
+        <span class="platform-badge platform-badge-status">
+          <span class="platform-pulse"></span><span data-location-status></span>
+        </span>
+      </div>
+
+      <p class="platform-location-summary" data-location-summary></p>
+      <p class="platform-location-coords"><span aria-hidden="true">⌖</span><span data-location-coordinates></span></p>
+
+      <div class="platform-mini-grid" data-location-challenge-block hidden>
+        <div class="platform-mini-block platform-mini-block-challenge">
+          <span class="platform-mini-label">{copy.panel.challenge}</span>
+          <p data-location-challenge></p>
         </div>
-        <div>
-          <dt>{copy.panel.status}</dt>
-          <dd><span class="platform-pulse"></span><span data-location-status></span></dd>
+        <div class="platform-mini-block platform-mini-block-response">
+          <span class="platform-mini-label">{copy.panel.response}</span>
+          <p data-location-response></p>
         </div>
-        <div>
-          <dt>{copy.panel.coordinates}</dt>
-          <dd data-location-coordinates></dd>
-        </div>
-      </dl>
+      </div>
+
+      <section class="platform-location-section">
+        <h2>{copy.panel.applications}</h2>
+        <ul data-location-applications></ul>
+      </section>
 
       <section class="platform-location-section">
         <h2>{copy.panel.dataInputs}</h2>
@@ -115,6 +130,16 @@ const siteHref = locale === 'es' ? '/' : '/en/';
         <h2>{copy.panel.outputs}</h2>
         <ul data-location-outputs></ul>
       </section>
+
+      <div class="platform-collaborate">
+        <div class="platform-collaborate-copy">
+          <strong>{copy.panel.collaborateTitle}</strong>
+          <p>{copy.panel.collaborateBody}</p>
+        </div>
+        <a class="platform-collaborate-cta" data-location-cta href="#">
+          {copy.panel.collaborateCta}<span aria-hidden="true">→</span>
+        </a>
+      </div>
 
       <p class="platform-demo-note"><span aria-hidden="true">i</span>{copy.panel.demonstrationNote}</p>
     </div>

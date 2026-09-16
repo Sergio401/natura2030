@@ -34,11 +34,19 @@ export interface PlatformCopy {
     category: string;
     status: string;
     coordinates: string;
+    challenge: string;
+    response: string;
+    applications: string;
     dataInputs: string;
     outputs: string;
     demonstrationNote: string;
+    collaborateTitle: string;
+    collaborateBody: string;
+    collaborateCta: string;
+    heroAlt: string;
   };
   categories: Record<LocationCategory, string>;
+  applicationsByCategory: Record<LocationCategory, string[]>;
 }
 
 export const platformCopy: Record<Locale, PlatformCopy> = {
@@ -71,16 +79,45 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       category: 'Aplicación',
       status: 'Estado',
       coordinates: 'Coordenadas',
+      challenge: 'El reto',
+      response: 'Nuestra respuesta',
+      applications: 'Aplicaciones',
       dataInputs: 'Datos integrados',
-      outputs: 'Productos esperados',
+      outputs: 'Resultados propuestos',
       demonstrationNote:
         'Este caso es ilustrativo. Su ubicación y alcance se utilizan para mostrar cómo funcionará la plataforma con proyectos reales',
+      collaborateTitle: '¿Te interesa colaborar?',
+      collaborateBody: 'Buscamos aliados técnicos y financieros para implementar este proyecto',
+      collaborateCta: 'Conversemos sobre este proyecto',
+      heroAlt: 'Imagen ilustrativa del monitoreo ambiental de NATURA 2030',
     },
     categories: {
       'coastal-adaptation': 'Adaptación costera',
       'ecosystem-restoration': 'Restauración de ecosistemas',
       infrastructure: 'Infraestructura',
       'risk-management': 'Gestión del riesgo',
+    },
+    applicationsByCategory: {
+      'coastal-adaptation': [
+        'Adaptación de infraestructura costera',
+        'Planificación de sectores costeros',
+        'Alertas y monitoreo climático',
+      ],
+      'ecosystem-restoration': [
+        'Restauración de humedales',
+        'Gestión costera y adaptación climática',
+        'Monitoreo de ecosistemas',
+      ],
+      infrastructure: [
+        'Resiliencia de infraestructura estratégica',
+        'Planificación territorial',
+        'Inversión y seguros',
+      ],
+      'risk-management': [
+        'Gestión del riesgo costero',
+        'Planeación ante eventos extremos',
+        'Alertas tempranas',
+      ],
     },
   },
   en: {
@@ -112,16 +149,45 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       category: 'Application',
       status: 'Status',
       coordinates: 'Coordinates',
+      challenge: 'The challenge',
+      response: 'Our response',
+      applications: 'Applications',
       dataInputs: 'Integrated data',
-      outputs: 'Expected products',
+      outputs: 'Proposed outcomes',
       demonstrationNote:
         'This is an illustrative case. Its location and scope are used to demonstrate how the platform will work with real projects',
+      collaborateTitle: 'Interested in collaborating?',
+      collaborateBody: "We're looking for technical and financial partners to implement this project",
+      collaborateCta: "Let's talk about this project",
+      heroAlt: 'Illustrative image of NATURA 2030 environmental monitoring',
     },
     categories: {
       'coastal-adaptation': 'Coastal adaptation',
       'ecosystem-restoration': 'Ecosystem restoration',
       infrastructure: 'Infrastructure',
       'risk-management': 'Risk management',
+    },
+    applicationsByCategory: {
+      'coastal-adaptation': [
+        'Coastal infrastructure adaptation',
+        'Coastal district planning',
+        'Climate alerts and monitoring',
+      ],
+      'ecosystem-restoration': [
+        'Wetland restoration',
+        'Coastal management and climate adaptation',
+        'Ecosystem monitoring',
+      ],
+      infrastructure: [
+        'Resilience of strategic infrastructure',
+        'Territorial planning',
+        'Investment and insurance',
+      ],
+      'risk-management': [
+        'Coastal risk management',
+        'Planning for extreme events',
+        'Early warning systems',
+      ],
     },
   },
 };

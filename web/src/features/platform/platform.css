@@ -442,7 +442,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
 
 .platform-panel-bar > span,
 .platform-location-index,
-.platform-location-facts dt,
+.platform-mini-label,
 .platform-location-section h2 {
   font-family: 'Archivo', Arial, sans-serif;
   font-weight: 700;
@@ -509,51 +509,106 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   outline: none;
 }
 
+.platform-hero {
+  margin: -28px -28px 20px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.platform-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.platform-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-family: 'Archivo', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--badge-color, var(--teal)) 18%, transparent);
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--badge-color, var(--teal)) 45%, transparent);
+}
+
+.platform-badge-status {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--ink-soft);
+}
+
+.platform-badge-status .platform-pulse {
+  width: 6px;
+  height: 6px;
+  box-shadow: none;
+}
+
 .platform-location-summary {
-  margin: 17px 0 26px;
+  margin: 17px 0 8px;
   color: var(--ink-soft);
   font-size: 14px;
   line-height: 1.65;
 }
 
-.platform-location-facts {
-  margin: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-}
-
-.platform-location-facts > div {
-  display: grid;
-  grid-template-columns: 108px 1fr;
-  gap: 12px;
-  padding: 13px 14px;
-  border-bottom: 1px dashed var(--border);
-}
-
-.platform-location-facts > div:last-child {
-  border-bottom: 0;
-}
-
-.platform-location-facts dt {
-  color: var(--ink-softer);
-  font-size: 9px;
-}
-
-.platform-location-facts dd {
+.platform-location-coords {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin: 0;
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 700;
+  gap: 6px;
+  margin: 0 0 26px;
+  color: var(--ink-softer);
+  font-size: 11px;
+  letter-spacing: 0.02em;
 }
 
-.platform-location-facts dd .platform-pulse {
-  width: 6px;
-  height: 6px;
-  box-shadow: none;
+.platform-mini-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 27px;
+}
+
+.platform-mini-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+  border-left: 3px solid var(--mini-color, var(--ink-softer));
+}
+
+.platform-mini-block-challenge {
+  --mini-color: #ff9b6a;
+}
+
+.platform-mini-block-response {
+  --mini-color: var(--teal);
+}
+
+.platform-mini-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 9px;
+  color: var(--mini-color, var(--ink-softer));
+}
+
+.platform-mini-block p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  line-height: 1.55;
 }
 
 .platform-location-section {
@@ -594,6 +649,47 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   height: 6px;
   border-radius: 50%;
   background: var(--yellow);
+}
+
+.platform-collaborate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 27px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--teal) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+}
+
+.platform-collaborate-copy strong {
+  display: block;
+  font-family: 'Archivo', Arial, sans-serif;
+  font-size: 13px;
+}
+
+.platform-collaborate-copy p {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.platform-collaborate-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: var(--teal);
+  color: #0b1626;
+  font-family: 'Archivo', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .platform-demo-note {
@@ -796,8 +892,22 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
     padding: 23px 21px 30px;
   }
 
+  .platform-hero {
+    margin: -23px -21px 18px;
+  }
+
   .platform-location-region + h1 {
     font-size: 28px;
+  }
+
+  .platform-collaborate {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .platform-collaborate-cta {
+    margin-left: 0;
+    justify-content: center;
   }
 
   .platform-mobile-scrim {
