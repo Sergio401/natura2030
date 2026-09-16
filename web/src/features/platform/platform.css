@@ -194,7 +194,12 @@ html[data-theme='dark'] .platform-shell {
 
 .platform-marker {
   --marker-color: var(--teal);
-  position: relative;
+  /* No `position` here: maplibre-gl.css sets `.maplibregl-marker { position: absolute }`,
+     which is how it drives the element via the `transform` it computes each frame.
+     Overriding it to `relative` keeps the marker buttons in normal document flow,
+     so each one renders offset by (20px x how many earlier markers precede it in the
+     DOM) from where maplibre actually placed it — correct at the exact spot only for
+     the first marker, drifting further for every marker after it. */
   width: 20px;
   height: 20px;
   padding: 0;
