@@ -5,12 +5,6 @@ export interface LinkItem {
   label: string;
 }
 
-export interface ProcessStep {
-  n: string;
-  title: string;
-  body: string;
-}
-
 export interface InputItem {
   title: string;
   body: string;
@@ -35,9 +29,6 @@ export interface SiteContent {
     siteName: string;
     orgName: string;
     description: string;
-  };
-  process: {
-    steps: ProcessStep[];
   };
   inputs: {
     items: InputItem[];

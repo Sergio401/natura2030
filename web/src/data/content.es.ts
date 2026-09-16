@@ -7,35 +7,6 @@ export const es: SiteContent = {
     description:
       'NATURA 2030 integra información climática y oceanográfica de múltiples fuentes en insumos útiles para decisiones locales de adaptación costera en América Latina',
   },
-  process: {
-    steps: [
-      {
-        n: '1',
-        title: 'Definición del sitio y del objetivo',
-        body: 'Identificación del problema, ubicación, horizonte temporal y necesidades del proyecto',
-      },
-      {
-        n: '2',
-        title: 'Selección, descarga e ingesta',
-        body: 'Recopilación de datos relevantes de modelos, observaciones y fuentes locales',
-      },
-      {
-        n: '3',
-        title: 'Armonización y control de calidad',
-        body: 'Revisión de cobertura, consistencia, unidades, coordenadas y datums',
-      },
-      {
-        n: '4',
-        title: 'Integración y análisis',
-        body: 'Combinación físico-estadística de fuentes, tendencias, climatologías y escenarios',
-      },
-      {
-        n: '5',
-        title: 'Interpretación para adaptación',
-        body: 'Traducción de los resultados en información útil para planificación y toma de decisiones',
-      },
-    ],
-  },
   inputs: {
     items: [
       {

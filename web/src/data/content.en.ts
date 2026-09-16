@@ -7,35 +7,6 @@ export const en: SiteContent = {
     description:
       'NATURA 2030 brings together climate and ocean data from multiple sources into inputs local teams can use for coastal adaptation decisions across Latin America',
   },
-  process: {
-    steps: [
-      {
-        n: '1',
-        title: 'Site and objective definition',
-        body: 'Identifying the problem, location, time horizon and needs of the project',
-      },
-      {
-        n: '2',
-        title: 'Selection, download and ingestion',
-        body: 'Gathering relevant data from models, observations and local sources',
-      },
-      {
-        n: '3',
-        title: 'Harmonization and quality control',
-        body: 'Checking coverage, consistency, units, coordinates and datums',
-      },
-      {
-        n: '4',
-        title: 'Integration and analysis',
-        body: 'Physical-statistical combination of sources, trends, climatologies and scenarios',
-      },
-      {
-        n: '5',
-        title: 'Interpretation for adaptation',
-        body: 'Translating the results into information useful for planning and decision-making',
-      },
-    ],
-  },
   inputs: {
     items: [
       {

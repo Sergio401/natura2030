@@ -120,26 +120,7 @@ let wordIndex = 0;
     </div>
   </section>
 
-  <section class="nd-section nd-process" id="proceso">
-    <div class="nd-wrap">
-      <div class="nd-head">
-        <span class="nd-eyebrow">{c.sections.process.eyebrow}</span>
-        <h2>{c.sections.process.title}</h2>
-      </div>
-      <div class="nd-pipe">
-        <div class="nd-pipe-line" aria-hidden="true"><div class="nd-pipe-line-fill" data-pipe-fill></div></div>
-        {t.process.steps.map((step) => (
-          <div class="nd-step reveal">
-            <div class="nd-step-num">{step.n}</div>
-            <h3>{step.title}</h3>
-            <p>{step.body}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="nd-section" id="plataforma">
+  <section class="nd-section nd-process" id="plataforma">
     <div class="nd-wrap">
       <div class="nd-head">
         <span class="nd-eyebrow">{c.sections.inputs.eyebrow}</span>
@@ -161,7 +142,7 @@ let wordIndex = 0;
     </div>
   </section>
 
-  <section class="nd-section nd-apps" id="aplicaciones">
+  <section class="nd-section" id="aplicaciones">
     <div class="nd-wrap">
       <div class="nd-head">
         <span class="nd-eyebrow">{c.sections.applications.eyebrow}</span>
@@ -175,7 +156,7 @@ let wordIndex = 0;
     </div>
   </section>
 
-  <section class="nd-section" id="nosotros">
+  <section class="nd-section nd-people" id="nosotros">
     <div class="nd-wrap nd-about">
       <div class="nd-about-copy">
         <span class="nd-eyebrow">{c.sections.about.eyebrow}</span>
@@ -305,23 +286,6 @@ let wordIndex = 0;
   .nd-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
   .nd-head h2 { font-size: clamp(28px,3.4vw,40px); margin-top: 14px; line-height: 1.15; }
 
-  .nd-process { background: var(--block-bg); color: var(--block-ink); }
-  .nd-process .nd-eyebrow { color: var(--yellow); }
-  .nd-process .nd-head h2 { color: var(--block-ink); }
-  .nd-process .nd-pipe-line { background: color-mix(in srgb, var(--block-ink) 18%, transparent); }
-  .nd-process .nd-step-num { background: var(--block-bg); color: var(--block-ink); }
-  .nd-process .nd-step h3 { color: var(--block-ink); }
-  .nd-process .nd-step p { color: color-mix(in srgb, var(--block-ink) 70%, transparent); }
-  .nd-pipe { display: flex; flex-wrap: wrap; gap: 32px 0; align-items: stretch; position: relative; }
-  .nd-pipe-line { position: absolute; top: 26px; left: 4%; right: 4%; height: 2px; background: var(--border); }
-  .nd-pipe-line-fill { height: 2px; width: 0; background: var(--teal); transition: width 1.4s cubic-bezier(.16,1,.3,1); }
-  .nd-pipe-line-fill.fill { width: 100%; }
-  .nd-step { flex: 1 1 18%; min-width: 180px; padding: 0 16px; text-align: left; position: relative; }
-  .nd-step-num { width: 52px; height: 52px; border-radius: 50%; background: var(--surface); border: 2px solid var(--teal); color: var(--ink);
-    display: flex; align-items: center; justify-content: center; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 18px; margin-bottom: 20px; position: relative; z-index: 2; }
-  .nd-step h3 { font-size: 17px; margin-bottom: 8px; }
-  .nd-step p { font-size: 14px; color: var(--ink-soft); }
-
   .nd-inputs-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
   .nd-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; box-shadow: var(--card-shadow); }
   .nd-card h3 { font-size: 16px; margin-bottom: 8px; }
@@ -331,6 +295,14 @@ let wordIndex = 0;
   .nd-marquee-track { display: flex; gap: 56px; white-space: nowrap; width: max-content; animation: scrollLeft 26s linear infinite; }
   .nd-marquee-track span { font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-softer); text-transform: uppercase; }
   @keyframes scrollLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .nd-process { background: var(--block-bg); color: var(--block-ink); }
+  .nd-process .nd-eyebrow { color: var(--yellow); }
+  .nd-process .nd-head h2 { color: var(--block-ink); }
+  .nd-process .nd-card { background: color-mix(in srgb, var(--block-ink) 6%, transparent); border-color: color-mix(in srgb, var(--block-ink) 16%, transparent); box-shadow: none; }
+  .nd-process .nd-card p { color: color-mix(in srgb, var(--block-ink) 70%, transparent); }
+  .nd-process .nd-marquee { border-color: color-mix(in srgb, var(--block-ink) 16%, transparent); }
+  .nd-process .nd-marquee-track span { color: color-mix(in srgb, var(--block-ink) 55%, transparent); }
 
   .nd-deliver-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
   .nd-deliver-card { border: 1px solid var(--border); border-radius: 18px; padding: 30px 26px; background: var(--surface); box-shadow: var(--card-shadow); }
@@ -342,15 +314,17 @@ let wordIndex = 0;
   .nd-monitor-text h3 { font-size: clamp(22px, 2.4vw, 28px); line-height: 1.2; margin: 14px 0 14px; }
   .nd-monitor-text p { color: var(--ink-soft); font-size: 16px; max-width: 480px; }
 
-  .nd-apps { background: var(--block-bg); color: var(--block-ink); }
-  .nd-apps .nd-eyebrow { color: var(--yellow); }
-  .nd-apps .nd-head h2 { color: var(--block-ink); }
-  .nd-apps .nd-apptag { background: color-mix(in srgb, var(--block-ink) 6%, transparent); border-color: color-mix(in srgb, var(--block-ink) 16%, transparent); box-shadow: none; color: var(--block-ink); }
   .nd-apps-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
   .nd-apptag { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 12px 20px 12px 14px; box-shadow: var(--card-shadow); transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
   .nd-apptag:hover { transform: translateY(-4px); }
   .nd-apptag .dot { width: 30px; height: 30px; border-radius: 50%; background: var(--yellow); flex: none; }
   .nd-apptag span:last-child { font-size: 14px; font-weight: 700; }
+
+  .nd-people { background: var(--block-bg); color: var(--block-ink); }
+  .nd-people .nd-eyebrow { color: var(--yellow); }
+  .nd-people .nd-about-copy h2 { color: var(--block-ink); }
+  .nd-people .nd-about-copy p { color: color-mix(in srgb, var(--block-ink) 72%, transparent); }
+  .nd-people .nd-pillar span { color: var(--block-ink); }
 
   .nd-about { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
   .nd-about-copy p { font-size: 16px; color: var(--ink-soft); margin-top: 16px; }
@@ -379,8 +353,6 @@ let wordIndex = 0;
     .nd-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .nd-deliver-grid { grid-template-columns: 1fr; }
     .nd-monitor { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
-    .nd-pipe { flex-direction: column; gap: 28px; }
-    .nd-pipe-line { display: none; }
     .nd-about { grid-template-columns: 1fr; }
     .nd-cta-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }
@@ -398,25 +370,5 @@ let wordIndex = 0;
 <script>
   import { initCommonInteractions } from '../../scripts/common-interactions';
   const page = document.getElementById('main');
-  if (page) {
-    const { reduced } = initCommonInteractions(page);
-    if (!reduced) {
-      const lineFill = page.querySelector('[data-pipe-fill]');
-      if (lineFill) {
-        const io2 = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                lineFill.classList.add('fill');
-                io2.unobserve(entry.target);
-              }
-            }
-          },
-          { threshold: 0.3 },
-        );
-        const pipe = page.querySelector('.nd-pipe');
-        if (pipe) io2.observe(pipe);
-      }
-    }
-  }
+  if (page) initCommonInteractions(page);
 </script>
