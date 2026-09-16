@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
+import logotipoTealWhite from '../../assets/brand/logotipo-teal-white.png';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
@@ -83,6 +84,7 @@ let wordIndex = 0;
       <span class="nd-eyebrow">{c.problem.eyebrow}</span>
       <h2>{c.problem.title}</h2>
       <p>{c.problem.body}</p>
+      <div class="nd-problem-logo"><Image src={logotipoTealWhite} alt="Adaptation Latin America" width={271} height={68} /></div>
       <div class="nd-chiprow">
         {c.problem.chips.map((chip) => <span class="nd-chip">{chip}</span>)}
       </div>
@@ -282,6 +284,8 @@ let wordIndex = 0;
   .nd-problem .nd-eyebrow { color: var(--yellow); }
   .nd-problem h2 { color: var(--block-ink); font-size: clamp(28px,3.6vw,42px); margin: 16px auto 22px; max-width: 760px; line-height: 1.16; }
   .nd-problem p { max-width: 620px; margin: 0 auto; color: color-mix(in srgb, var(--block-ink) 75%, transparent); font-size: 17px; }
+  .nd-problem-logo { margin-top: 36px; }
+  .nd-problem-logo img { display: block; margin: 0 auto; width: 220px; height: auto; }
   .nd-chiprow { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
   .nd-chip { border: 1px solid color-mix(in srgb, var(--block-ink) 22%, transparent); color: var(--block-ink); font-size: 13px; font-weight: 700; border-radius: 999px; padding: 9px 18px; }
 

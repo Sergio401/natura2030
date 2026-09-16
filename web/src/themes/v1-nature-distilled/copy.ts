@@ -30,10 +30,10 @@ export const v1Copy: Record<Locale, V1Copy> = {
       lede: 'Integramos datos, tecnología y naturaleza para anticipar riesgos, orientar decisiones y responder a los desafíos climáticos.',
     },
     problem: {
-      eyebrow: 'El reto',
-      title: 'La información de la costa existe. Solo está dispersa',
-      body: 'Modelos climáticos, mareógrafos, boyas, satélites y campañas de campo generan datos valiosos sobre el litoral de América Latina — pero rara vez llegan a tiempo, en un formato útil, a quienes deben decidir sobre restauración, infraestructura o riesgo costero',
-      chips: ['Modelos climáticos y oceánicos', 'Observaciones históricas', 'Datos locales de campo'],
+      eyebrow: 'Entender · Actuar · Fortalecer',
+      title: 'Herramientas para la adaptación climática',
+      body: 'Cada territorio define sus propios desafíos. Nosotros brindamos soluciones innovadoras a la medida de su realidad.',
+      chips: ['Inteligencia ambiental', 'Soluciones basadas en la naturaleza', 'Desarrollo local'],
     },
     sections: {
       process: { eyebrow: 'El proceso', title: 'De datos dispersos a decisiones, en cinco etapas' },
@@ -51,10 +51,10 @@ export const v1Copy: Record<Locale, V1Copy> = {
       lede: 'We integrate data, technology, and nature to anticipate risks, inform decisions, and respond to climate challenges.',
     },
     problem: {
-      eyebrow: 'The challenge',
-      title: "The coast's information exists. It's just scattered",
-      body: 'Climate models, tide gauges, buoys, satellites and field campaigns generate valuable data about the Latin American coastline — but it rarely reaches those deciding on restoration, infrastructure or coastal risk in time, or in a usable format',
-      chips: ['Climate & ocean models', 'Historical observations', 'Local field data'],
+      eyebrow: 'Understand · Act · Strengthen',
+      title: 'Tools for climate adaptation',
+      body: 'Every territory faces its own challenges. We deliver innovative solutions designed for specific contexts.',
+      chips: ['Environmental Intelligence', 'Nature-Based Solutions', 'Local Development'],
     },
     sections: {
       process: { eyebrow: 'The process', title: 'From scattered data to decisions, in five stages' },
