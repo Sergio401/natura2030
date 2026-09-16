@@ -45,6 +45,12 @@ export interface SiteContent {
   };
   deliverables: {
     items: DeliverableItem[];
+    monitoring: {
+      label: string;
+      title: string;
+      body: string;
+      imageAlt: string;
+    };
   };
   applications: {
     items: string[];

@@ -75,6 +75,12 @@ export const en: SiteContent = {
         body: 'Technical reports, infographics, adaptation indicators and recommendations',
       },
     ],
+    monitoring: {
+      label: 'Environmental monitoring',
+      title: 'Field measurements behind every result',
+      body: 'We complement models with data collected on site: cameras and sensors installed in mangroves and water bodies record currents, water levels and ecosystem change to calibrate and validate what we deliver.',
+      imageAlt: 'GoPro camera mounted in a mangrove recording current velocity along a channel',
+    },
   },
   applications: {
     items: [

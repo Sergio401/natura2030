@@ -75,6 +75,12 @@ export const es: SiteContent = {
         body: 'Reportes técnicos, infografías, indicadores de adaptación y recomendaciones',
       },
     ],
+    monitoring: {
+      label: 'Monitoreo ambiental',
+      title: 'Mediciones en campo que respaldan cada resultado',
+      body: 'Complementamos los modelos con datos tomados en el territorio: cámaras y sensores instalados en manglares y cuerpos de agua registran corrientes, niveles y cambios del ecosistema para calibrar y validar lo que entregamos.',
+      imageAlt: 'Cámara GoPro instalada en un manglar registrando la velocidad de la corriente en un canal',
+    },
   },
   applications: {
     items: [

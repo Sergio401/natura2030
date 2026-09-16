@@ -38,7 +38,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
     sections: {
       process: { eyebrow: 'El proceso', title: 'De datos dispersos a decisiones, en cinco etapas' },
       inputs: { eyebrow: 'Qué integra la plataforma', title: 'Cuatro tipos de datos, una sola lectura del territorio' },
-      deliverables: { eyebrow: 'Qué entregamos', title: 'Productos listos para respaldar una decisión' },
+      deliverables: { eyebrow: 'NATURA 2030', title: 'Productos listos para respaldar una decisión' },
       applications: { eyebrow: 'Dónde se aplica', title: 'Un mismo motor, seis decisiones distintas sobre la costa' },
       about: { eyebrow: 'Quiénes somos', title: 'Impulsados por Adaptation Latin America' },
       cta: { eyebrow: 'Hablemos', title: '¿Listo para llevar datos dispersos a decisiones de adaptación?' },
@@ -59,7 +59,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
     sections: {
       process: { eyebrow: 'The process', title: 'From scattered data to decisions, in five stages' },
       inputs: { eyebrow: 'What the platform integrates', title: 'Four types of data, one single reading of the territory' },
-      deliverables: { eyebrow: 'What we deliver', title: 'Products ready to back a decision' },
+      deliverables: { eyebrow: 'NATURA 2030', title: 'Products ready to back a decision' },
       applications: { eyebrow: "Where it's applied", title: 'One engine, six different decisions about the coast' },
       about: { eyebrow: 'Who we are', title: 'Driven by Adaptation Latin America' },
       cta: { eyebrow: "Let's talk", title: 'Ready to turn scattered data into adaptation decisions?' },

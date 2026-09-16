@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
 import logotipoTealWhite from '../../assets/brand/logotipo-teal-white.png';
+import monitoringImg from '../../assets/landing/manglar-gopro-velocidad.jpg';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
@@ -91,6 +92,34 @@ let wordIndex = 0;
     </div>
   </section>
 
+  <section class="nd-section nd-deliver" id="natura2030">
+    <div class="nd-wrap">
+      <div class="nd-head">
+        <span class="nd-eyebrow">{c.sections.deliverables.eyebrow}</span>
+        <h2>{c.sections.deliverables.title}</h2>
+      </div>
+      <div class="nd-deliver-grid stagger">
+        {t.deliverables.items.map((item) => (
+          <div class="nd-deliver-card reveal">
+            <span class="tag">{item.tag}</span>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+      <div class="nd-monitor reveal">
+        <div class="nd-monitor-media">
+          <Image src={monitoringImg} alt={t.deliverables.monitoring.imageAlt} width={724} height={543} />
+        </div>
+        <div class="nd-monitor-text">
+          <span class="nd-eyebrow">{t.deliverables.monitoring.label}</span>
+          <h3>{t.deliverables.monitoring.title}</h3>
+          <p>{t.deliverables.monitoring.body}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="nd-section" id="proceso">
     <div class="nd-wrap">
       <div class="nd-head">
@@ -128,24 +157,6 @@ let wordIndex = 0;
         <div class="nd-marquee-track">
           {[...t.inputs.sources, ...t.inputs.sources].map((s) => <span>{s}</span>)}
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="nd-section nd-deliver">
-    <div class="nd-wrap">
-      <div class="nd-head">
-        <span class="nd-eyebrow">{c.sections.deliverables.eyebrow}</span>
-        <h2>{c.sections.deliverables.title}</h2>
-      </div>
-      <div class="nd-deliver-grid stagger">
-        {t.deliverables.items.map((item) => (
-          <div class="nd-deliver-card reveal">
-            <span class="tag">{item.tag}</span>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </div>
-        ))}
       </div>
     </div>
   </section>
@@ -314,14 +325,15 @@ let wordIndex = 0;
   .nd-marquee-track span { font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-softer); text-transform: uppercase; }
   @keyframes scrollLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-  .nd-deliver { background: var(--block-bg); }
-  .nd-deliver .nd-eyebrow { color: var(--yellow); }
-  .nd-deliver .nd-head h2 { color: var(--block-ink); }
   .nd-deliver-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
-  .nd-deliver-card { border: 1px solid color-mix(in srgb, var(--block-ink) 14%, transparent); border-radius: 18px; padding: 30px 26px; background: color-mix(in srgb, var(--block-ink) 4%, transparent); }
-  .nd-deliver-card .tag { display: inline-block; font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.1em; color: var(--block-bg); background: var(--teal); border-radius: 999px; padding: 5px 12px; margin-bottom: 16px; }
-  .nd-deliver-card h3 { color: var(--block-ink); font-size: 18px; margin-bottom: 10px; }
-  .nd-deliver-card p { color: color-mix(in srgb, var(--block-ink) 68%, transparent); font-size: 14px; }
+  .nd-deliver-card { border: 1px solid var(--border); border-radius: 18px; padding: 30px 26px; background: var(--surface); box-shadow: var(--card-shadow); }
+  .nd-deliver-card .tag { display: inline-block; font-family: 'Archivo',sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.1em; color: #0b1626; background: var(--teal); border-radius: 999px; padding: 5px 12px; margin-bottom: 16px; }
+  .nd-deliver-card h3 { font-size: 18px; margin-bottom: 10px; }
+  .nd-deliver-card p { color: var(--ink-soft); font-size: 14px; }
+  .nd-monitor { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; align-items: center; margin-top: 56px; }
+  .nd-monitor-media img { display: block; width: 100%; height: auto; border-radius: 18px; box-shadow: var(--card-shadow); }
+  .nd-monitor-text h3 { font-size: clamp(22px, 2.4vw, 28px); line-height: 1.2; margin: 14px 0 14px; }
+  .nd-monitor-text p { color: var(--ink-soft); font-size: 16px; max-width: 480px; }
 
   .nd-apps-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
   .nd-apptag { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 12px 20px 12px 14px; box-shadow: var(--card-shadow); transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
@@ -355,6 +367,7 @@ let wordIndex = 0;
   @media (max-width: 860px) {
     .nd-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .nd-deliver-grid { grid-template-columns: 1fr; }
+    .nd-monitor { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
     .nd-pipe { flex-direction: column; gap: 28px; }
     .nd-pipe-line { display: none; }
     .nd-about { grid-template-columns: 1fr; }
