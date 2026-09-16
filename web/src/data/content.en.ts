@@ -98,8 +98,8 @@ export const en: SiteContent = {
     ],
   },
   cta: {
-    initiatives: 'View initiatives',
-    models: 'View models',
+    initiatives: 'Explore initiatives',
+    models: 'Explore models',
   },
   footer: {
     email: 'algo@natura2030.com',

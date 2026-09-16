@@ -25,9 +25,9 @@ export interface V1Copy {
 export const v1Copy: Record<Locale, V1Copy> = {
   es: {
     hero: {
-      eyebrow: 'Adaptation Latin America · NATURA 2030',
-      headline: 'De los datos del {{océano}}\na las decisiones que protegen la {{costa}}',
-      lede: 'NATURA 2030 traduce modelos climáticos, mareas, oleaje y datos de campo en información clara para quienes cuidan el litoral latinoamericano',
+      eyebrow: 'Adaptation Latin America',
+      headline: 'Transformamos información ambiental en {{soluciones resilientes}} para la región',
+      lede: 'Integramos datos, tecnología y naturaleza para anticipar riesgos, orientar decisiones y responder a los desafíos climáticos.',
     },
     problem: {
       eyebrow: 'El reto',
@@ -46,9 +46,9 @@ export const v1Copy: Record<Locale, V1Copy> = {
   },
   en: {
     hero: {
-      eyebrow: 'Adaptation Latin America · NATURA 2030',
-      headline: 'From ocean {{data}}\nto decisions that protect the {{coast}}',
-      lede: 'NATURA 2030 turns climate models, tides, waves and field data into clear information for those who care for the Latin American coastline',
+      eyebrow: 'Adaptation Latin America',
+      headline: 'Transforming environmental information into {{resilient solutions}} for the region',
+      lede: 'We integrate data, technology, and nature to anticipate risks, inform decisions, and respond to climate challenges.',
     },
     problem: {
       eyebrow: 'The challenge',
