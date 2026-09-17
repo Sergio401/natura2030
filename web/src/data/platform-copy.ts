@@ -40,7 +40,6 @@ export interface PlatformCopy {
     applications: string;
     dataInputs: string;
     outputs: string;
-    demonstrationNote: string;
     collaborateTitle: string;
     collaborateBody: string;
     collaborateCta: string;
@@ -55,7 +54,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     meta: {
       title: 'Adaptation Latin America — Plataforma regional',
       description:
-        'Mapa demostrativo de iniciativas de información climática costera de Adaptation Latin America en América Latina',
+        'Mapa de iniciativas de información climática costera de Adaptation Latin America en América Latina',
     },
     header: {
       eyebrow: 'INTELIGENCIA CLIMÁTICA COSTERA',
@@ -65,9 +64,9 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       language: 'English',
     },
     map: {
-      ariaLabel: 'Mapa de iniciativas demostrativas de Adaptation Latin America',
-      locationCount: '08',
-      locationCountLabel: 'Ubicaciones demostrativas',
+      ariaLabel: 'Mapa de iniciativas de Adaptation Latin America',
+      locationCount: '01',
+      locationCountLabel: 'Ubicaciones registradas',
       legendTitle: 'Aplicaciones',
       satellite: 'Satélite',
       streets: 'Calles',
@@ -75,7 +74,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       loadError: 'El mapa no pudo cargarse. Revisa tu conexión e inténtalo de nuevo',
     },
     panel: {
-      demoLabel: 'Ubicación demostrativa',
+      demoLabel: 'Ubicación registrada',
       close: 'Cerrar detalle',
       category: 'Aplicación',
       status: 'Estado',
@@ -86,12 +85,11 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       applications: 'Aplicaciones',
       dataInputs: 'Datos integrados',
       outputs: 'Resultados propuestos',
-      demonstrationNote:
-        'Este caso es ilustrativo. Su ubicación y alcance se utilizan para mostrar cómo funcionará la plataforma con proyectos reales',
       collaborateTitle: '¿Te interesa colaborar?',
       collaborateBody: 'Buscamos aliados técnicos y financieros para implementar este proyecto',
       collaborateCta: 'Conversemos sobre este proyecto',
-      heroAlt: 'Imagen ilustrativa del monitoreo ambiental de Adaptation Latin America',
+      heroAlt:
+        'Monitoreo de corrientes en un canal de manglar en Nayarit mediante una cámara GoPro y visualización de campos de velocidad',
     },
     categories: {
       'coastal-adaptation': 'Adaptación costera',
@@ -105,11 +103,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
         'Planificación de sectores costeros',
         'Alertas y monitoreo climático',
       ],
-      'ecosystem-restoration': [
-        'Restauración de humedales',
-        'Gestión costera y adaptación climática',
-        'Monitoreo de ecosistemas',
-      ],
+      'ecosystem-restoration': ['Restauración de ecosistemas', 'Monitoreo ambiental'],
       infrastructure: [
         'Resiliencia de infraestructura estratégica',
         'Planificación territorial',
@@ -126,7 +120,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     meta: {
       title: 'Adaptation Latin America — Regional platform',
       description:
-        'Demonstration map of Adaptation Latin America coastal climate information initiatives across Latin America',
+        'Map of Adaptation Latin America coastal climate information initiatives across Latin America',
     },
     header: {
       eyebrow: 'COASTAL CLIMATE INTELLIGENCE',
@@ -136,9 +130,9 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       language: 'Español',
     },
     map: {
-      ariaLabel: 'Map of Adaptation Latin America demonstration initiatives',
-      locationCount: '08',
-      locationCountLabel: 'Demonstration locations',
+      ariaLabel: 'Map of Adaptation Latin America initiatives',
+      locationCount: '01',
+      locationCountLabel: 'Registered locations',
       legendTitle: 'Applications',
       satellite: 'Satellite',
       streets: 'Streets',
@@ -146,7 +140,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       loadError: 'The map could not load. Check your connection and try again',
     },
     panel: {
-      demoLabel: 'Demonstration location',
+      demoLabel: 'Registered location',
       close: 'Close details',
       category: 'Application',
       status: 'Status',
@@ -157,12 +151,11 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       applications: 'Applications',
       dataInputs: 'Integrated data',
       outputs: 'Proposed outcomes',
-      demonstrationNote:
-        'This is an illustrative case. Its location and scope are used to demonstrate how the platform will work with real projects',
       collaborateTitle: 'Interested in collaborating?',
       collaborateBody: "We're looking for technical and financial partners to implement this project",
       collaborateCta: "Let's talk about this project",
-      heroAlt: 'Illustrative image of Adaptation Latin America environmental monitoring',
+      heroAlt:
+        'Monitoring currents in a mangrove channel in Nayarit using a GoPro camera and velocity field visualization',
     },
     categories: {
       'coastal-adaptation': 'Coastal adaptation',
@@ -176,11 +169,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
         'Coastal district planning',
         'Climate alerts and monitoring',
       ],
-      'ecosystem-restoration': [
-        'Wetland restoration',
-        'Coastal management and climate adaptation',
-        'Ecosystem monitoring',
-      ],
+      'ecosystem-restoration': ['Ecosystem restoration', 'Environmental monitoring'],
       infrastructure: [
         'Resilience of strategic infrastructure',
         'Territorial planning',
