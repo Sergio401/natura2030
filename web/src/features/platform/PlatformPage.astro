@@ -83,9 +83,7 @@ const siteHref = locale === 'es' ? '/' : '/en/';
   </section>
 
   <aside class="platform-panel" data-location-panel aria-hidden="true" aria-labelledby="location-title" inert>
-    <div class="platform-panel-bar">
-      <button type="button" data-panel-close aria-label={copy.panel.close}>×</button>
-    </div>
+    <button type="button" class="platform-panel-close" data-panel-close aria-label={copy.panel.close}>×</button>
     <div class="platform-panel-body">
       <div class="platform-hero">
         <Image src={panelHeroImg} alt={copy.panel.heroAlt} width={640} height={480} />
