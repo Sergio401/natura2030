@@ -29,7 +29,6 @@ export interface PlatformCopy {
     loadError: string;
   };
   panel: {
-    demoLabel: string;
     close: string;
     category: string;
     status: string;
@@ -46,7 +45,6 @@ export interface PlatformCopy {
     heroAlt: string;
   };
   categories: Record<LocationCategory, string>;
-  applicationsByCategory: Record<LocationCategory, string[]>;
 }
 
 export const platformCopy: Record<Locale, PlatformCopy> = {
@@ -65,7 +63,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     },
     map: {
       ariaLabel: 'Mapa de iniciativas de Adaptation Latin America',
-      locationCount: '01',
+      locationCount: '02',
       locationCountLabel: 'Ubicaciones registradas',
       legendTitle: 'Aplicaciones',
       satellite: 'Satélite',
@@ -74,7 +72,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       loadError: 'El mapa no pudo cargarse. Revisa tu conexión e inténtalo de nuevo',
     },
     panel: {
-      demoLabel: 'Ubicación registrada',
       close: 'Cerrar detalle',
       category: 'Aplicación',
       status: 'Estado',
@@ -97,24 +94,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       infrastructure: 'Infraestructura',
       'risk-management': 'Gestión del riesgo',
     },
-    applicationsByCategory: {
-      'coastal-adaptation': [
-        'Adaptación de infraestructura costera',
-        'Planificación de sectores costeros',
-        'Alertas y monitoreo climático',
-      ],
-      'ecosystem-restoration': ['Restauración de ecosistemas', 'Monitoreo ambiental'],
-      infrastructure: [
-        'Resiliencia de infraestructura estratégica',
-        'Planificación territorial',
-        'Inversión y seguros',
-      ],
-      'risk-management': [
-        'Gestión del riesgo costero',
-        'Planeación ante eventos extremos',
-        'Alertas tempranas',
-      ],
-    },
   },
   en: {
     meta: {
@@ -131,7 +110,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     },
     map: {
       ariaLabel: 'Map of Adaptation Latin America initiatives',
-      locationCount: '01',
+      locationCount: '02',
       locationCountLabel: 'Registered locations',
       legendTitle: 'Applications',
       satellite: 'Satellite',
@@ -140,7 +119,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       loadError: 'The map could not load. Check your connection and try again',
     },
     panel: {
-      demoLabel: 'Registered location',
       close: 'Close details',
       category: 'Application',
       status: 'Status',
@@ -162,24 +140,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       'ecosystem-restoration': 'Ecosystem restoration',
       infrastructure: 'Infrastructure',
       'risk-management': 'Risk management',
-    },
-    applicationsByCategory: {
-      'coastal-adaptation': [
-        'Coastal infrastructure adaptation',
-        'Coastal district planning',
-        'Climate alerts and monitoring',
-      ],
-      'ecosystem-restoration': ['Ecosystem restoration', 'Environmental monitoring'],
-      infrastructure: [
-        'Resilience of strategic infrastructure',
-        'Territorial planning',
-        'Investment and insurance',
-      ],
-      'risk-management': [
-        'Coastal risk management',
-        'Planning for extreme events',
-        'Early warning systems',
-      ],
     },
   },
 };

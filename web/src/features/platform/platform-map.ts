@@ -218,10 +218,7 @@ export function initPlatformMap(root: HTMLElement): void {
       }
     }
 
-    fillList(
-      panel.querySelector<HTMLElement>('[data-location-applications]'),
-      copy.applicationsByCategory[location.category],
-    );
+    fillList(panel.querySelector<HTMLElement>('[data-location-applications]'), details.applications);
     fillIconList(panel.querySelector<HTMLElement>('[data-location-inputs]'), details.dataInputs, DATA_INPUT_ICONS);
     fillIconList(panel.querySelector<HTMLElement>('[data-location-outputs]'), details.outputs, OUTPUT_ICONS);
 
