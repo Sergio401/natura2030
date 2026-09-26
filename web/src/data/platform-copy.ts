@@ -17,6 +17,7 @@ export interface PlatformCopy {
     status: string;
     back: string;
     language: string;
+    models: string;
   };
   map: {
     ariaLabel: string;
@@ -60,6 +61,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       status: 'Plataforma activa',
       back: 'Volver al sitio',
       language: 'English',
+      models: 'Ver modelos',
     },
     map: {
       ariaLabel: 'Mapa de iniciativas de Adaptation Latin America',
@@ -107,6 +109,7 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       status: 'Platform active',
       back: 'Back to site',
       language: 'Español',
+      models: 'View models',
     },
     map: {
       ariaLabel: 'Map of Adaptation Latin America initiatives',

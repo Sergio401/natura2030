@@ -121,7 +121,8 @@ html[data-theme='dark'] .models-shell {
   background: color-mix(in srgb, var(--models-teal) 8%, transparent);
 }
 
-.models-site-link {
+.models-site-link,
+.models-map-link {
   border: 1px solid var(--models-border);
 }
 
@@ -876,7 +877,8 @@ html[data-theme='dark'] .models-shell {
     min-height: 58px;
     padding: 10px 12px;
   }
-  .models-site-link { display: none !important; }
+  .models-site-link,
+  .models-map-link { display: none !important; }
   .models-header-tools { gap: 2px; }
   .models-header-tools > a { padding-inline: 8px; }
   .models-hero,

@@ -53,7 +53,8 @@ html[data-theme='dark'] .platform-shell {
 
 .platform-brand,
 .platform-back,
-.platform-language {
+.platform-language,
+.platform-models-link {
   color: var(--ink);
   text-decoration: none;
 }
@@ -119,7 +120,8 @@ html[data-theme='dark'] .platform-shell {
 
 .platform-status,
 .platform-language,
-.platform-back {
+.platform-back,
+.platform-models-link {
   font-family: 'Archivo', Arial, sans-serif;
   font-size: 10px;
   font-weight: 700;
@@ -144,19 +146,22 @@ html[data-theme='dark'] .platform-shell {
 }
 
 .platform-language,
-.platform-back {
+.platform-back,
+.platform-models-link {
   padding: 10px 12px;
   border-radius: 999px;
   transition: color 180ms ease, background 180ms ease;
 }
 
 .platform-language:hover,
-.platform-back:hover {
+.platform-back:hover,
+.platform-models-link:hover {
   color: var(--teal);
   background: color-mix(in srgb, var(--teal) 8%, transparent);
 }
 
-.platform-back {
+.platform-back,
+.platform-models-link {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -870,7 +875,8 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   }
 
   .platform-brand-copy small,
-  .platform-back {
+  .platform-back,
+  .platform-models-link {
     display: none;
   }
 

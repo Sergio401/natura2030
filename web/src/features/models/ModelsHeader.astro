@@ -17,6 +17,7 @@ const t = getContent(locale);
 const spanishHref = page === 'catalog' ? '/models/' : '/models/two-sided-channel/';
 const englishHref = page === 'catalog' ? '/models/en/' : '/models/en/two-sided-channel/';
 const siteHref = locale === 'es' ? '/' : '/en/';
+const mapHref = locale === 'es' ? '/platform/' : '/platform/en/';
 ---
 
 <header class="models-header">
@@ -36,6 +37,7 @@ const siteHref = locale === 'es' ? '/' : '/en/';
       labelToLight={t.ui.themeToggleToLight}
       labelToDark={t.ui.themeToggleToDark}
     />
+    <a href={mapHref} class="models-map-link">{copy.header.map}</a>
     <a href={siteHref} class="models-site-link">{copy.header.site}</a>
   </nav>
 </header>

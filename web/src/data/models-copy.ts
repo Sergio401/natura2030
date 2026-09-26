@@ -10,6 +10,7 @@ export interface ModelsCopy {
   header: {
     catalog: string;
     site: string;
+    map: string;
   };
   catalog: {
     status: string;
@@ -67,6 +68,7 @@ export const modelsCopy: Record<Locale, ModelsCopy> = {
     header: {
       catalog: 'Laboratorio de modelos',
       site: 'Volver al sitio',
+      map: 'Ver el mapa',
     },
     catalog: {
       status: 'Laboratorio activo',
@@ -122,6 +124,7 @@ export const modelsCopy: Record<Locale, ModelsCopy> = {
     header: {
       catalog: 'Model laboratory',
       site: 'Back to site',
+      map: 'View the map',
     },
     catalog: {
       status: 'Laboratory active',

@@ -18,6 +18,7 @@ const { locale } = Astro.props;
 const copy = platformCopy[locale];
 const languageHref = locale === 'es' ? '/platform/en/' : '/platform/';
 const siteHref = locale === 'es' ? '/' : '/en/';
+const modelsHref = locale === 'es' ? '/models/' : '/models/en/';
 ---
 
 <main class="platform-shell" id="main" data-platform-root data-locale={locale}>
@@ -42,6 +43,7 @@ const siteHref = locale === 'es' ? '/' : '/en/';
         labelToLight={locale === 'es' ? 'Cambiar a modo claro' : 'Switch to light mode'}
         labelToDark={locale === 'es' ? 'Cambiar a modo oscuro' : 'Switch to dark mode'}
       />
+      <a class="platform-models-link" href={modelsHref}>{copy.header.models}</a>
       <a class="platform-back" href={siteHref}><span aria-hidden="true">←</span>{copy.header.back}</a>
     </div>
   </header>

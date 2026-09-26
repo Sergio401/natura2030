@@ -31,6 +31,9 @@ let wordIndex = 0;
       <span class="word">{t.meta.orgName.toUpperCase()}</span>
     </div>
     <div class="nd-nav-tools">
+      <div class="nd-nav-contact">
+        <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
+      </div>
       <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
       <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
@@ -66,6 +69,10 @@ let wordIndex = 0;
         <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
         <a href={modelsHref} class="nd-btn nd-btn-primary magnetic">{t.cta.models}</a>
       </div>
+      <div class="nd-hero-contact">
+        <span class="nd-hero-contact-label">{c.hero.contactLabel}</span>
+        <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
+      </div>
       <div class="nd-hero-mark"><Image src={isotipoColor} alt="" width={108} height={108} /></div>
       <div class="nd-scrollcue" aria-hidden="true"><span></span></div>
     </div>
@@ -86,7 +93,12 @@ let wordIndex = 0;
       <h2>{c.problem.title}</h2>
       <p>{c.problem.body}</p>
       <div class="nd-chiprow">
-        {c.problem.chips.map((chip) => <span class="nd-chip">{chip}</span>)}
+        {c.problem.chips.map((chip) => (
+          <span class="nd-chip-wrap">
+            <button type="button" class="nd-chip">{chip.label}</button>
+            <span class="nd-chip-pop" role="tooltip">{chip.description}</span>
+          </span>
+        ))}
       </div>
     </div>
   </section>
@@ -236,6 +248,7 @@ let wordIndex = 0;
   .nd-brand .word { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; font-size: 15px; line-height: 1.15; }
   .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
   .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
+  .nd-nav-contact { display: flex; align-items: center; padding-right: 12px; border-right: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
   .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
     display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
     transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
@@ -259,6 +272,8 @@ let wordIndex = 0;
   @keyframes riseWord { to { opacity: 1; transform: translateY(0); } }
   .nd-hero p.lede { max-width: 640px; margin: 0 auto; font-size: 18px; color: var(--ink-soft); }
   .nd-hero-cta { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 38px; flex-wrap: wrap; }
+  .nd-hero-contact { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .nd-hero-contact-label { font-size: 14px; color: var(--ink-soft); }
   .nd-hero-mark { display: flex; justify-content: center; margin-top: 72px; }
   .nd-hero-mark img { animation: breathe 6s ease-in-out infinite; filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--ink) 18%, transparent)); }
   @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
@@ -286,7 +301,28 @@ let wordIndex = 0;
   .nd-problem h2 { color: var(--block-ink); font-size: clamp(28px,3.6vw,42px); margin: 16px auto 22px; max-width: 760px; line-height: 1.16; }
   .nd-problem p { max-width: 620px; margin: 0 auto; color: color-mix(in srgb, var(--block-ink) 75%, transparent); font-size: 17px; }
   .nd-chiprow { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
-  .nd-chip { border: 1px solid color-mix(in srgb, var(--block-ink) 22%, transparent); color: var(--block-ink); font-size: 13px; font-weight: 700; border-radius: 999px; padding: 9px 18px; }
+  .nd-chip-wrap { position: relative; display: inline-flex; }
+  .nd-chip {
+    appearance: none; background: transparent; font-family: inherit;
+    border: 1px solid color-mix(in srgb, var(--block-ink) 22%, transparent); color: var(--block-ink);
+    font-size: 13px; font-weight: 700; border-radius: 999px; padding: 9px 18px; cursor: help;
+    transition: border-color .25s ease, color .25s ease;
+  }
+  .nd-chip:hover, .nd-chip:focus-visible { border-color: var(--teal); color: var(--teal); outline: none; }
+  .nd-chip-pop {
+    position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translate(-50%, 4px);
+    width: min(240px, 80vw); background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px 14px; font-size: 12.5px; font-weight: 500; line-height: 1.5; text-align: left;
+    box-shadow: var(--card-shadow); opacity: 0; pointer-events: none; z-index: 5;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  .nd-chip-pop::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: var(--surface);
+  }
+  .nd-chip-wrap:hover .nd-chip-pop, .nd-chip-wrap:focus-within .nd-chip-pop {
+    opacity: 1; transform: translate(-50%, 0); pointer-events: auto;
+  }
 
   .nd-section { padding: 112px 48px; }
   .nd-section[id] { scroll-margin-top: 88px; }
@@ -376,6 +412,7 @@ let wordIndex = 0;
     .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }
     .nd-nav { padding: 14px 16px; }
     .nd-nav-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .nd-nav-contact { border-right: none; padding-right: 0; order: 10; width: 100%; justify-content: flex-end; }
     .nd-btn { padding: 11px 18px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {
