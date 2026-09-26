@@ -20,6 +20,7 @@ export interface V1Copy {
     about: { eyebrow: string; title: string };
     cta: { eyebrow: string; title: string };
   };
+  rail: { label: string; backToTop: string; otherLanguage: string };
 }
 
 export const v1Copy: Record<Locale, V1Copy> = {
@@ -60,6 +61,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
       about: { eyebrow: 'Quiénes somos', title: 'Impulsados por Adaptation Latin America' },
       cta: { eyebrow: 'Hablemos', title: '¿Listo para llevar datos dispersos a decisiones de adaptación?' },
     },
+    rail: { label: 'Navegación rápida', backToTop: 'Volver al inicio', otherLanguage: 'English' },
   },
   en: {
     hero: {
@@ -98,5 +100,6 @@ export const v1Copy: Record<Locale, V1Copy> = {
       about: { eyebrow: 'Who we are', title: 'Driven by Adaptation Latin America' },
       cta: { eyebrow: "Let's talk", title: 'Ready to turn scattered data into adaptation decisions?' },
     },
+    rail: { label: 'Quick navigation', backToTop: 'Back to top', otherLanguage: 'Español' },
   },
 };
