@@ -31,20 +31,26 @@ let wordIndex = 0;
       <Image src={isotipoColor} alt="Adaptation Latin America" width={34} height={34} />
       <span class="word">{t.meta.orgName.toUpperCase()}</span>
     </div>
-    <div class="nd-nav-tools">
-      <div class="nd-nav-contact">
-        <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
+    <button type="button" class="nd-nav-toggle" aria-expanded="false" aria-controls="nd-nav-drawer" data-nav-toggle>
+      <span>{c.nav.menu}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="nd-nav-drawer" id="nd-nav-drawer">
+      <div class="nd-nav-tools">
+        <div class="nd-nav-contact">
+          <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
+        </div>
+        <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
+        <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
+        <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
+        <a href={modelsHref} class="nd-btn nd-btn-primary">{t.cta.models}</a>
       </div>
-      <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
-      <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
-      <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
-      <a href={modelsHref} class="nd-btn nd-btn-primary">{t.cta.models}</a>
     </div>
   </header>
 
   <aside class="nd-rail" data-nd-rail aria-label={c.rail.label} inert>
     <a href="#main" class="nd-rail-item nd-rail-brand" style="--i:0" aria-label={c.rail.backToTop}>
-      <Image src={isotipoColor} alt="" width={36} height={36} />
+      <Image src={isotipoColor} alt="" width={28} height={28} />
       <span class="nd-rail-tip" aria-hidden="true">{c.rail.backToTop}</span>
     </a>
     <span class="nd-rail-sep" aria-hidden="true"></span>
@@ -277,30 +283,43 @@ let wordIndex = 0;
   .nd-nav { transition: background .3s ease, backdrop-filter .3s ease, transform .5s cubic-bezier(.16,1,.3,1), opacity .35s ease; }
 
   /* Rail lateral: reemplaza al top bar cuando el hero sale de pantalla (solo escritorio). */
-  .nd-rail { position: fixed; right: 20px; top: 50%; z-index: 45; display: none; flex-direction: column; align-items: center; gap: 10px;
-    padding: 12px 10px; background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); border-radius: 999px;
-    box-shadow: 0 18px 44px color-mix(in srgb, var(--ink) 16%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    transform: translate(calc(100% + 32px), -50%); opacity: 0; pointer-events: none;
+  .nd-rail { position: fixed; right: 14px; top: 50%; z-index: 45; display: none; flex-direction: column; align-items: center; gap: 4px;
+    padding: 8px 5px; background: color-mix(in srgb, var(--surface) 38%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent); border-radius: 999px;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 7%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transform: translate(calc(100% + 24px), -50%); opacity: 0; pointer-events: none;
     transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .35s ease; }
   .nd-rail-item { position: relative; display: flex; align-items: center; justify-content: center;
-    opacity: 0; transform: translateX(14px); transition: opacity .3s ease, transform .45s cubic-bezier(.16,1,.3,1); }
-  .theme-v1.is-rail .nd-rail { transform: translate(0, -50%); opacity: 1; pointer-events: auto; }
+    opacity: 0; transform: translateX(10px); transition: opacity .3s ease, transform .45s cubic-bezier(.16,1,.3,1); }
+  .theme-v1.is-rail .nd-rail { transform: translate(0, -50%); opacity: .7; pointer-events: auto; }
+  .theme-v1.is-rail .nd-rail:hover, .theme-v1.is-rail .nd-rail:focus-within { opacity: 1; }
   .theme-v1.is-rail .nd-rail-item { opacity: 1; transform: none; transition-delay: calc(.12s + var(--i) * .05s); }
+  .nd-rail-brand { padding: 2px; }
   .nd-rail-brand img { display: block; border-radius: 50%; }
-  .nd-rail-sep { width: 22px; height: 1px; background: var(--border); }
-  .nd-rail-btn { width: 40px; height: 40px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
-    border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); background: transparent; color: var(--ink); cursor: pointer; padding: 0;
-    font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 12.5px; text-decoration: none;
-    transition: border-color .2s ease, background .2s ease, transform .2s ease; }
-  .nd-rail-btn:hover { border-color: var(--ink); transform: scale(1.06); }
-  .nd-rail-btn.is-primary { background: var(--teal); border-color: var(--teal); color: #0b1626; }
-  .theme-v1 .nd-rail a.nd-rail-btn, .theme-v1 .nd-rail a.nd-rail-btn:hover { color: var(--ink); }
-  .theme-v1 .nd-rail a.nd-rail-btn.is-primary { color: #0b1626; }
-  .nd-rail-btn svg { width: 18px; height: 18px; }
+  .nd-rail-sep { width: 14px; height: 1px; margin: 2px 0; background: color-mix(in srgb, var(--ink) 10%, transparent); }
+  .nd-rail-btn { width: 32px; height: 32px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: color-mix(in srgb, var(--ink) 72%, transparent); cursor: pointer; padding: 0;
+    font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 11px; letter-spacing: .04em; text-decoration: none;
+    transition: background .2s ease, color .2s ease; }
+  .nd-rail-btn:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+  .theme-v1 .nd-rail a.nd-rail-btn { color: color-mix(in srgb, var(--ink) 72%, transparent); }
+  .theme-v1 .nd-rail a.nd-rail-btn:hover, .nd-rail-btn:hover { color: var(--ink); }
+  .theme-v1 .nd-rail a.nd-rail-btn.is-primary { color: var(--teal); }
+  .nd-rail-btn svg { width: 16px; height: 16px; }
   .nd-rail-btn .icon-check, .nd-rail-btn.copied .icon-copy { display: none; }
-  .nd-rail-btn.copied .icon-check { display: block; }
-  .nd-rail-theme :global(.natura-theme-toggle) { width: 40px; height: 40px; opacity: 1; border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
-  .nd-rail-tip { position: absolute; right: calc(100% + 16px); top: 50%; transform: translate(6px, -50%); white-space: nowrap; pointer-events: none;
+  .nd-rail-btn.copied .icon-check { display: block; color: var(--teal); }
+  .nd-rail-theme :global(.natura-theme-toggle) { width: 32px; height: 32px; border: none; opacity: .72; }
+  .nd-rail-theme :global(.natura-theme-toggle:hover) { opacity: 1; background: color-mix(in srgb, var(--ink) 8%, transparent); }
+  .nd-rail-theme :global(.natura-theme-toggle svg) { width: 16px; height: 16px; }
+  /* Sobre paneles oscuros (--block-bg) el rail cambia a tinta clara. */
+  .nd-rail.on-dark { background: color-mix(in srgb, var(--block-ink) 8%, transparent); border-color: color-mix(in srgb, var(--block-ink) 14%, transparent);
+    box-shadow: none; }
+  .nd-rail.on-dark .nd-rail-btn, .theme-v1 .nd-rail.on-dark a.nd-rail-btn { color: color-mix(in srgb, var(--block-ink) 75%, transparent); }
+  .nd-rail.on-dark .nd-rail-btn:hover, .theme-v1 .nd-rail.on-dark a.nd-rail-btn:hover { color: var(--block-ink); background: color-mix(in srgb, var(--block-ink) 12%, transparent); }
+  .theme-v1 .nd-rail.on-dark a.nd-rail-btn.is-primary { color: var(--teal); }
+  .nd-rail.on-dark .nd-rail-sep { background: color-mix(in srgb, var(--block-ink) 16%, transparent); }
+  .nd-rail.on-dark .nd-rail-theme :global(.natura-theme-toggle) { color: var(--block-ink); }
+  .nd-rail { transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .35s ease, background .3s ease, border-color .3s ease; }
+  .nd-rail-tip { position: absolute; right: calc(100% + 14px); top: 50%; transform: translate(6px, -50%); white-space: nowrap; pointer-events: none;
     background: var(--surface); color: var(--ink); border: 1px solid var(--border); box-shadow: 0 8px 22px color-mix(in srgb, var(--ink) 18%, transparent); font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0; padding: 6px 10px; border-radius: 8px;
     opacity: 0; transition: opacity .2s ease, transform .2s ease; }
   .nd-rail-item:hover .nd-rail-tip, .nd-rail-item:focus-within .nd-rail-tip, .nd-rail-item:focus-visible .nd-rail-tip, .nd-rail-btn.copied .nd-rail-tip { opacity: 1; transform: translate(0, -50%); }
@@ -313,6 +332,8 @@ let wordIndex = 0;
   .nd-brand .word { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; font-size: 15px; line-height: 1.15; }
   .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
   .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
+  .nd-nav-drawer { display: contents; }
+  .nd-nav-toggle { display: none; }
   .nd-nav-contact { display: flex; align-items: center; padding-right: 12px; border-right: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
   .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
     display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
@@ -484,9 +505,23 @@ let wordIndex = 0;
     .nd-about { grid-template-columns: 1fr; }
     .nd-cta-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }
-    .nd-nav { padding: 14px 16px; }
-    .nd-nav-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-    .nd-nav-contact { border-right: none; padding-right: 0; order: 10; width: 100%; justify-content: flex-end; }
+    /* Móvil: el top bar se pliega como acordeón (logo + botón Menú). */
+    .nd-nav { padding: 14px 16px; flex-wrap: wrap; }
+    .nd-nav.is-open { background: color-mix(in srgb, var(--bg) 96%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 1px 0 var(--border); }
+    .nd-brand { flex: 1; min-width: 0; }
+    .nd-brand .word { font-size: 13px; }
+    .nd-nav-toggle { flex: none; margin-left: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; cursor: pointer;
+      border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); background: transparent; color: var(--ink);
+      font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 13px; }
+    .nd-nav-toggle svg { width: 16px; height: 16px; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+    .nd-nav.is-open .nd-nav-toggle svg { transform: rotate(180deg); }
+    .nd-nav-drawer { display: grid; grid-template-rows: 0fr; width: 100%; transition: grid-template-rows .4s cubic-bezier(.16,1,.3,1); }
+    .nd-nav.is-open .nd-nav-drawer { grid-template-rows: 1fr; }
+    .nd-nav-tools { min-height: 0; overflow: hidden; flex-wrap: wrap; justify-content: flex-start; gap: 12px; visibility: hidden; transition: visibility 0s linear .4s; }
+    .nd-nav.is-open .nd-nav-tools { visibility: visible; transition-delay: 0s; }
+    .nd-nav-contact { border-right: none; padding-right: 0; width: 100%; justify-content: flex-start; margin-top: 16px; }
+    .nd-nav-tools :global(.natura-lang) { flex: 1 1 calc(100% - 50px); }
+    .nd-nav-tools .nd-btn { flex: 1 1 calc(50% - 6px); justify-content: center; margin-bottom: 4px; }
     .nd-btn { padding: 11px 18px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -500,6 +535,14 @@ let wordIndex = 0;
   import { initCommonInteractions } from '../../scripts/common-interactions';
   const page = document.getElementById('main');
   if (page) initCommonInteractions(page);
+
+  // Móvil: acordeón del top bar.
+  const navToggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  navToggle?.addEventListener('click', () => {
+    const open = navToggle.getAttribute('aria-expanded') !== 'true';
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.closest('.nd-nav')?.classList.toggle('is-open', open);
+  });
 
   // Top bar ↔ rail lateral: mientras el hero está en pantalla se muestra el top bar;
   // al salir, el top bar se esconde y entra el rail (en móvil el CSS nunca muestra el rail).
@@ -520,6 +563,23 @@ let wordIndex = 0;
       apply();
     }, { rootMargin: '-120px 0px 0px 0px' }).observe(hero);
     desktop.addEventListener('change', apply);
+
+    // El rail cambia de tinta según el panel que tiene debajo (claro u oscuro).
+    const darkBlocks = Array.from(page.querySelectorAll<HTMLElement>('.nd-problem, .nd-process, .nd-people, .nd-footer'));
+    let ticking = false;
+    const updateTone = () => {
+      ticking = false;
+      if (!page.classList.contains('is-rail')) return;
+      const y = window.innerHeight / 2;
+      rail.classList.toggle('on-dark', darkBlocks.some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= y && r.bottom >= y;
+      }));
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(updateTone); }
+    }, { passive: true });
+    updateTone();
   }
 
   document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
