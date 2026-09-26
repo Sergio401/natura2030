@@ -37,11 +37,18 @@ let wordIndex = 0;
     </button>
     <div class="nd-nav-drawer" id="nd-nav-drawer">
       <div class="nd-nav-tools">
-        <div class="nd-nav-contact">
+        <div class="nd-nav-row nd-nav-contact">
+          <span class="nd-nav-label" aria-hidden="true">{c.nav.email}</span>
           <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
         </div>
-        <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
-        <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
+        <div class="nd-nav-row">
+          <span class="nd-nav-label" aria-hidden="true">{c.nav.language}</span>
+          <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
+        </div>
+        <div class="nd-nav-row">
+          <span class="nd-nav-label" aria-hidden="true">{c.nav.theme}</span>
+          <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
+        </div>
         <a href={platformHref} class="nd-btn nd-btn-ghost">{t.cta.initiatives}</a>
         <a href={modelsHref} class="nd-btn nd-btn-primary">{t.cta.models}</a>
       </div>
@@ -333,6 +340,8 @@ let wordIndex = 0;
   .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
   .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
   .nd-nav-drawer { display: contents; }
+  .nd-nav-row { display: contents; }
+  .nd-nav-label { display: none; }
   .nd-nav-toggle { display: none; }
   .nd-nav-contact { display: flex; align-items: center; padding-right: 12px; border-right: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
   .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
@@ -517,11 +526,16 @@ let wordIndex = 0;
     .nd-nav.is-open .nd-nav-toggle svg { transform: rotate(180deg); }
     .nd-nav-drawer { display: grid; grid-template-rows: 0fr; width: 100%; transition: grid-template-rows .4s cubic-bezier(.16,1,.3,1); }
     .nd-nav.is-open .nd-nav-drawer { grid-template-rows: 1fr; }
-    .nd-nav-tools { min-height: 0; overflow: hidden; flex-wrap: wrap; justify-content: flex-start; gap: 12px; visibility: hidden; transition: visibility 0s linear .4s; }
+    .nd-nav-tools { min-height: 0; overflow: hidden; flex-direction: column; align-items: stretch; gap: 0; visibility: hidden; transition: visibility 0s linear .4s; }
     .nd-nav.is-open .nd-nav-tools { visibility: visible; transition-delay: 0s; }
-    .nd-nav-contact { border-right: none; padding-right: 0; width: 100%; justify-content: flex-start; margin-top: 16px; }
-    .nd-nav-tools :global(.natura-lang) { flex: 1 1 calc(100% - 50px); }
-    .nd-nav-tools .nd-btn { flex: 1 1 calc(50% - 6px); justify-content: center; margin-bottom: 4px; }
+    .nd-nav-tools .nd-btn { justify-content: center; margin-top: 10px; }
+    .nd-nav-tools .nd-btn-primary { order: -2; margin-top: 18px; }
+    .nd-nav-tools .nd-btn-ghost { order: -1; margin-bottom: 14px; }
+    .nd-nav-row, .nd-nav-contact { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px;
+      padding: 0 4px; border-right: none; border-top: 1px solid var(--border); }
+    .nd-nav-row:last-child { margin-bottom: 4px; }
+    .nd-nav-label { display: block; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+    .nd-nav-row :global(.natura-theme-toggle) { width: 34px; height: 34px; }
     .nd-btn { padding: 11px 18px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {
