@@ -33,10 +33,7 @@ let wordIndex = 0;
     </div>
     <div class="nd-nav-tools">
       <div class="nd-nav-contact">
-        <a class="nd-nav-mail" href={`mailto:${t.footer.email}`}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-          <span>{t.footer.email}</span>
-        </a>
+        <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
       </div>
       <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
@@ -249,8 +246,6 @@ let wordIndex = 0;
   .nd-brand .word { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; font-size: 15px; line-height: 1.15; }
   .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
   .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
-  .nd-nav-mail { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
-  .nd-nav-mail svg { width: 16px; height: 16px; flex: none; }
   .nd-nav-contact { display: flex; align-items: center; padding-right: 12px; border-right: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
   .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
     display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
