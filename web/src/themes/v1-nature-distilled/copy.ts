@@ -16,7 +16,7 @@ export interface V1Copy {
   sections: {
     inputs: { eyebrow: string; title: string };
     deliverables: { eyebrow: string; title: string };
-    collaborators: { eyebrow: string; title: string };
+    collaborators: { title: string; subtitle: string };
     about: { eyebrow: string; title: string };
     cta: { eyebrow: string; title: string };
   };
@@ -52,7 +52,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
     sections: {
       inputs: { eyebrow: 'Qué integra la plataforma', title: 'Cuatro tipos de datos, una sola lectura del territorio' },
       deliverables: { eyebrow: 'NATURA 2030', title: 'Productos listos para respaldar una decisión' },
-      collaborators: { eyebrow: 'Colaboradores', title: 'Nuestros colaboradores y aliados, pasados y actuales' },
+      collaborators: { title: 'Colaboradores', subtitle: 'Nuestros colaboradores y aliados, pasados y actuales' },
       about: { eyebrow: 'Quiénes somos', title: 'Impulsados por Adaptation Latin America' },
       cta: { eyebrow: 'Hablemos', title: '¿Listo para llevar datos dispersos a decisiones de adaptación?' },
     },
@@ -86,7 +86,7 @@ export const v1Copy: Record<Locale, V1Copy> = {
     sections: {
       inputs: { eyebrow: 'What the platform integrates', title: 'Four types of data, one single reading of the territory' },
       deliverables: { eyebrow: 'NATURA 2030', title: 'Products ready to back a decision' },
-      collaborators: { eyebrow: 'Collaborators', title: 'Our past and current collaborators and supporters' },
+      collaborators: { title: 'Collaborators', subtitle: 'Our past and current collaborators and supporters' },
       about: { eyebrow: 'Who we are', title: 'Driven by Adaptation Latin America' },
       cta: { eyebrow: "Let's talk", title: 'Ready to turn scattered data into adaptation decisions?' },
     },
