@@ -53,6 +53,9 @@ export const es: SiteContent = {
       imageAlt: 'Cámara GoPro instalada en un manglar registrando la velocidad de la corriente en un canal',
     },
   },
+  collaborators: {
+    body: 'Trabajamos junto a organismos internacionales de desarrollo, universidades y programas de conservación costera. Cada alianza suma ciencia, datos de campo y conocimiento local para que las soluciones de adaptación lleguen al territorio.',
+  },
   about: {
     body: 'ALA es una organización sin fines de lucro que trabaja por una relación más sostenible con el agua y la naturaleza en América Latina, promoviendo una colaboración eficiente entre gobiernos, sector privado, ONG y comunidades locales',
     pillars: ['Agua', 'Clima', 'Naturaleza'],

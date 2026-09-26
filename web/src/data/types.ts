@@ -43,6 +43,9 @@ export interface SiteContent {
       imageAlt: string;
     };
   };
+  collaborators: {
+    body: string;
+  };
   about: {
     body: string;
     pillars: string[];
