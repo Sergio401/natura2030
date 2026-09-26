@@ -53,16 +53,6 @@ export const en: SiteContent = {
       imageAlt: 'GoPro camera mounted in a mangrove recording current velocity along a channel',
     },
   },
-  applications: {
-    items: [
-      'Coastal adaptation',
-      'Ecosystem restoration',
-      'Territorial planning',
-      'Infrastructure',
-      'Risk management',
-      'Investment and insurance',
-    ],
-  },
   about: {
     body: 'ALA is a non-profit organization working toward a more sustainable relationship with water and nature in Latin America, promoting efficient collaboration between governments, the private sector, NGOs and local communities',
     pillars: ['Water', 'Climate', 'Nature'],

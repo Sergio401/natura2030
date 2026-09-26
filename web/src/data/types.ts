@@ -43,9 +43,6 @@ export interface SiteContent {
       imageAlt: string;
     };
   };
-  applications: {
-    items: string[];
-  };
   about: {
     body: string;
     pillars: string[];

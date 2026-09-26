@@ -6,6 +6,7 @@ import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
 import { getContent } from '../../data';
+import { collaborators } from '../../data/collaborators';
 import type { Locale } from '../../data/types';
 import { parseHeadline } from '../../utils/headline';
 import './tokens.css';
@@ -140,15 +141,23 @@ let wordIndex = 0;
     </div>
   </section>
 
-  <section class="nd-section" id="aplicaciones">
+  <section class="nd-section nd-collab" id="colaboradores">
     <div class="nd-wrap">
       <div class="nd-head">
-        <span class="nd-eyebrow">{c.sections.applications.eyebrow}</span>
-        <h2>{c.sections.applications.title}</h2>
+        <span class="nd-eyebrow">{c.sections.collaborators.eyebrow}</span>
+        <h2>{c.sections.collaborators.title}</h2>
       </div>
-      <div class="nd-apps-row">
-        {t.applications.items.map((label) => (
-          <div class="nd-apptag"><span class="dot" aria-hidden="true"></span><span>{label}</span></div>
+    </div>
+    <div class="nd-logos">
+      <div class="nd-logos-track">
+        {[0, 1, 2, 3].map((copy) => (
+          <ul class="nd-logos-set" aria-hidden={copy > 0 ? 'true' : undefined}>
+            {collaborators.map((co) => (
+              <li class="nd-logo-card">
+                <Image src={co.logo} alt={copy > 0 ? '' : co.name} height={120} />
+              </li>
+            ))}
+          </ul>
         ))}
       </div>
     </div>
@@ -310,11 +319,18 @@ let wordIndex = 0;
   .nd-monitor-text h3 { font-size: clamp(22px, 2.4vw, 28px); line-height: 1.2; margin: 14px 0 14px; }
   .nd-monitor-text p { color: var(--ink-soft); font-size: 16px; max-width: 480px; }
 
-  .nd-apps-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
-  .nd-apptag { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 12px 20px 12px 14px; box-shadow: var(--card-shadow); transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
-  .nd-apptag:hover { transform: translateY(-4px); }
-  .nd-apptag .dot { width: 30px; height: 30px; border-radius: 50%; background: var(--yellow); flex: none; }
-  .nd-apptag span:last-child { font-size: 14px; font-weight: 700; }
+  .nd-logos { overflow: hidden; padding: 12px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .nd-logos-track { display: flex; width: max-content; animation: scrollRight 48s linear infinite; }
+  .nd-logos:hover .nd-logos-track { animation-play-state: paused; }
+  .nd-logos-set { display: flex; gap: 28px; padding: 0 14px; margin: 0; list-style: none; }
+  .nd-logo-card { width: 280px; height: 128px; flex: none; display: flex; align-items: center; justify-content: center; padding: 22px 26px;
+    background: #ffffff; border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--card-shadow);
+    transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
+  .nd-logo-card:hover { transform: translateY(-6px); box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 14%, transparent); }
+  .nd-logo-card img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; mix-blend-mode: multiply; }
+  @keyframes scrollRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
   .nd-people { background: var(--block-bg); color: var(--block-ink); }
   .nd-people .nd-eyebrow { color: var(--yellow); }
@@ -349,6 +365,8 @@ let wordIndex = 0;
     .nd-inputs-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .nd-deliver-grid { grid-template-columns: 1fr; }
     .nd-monitor { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+    .nd-logo-card { width: 210px; height: 100px; padding: 16px 20px; }
+    .nd-logos-set { gap: 18px; padding: 0 9px; }
     .nd-about { grid-template-columns: 1fr; }
     .nd-cta-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }

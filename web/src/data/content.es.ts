@@ -53,16 +53,6 @@ export const es: SiteContent = {
       imageAlt: 'Cámara GoPro instalada en un manglar registrando la velocidad de la corriente en un canal',
     },
   },
-  applications: {
-    items: [
-      'Adaptación costera',
-      'Restauración de ecosistemas',
-      'Ordenamiento territorial',
-      'Infraestructura',
-      'Gestión del riesgo',
-      'Inversión y seguros',
-    ],
-  },
   about: {
     body: 'ALA es una organización sin fines de lucro que trabaja por una relación más sostenible con el agua y la naturaleza en América Latina, promoviendo una colaboración eficiente entre gobiernos, sector privado, ONG y comunidades locales',
     pillars: ['Agua', 'Clima', 'Naturaleza'],
