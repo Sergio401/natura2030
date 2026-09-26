@@ -16,7 +16,7 @@ export interface V1Copy {
   sections: {
     inputs: { eyebrow: string; title: string };
     deliverables: { eyebrow: string; title: string };
-    collaborators: { eyebrow: string; title: string; ctaTitle: string; ctaBody: string; ctaSubject: string };
+    collaborators: { eyebrow: string; title: string; ctaTitle: string };
     about: { eyebrow: string; title: string };
     cta: { eyebrow: string; title: string };
   };
@@ -56,8 +56,6 @@ export const v1Copy: Record<Locale, V1Copy> = {
         eyebrow: 'Colaboradores',
         title: 'Nuestros colaboradores y aliados, pasados y actuales',
         ctaTitle: '¿Quieres colaborar?',
-        ctaBody: 'Escríbenos',
-        ctaSubject: 'Colaboración con Adaptation Latin America',
       },
       about: { eyebrow: 'Quiénes somos', title: 'Impulsados por Adaptation Latin America' },
       cta: { eyebrow: 'Hablemos', title: '¿Listo para llevar datos dispersos a decisiones de adaptación?' },
@@ -96,8 +94,6 @@ export const v1Copy: Record<Locale, V1Copy> = {
         eyebrow: 'Collaborators',
         title: 'Our past and current collaborators and supporters',
         ctaTitle: 'Want to collaborate?',
-        ctaBody: 'Get in touch',
-        ctaSubject: 'Collaboration with Adaptation Latin America',
       },
       about: { eyebrow: 'Who we are', title: 'Driven by Adaptation Latin America' },
       cta: { eyebrow: "Let's talk", title: 'Ready to turn scattered data into adaptation decisions?' },
