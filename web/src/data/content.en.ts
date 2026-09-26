@@ -56,6 +56,7 @@ export const en: SiteContent = {
   about: {
     body: 'ALA is a non-profit organization working toward a more sustainable relationship with water and nature in Latin America, promoting efficient collaboration between governments, the private sector, NGOs and local communities',
     pillars: ['Water', 'Climate', 'Nature'],
+    imageAlt: 'Three Adaptation Latin America team members smiling in the organization\'s hoodies',
     org: [
       { label: 'Organization', value: 'Adaptation Latin America' },
       { label: 'Platform', value: 'NATURA 2030' },

@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
 import monitoringImg from '../../assets/landing/manglar-gopro-velocidad.jpg';
+import teamImg from '../../assets/landing/equipo-ala.jpg';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import LanguageSwitcher from '../../components/shared/LanguageSwitcher.astro';
 import ContactEmail from '../../components/shared/ContactEmail.astro';
@@ -32,7 +33,10 @@ let wordIndex = 0;
     </div>
     <div class="nd-nav-tools">
       <div class="nd-nav-contact">
-        <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
+        <a class="nd-nav-mail" href={`mailto:${t.footer.email}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span>{t.footer.email}</span>
+        </a>
       </div>
       <LanguageSwitcher locale={locale} label={t.ui.languageLabel} />
       <ThemeToggle labelToLight={t.ui.themeToggleToLight} labelToDark={t.ui.themeToggleToDark} />
@@ -73,7 +77,6 @@ let wordIndex = 0;
         <span class="nd-hero-contact-label">{c.hero.contactLabel}</span>
         <ContactEmail email={t.footer.email} copyLabel={t.ui.copyEmail} copiedLabel={t.ui.emailCopied} compact />
       </div>
-      <div class="nd-hero-mark"><Image src={isotipoColor} alt="" width={108} height={108} /></div>
       <div class="nd-scrollcue" aria-hidden="true"><span></span></div>
     </div>
   </section>
@@ -187,12 +190,8 @@ let wordIndex = 0;
           {t.about.pillars.map((p) => <div class="nd-pillar"><span>{p}</span></div>)}
         </div>
       </div>
-      <div class="nd-river" aria-hidden="true">
-        <svg viewBox="0 0 500 500" fill="none">
-          <path d="M-20 120C80 80 120 200 220 160C320 120 360 240 460 200" stroke="var(--teal)" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
-          <path d="M-20 220C80 180 120 300 220 260C320 220 360 340 460 300" stroke="var(--yellow)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
-          <path d="M-20 320C80 280 120 400 220 360C320 320 360 440 460 400" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
-        </svg>
+      <div class="nd-team reveal">
+        <Image src={teamImg} alt={t.about.imageAlt} widths={[560, 1120]} sizes="(max-width: 860px) 100vw, 540px" />
       </div>
     </div>
   </section>
@@ -248,6 +247,8 @@ let wordIndex = 0;
   .nd-brand .word { font-family: 'Archivo', Arial, sans-serif; font-weight: 900; font-size: 15px; line-height: 1.15; }
   .nd-brand .word small { display: block; font-weight: 600; font-size: 10px; letter-spacing: 0.16em; color: var(--teal); }
   .nd-nav-tools { display: flex; align-items: center; gap: 16px; }
+  .nd-nav-mail { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+  .nd-nav-mail svg { width: 16px; height: 16px; flex: none; }
   .nd-nav-contact { display: flex; align-items: center; padding-right: 12px; border-right: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
   .nd-btn { font-family: 'Archivo', Arial, sans-serif; font-weight: 800; font-size: 14px; border-radius: 999px; padding: 13px 26px;
     display: inline-flex; align-items: center; gap: 8px; border: 2px solid transparent; cursor: pointer; text-decoration: none;
@@ -274,9 +275,6 @@ let wordIndex = 0;
   .nd-hero-cta { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 38px; flex-wrap: wrap; }
   .nd-hero-contact { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
   .nd-hero-contact-label { font-size: 14px; color: var(--ink-soft); }
-  .nd-hero-mark { display: flex; justify-content: center; margin-top: 72px; }
-  .nd-hero-mark img { animation: breathe 6s ease-in-out infinite; filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--ink) 18%, transparent)); }
-  @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
   .nd-scrollcue { display: flex; justify-content: center; margin-top: 28px; }
   .nd-scrollcue span { width: 1px; height: 34px; background: linear-gradient(var(--ink), transparent); display: block; animation: cue 1.8s ease-in-out infinite; opacity: 0.4; }
   @keyframes cue { 0%,100% { transform: translateY(0); opacity: 0.15; } 50% { transform: translateY(8px); opacity: 0.55; } }
@@ -382,9 +380,8 @@ let wordIndex = 0;
   .nd-about-copy p { font-size: 16px; color: var(--ink-soft); margin-top: 16px; }
   .nd-pillars { display: flex; gap: 28px; margin-top: 32px; }
   .nd-pillar span { display: block; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.08em; }
-  .nd-river { position: relative; aspect-ratio: 1/1; border-radius: 28px; overflow: hidden; background: linear-gradient(160deg,#0f2038,#1c3a5e); }
-  .nd-river svg { position: absolute; inset: 0; width: 110%; height: 110%; margin: -5%; animation: riverDrift 34s ease-in-out infinite; }
-  @keyframes riverDrift { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-2%,1.5%) rotate(0.6deg); } }
+  .nd-team { border-radius: 28px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  .nd-team img { display: block; width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; }
 
   .nd-cta { background: var(--teal); padding: 80px 48px; }
   .nd-cta-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 48px; }

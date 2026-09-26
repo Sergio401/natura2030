@@ -56,6 +56,7 @@ export const es: SiteContent = {
   about: {
     body: 'ALA es una organización sin fines de lucro que trabaja por una relación más sostenible con el agua y la naturaleza en América Latina, promoviendo una colaboración eficiente entre gobiernos, sector privado, ONG y comunidades locales',
     pillars: ['Agua', 'Clima', 'Naturaleza'],
+    imageAlt: 'Tres integrantes del equipo de Adaptation Latin America sonriendo con sudaderas de la organización',
     org: [
       { label: 'Organización', value: 'Adaptation Latin America' },
       { label: 'Plataforma', value: 'NATURA 2030' },

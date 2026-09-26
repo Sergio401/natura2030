@@ -46,6 +46,7 @@ export interface SiteContent {
   about: {
     body: string;
     pillars: string[];
+    imageAlt: string;
     org: OrgFact[];
   };
   cta: {
