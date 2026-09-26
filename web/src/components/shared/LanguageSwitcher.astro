@@ -14,6 +14,43 @@ const { locale, label } = Astro.props;
   <a href="/en/" aria-current={locale === 'en' ? 'true' : undefined}>EN</a>
 </div>
 
+<script>
+  // Al cambiar de idioma se carga otra página (/ ↔ /en/) y el scroll vuelve arriba.
+  // Guardamos en qué bloque de la portada estaba el lector y qué fracción de él
+  // había recorrido (no píxeles: ES y EN tienen alturas distintas) y lo restauramos al cargar.
+  const KEY = 'natura-lang-scroll';
+  const blocks = () => Array.from(document.querySelectorAll<HTMLElement>('#main > :not(header)'));
+  const probe = () => window.innerHeight / 3;
+  // offsetTop es relativo a #main (position: relative); usamos coordenadas de documento.
+  const docTop = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY;
+
+  document.querySelectorAll<HTMLAnchorElement>('.natura-lang a:not([aria-current])').forEach((link) => {
+    link.addEventListener('click', () => {
+      const y = window.scrollY + probe();
+      const list = blocks();
+      const index = list.findIndex((el) => docTop(el) + el.offsetHeight > y);
+      if (index < 0 || window.scrollY === 0) return;
+      const el = list[index];
+      const fraction = (y - docTop(el)) / el.offsetHeight;
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify({ index, fraction }));
+      } catch {}
+    });
+  });
+
+  let saved: { index: number; fraction: number } | null = null;
+  try {
+    const raw = sessionStorage.getItem(KEY);
+    sessionStorage.removeItem(KEY);
+    saved = raw ? JSON.parse(raw) : null;
+  } catch {}
+  const el = saved ? blocks()[saved.index] : undefined;
+  if (saved && el) {
+    const top = docTop(el) + saved.fraction * el.offsetHeight - probe();
+    window.scrollTo({ top: Math.max(0, top), behavior: 'instant' });
+  }
+</script>
+
 <style>
   .natura-lang {
     display: inline-flex;
