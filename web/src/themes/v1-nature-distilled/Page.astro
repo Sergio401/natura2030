@@ -225,6 +225,20 @@ let wordIndex = 0;
     </div>
   </section>
 
+  <section class="nd-section nd-apps" id="aplicaciones">
+    <div class="nd-wrap">
+      <div class="nd-head">
+        <span class="nd-eyebrow">{c.sections.applications.eyebrow}</span>
+        <h2>{c.sections.applications.title}</h2>
+      </div>
+      <div class="nd-apps-row">
+        {t.applications.items.map((label) => (
+          <div class="nd-apptag"><span class="dot" aria-hidden="true"></span><span>{label}</span></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="nd-section nd-people" id="nosotros">
     <div class="nd-wrap nd-about">
       <div class="nd-about-copy">
@@ -475,17 +489,22 @@ let wordIndex = 0;
     transition: opacity .25s ease, transform .25s ease; }
   .nd-logo-card:hover .nd-logo-arrow, .nd-logo-card:focus-visible .nd-logo-arrow { opacity: .55; transform: none; }
 
-  .nd-people { background: var(--block-bg); color: var(--block-ink); }
-  .nd-people .nd-eyebrow { color: var(--yellow); }
-  .nd-people .nd-about-copy h2 { color: var(--block-ink); }
-  .nd-people .nd-about-copy p { color: color-mix(in srgb, var(--block-ink) 72%, transparent); }
-  .nd-people .nd-pillar span { color: var(--block-ink); }
+  .nd-apps { background: var(--block-bg); color: var(--block-ink); }
+  .nd-apps .nd-eyebrow { color: var(--yellow); }
+  .nd-apps .nd-head h2 { color: var(--block-ink); }
+  .nd-apps-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  .nd-apptag { display: flex; align-items: center; gap: 10px; border-radius: 999px; padding: 12px 20px 12px 14px;
+    background: color-mix(in srgb, var(--block-ink) 6%, transparent); border: 1px solid color-mix(in srgb, var(--block-ink) 16%, transparent);
+    transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  .nd-apptag:hover { transform: translateY(-4px); }
+  .nd-apptag .dot { width: 30px; height: 30px; border-radius: 50%; background: var(--yellow); flex: none; }
+  .nd-apptag span:last-child { font-size: 14px; font-weight: 700; color: var(--block-ink); }
 
   .nd-about { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
   .nd-about-copy p { font-size: 16px; color: var(--ink-soft); margin-top: 16px; }
   .nd-pillars { display: flex; gap: 28px; margin-top: 32px; }
   .nd-pillar span { display: block; font-family: 'Archivo',sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.08em; }
-  .nd-team { border-radius: 28px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  .nd-team { border-radius: 28px; overflow: hidden; box-shadow: var(--card-shadow); }
   .nd-team img { display: block; width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; }
 
   .nd-cta { background: var(--teal); padding: 80px 48px; }
@@ -579,7 +598,7 @@ let wordIndex = 0;
     desktop.addEventListener('change', apply);
 
     // El rail cambia de tinta según el panel que tiene debajo (claro u oscuro).
-    const darkBlocks = Array.from(page.querySelectorAll<HTMLElement>('.nd-problem, .nd-process, .nd-people, .nd-footer'));
+    const darkBlocks = Array.from(page.querySelectorAll<HTMLElement>('.nd-problem, .nd-process, .nd-apps, .nd-footer'));
     let ticking = false;
     const updateTone = () => {
       ticking = false;

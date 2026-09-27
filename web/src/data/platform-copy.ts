@@ -15,7 +15,6 @@ export interface PlatformCopy {
   header: {
     eyebrow: string;
     title: string;
-    status: string;
     back: string;
     language: string;
     models: string;
@@ -40,9 +39,6 @@ export interface PlatformCopy {
     applications: string;
     dataInputs: string;
     outputs: string;
-    collaborateTitle: string;
-    collaborateBody: string;
-    collaborateCta: string;
     tabDetails: string;
     tabOverview: string;
     tabsLabel: string;
@@ -61,7 +57,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     header: {
       eyebrow: 'INTELIGENCIA CLIMÁTICA COSTERA',
       title: 'Mapa regional',
-      status: 'Plataforma activa',
       back: 'Volver al sitio',
       language: 'English',
       models: 'Ver modelos',
@@ -86,9 +81,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       applications: 'Aplicaciones',
       dataInputs: 'Datos integrados',
       outputs: 'Resultados propuestos',
-      collaborateTitle: '¿Te interesa colaborar?',
-      collaborateBody: 'Buscamos aliados técnicos y financieros para implementar este proyecto',
-      collaborateCta: 'Conversemos sobre este proyecto',
       tabDetails: 'Detalle',
       tabOverview: 'Resumen del proyecto',
       tabsLabel: 'Secciones del proyecto',
@@ -111,7 +103,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     header: {
       eyebrow: 'COASTAL CLIMATE INTELLIGENCE',
       title: 'Regional map',
-      status: 'Platform active',
       back: 'Back to site',
       language: 'Español',
       models: 'View models',
@@ -136,9 +127,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       applications: 'Applications',
       dataInputs: 'Integrated data',
       outputs: 'Proposed outcomes',
-      collaborateTitle: 'Interested in collaborating?',
-      collaborateBody: "We're looking for technical and financial partners to implement this project",
-      collaborateCta: "Let's talk about this project",
       tabDetails: 'Details',
       tabOverview: 'Project overview',
       tabsLabel: 'Project sections',

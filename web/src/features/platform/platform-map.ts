@@ -268,12 +268,6 @@ export function initPlatformMap(root: HTMLElement): void {
     selectTab('details');
     panel.querySelector('.platform-panel-body')?.scrollTo({ top: 0 });
 
-    const collaborateCta = panel.querySelector<HTMLAnchorElement>('[data-location-cta]');
-    if (collaborateCta) {
-      const subject = locale === 'es' ? `Colaboración — ${details.title}` : `Collaboration — ${details.title}`;
-      collaborateCta.href = `mailto:info@adaptationla.org?subject=${encodeURIComponent(subject)}`;
-    }
-
     updateSelectedMarker();
     focusMapOnLocation(location);
     if (updateHistory) updateUrl(location.id);

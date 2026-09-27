@@ -53,6 +53,16 @@ export const es: SiteContent = {
       imageAlt: 'Cámara GoPro instalada en un manglar registrando la velocidad de la corriente en un canal',
     },
   },
+  applications: {
+    items: [
+      'Adaptación costera',
+      'Restauración de ecosistemas',
+      'Ordenamiento territorial',
+      'Infraestructura',
+      'Gestión del riesgo',
+      'Inversión y seguros',
+    ],
+  },
   collaborators: {
     body: 'Trabajamos junto a organismos internacionales de desarrollo, universidades y programas de conservación costera. Cada alianza suma ciencia, datos de campo y conocimiento local para que las soluciones de adaptación lleguen al territorio.',
   },

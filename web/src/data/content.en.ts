@@ -53,6 +53,16 @@ export const en: SiteContent = {
       imageAlt: 'GoPro camera mounted in a mangrove recording current velocity along a channel',
     },
   },
+  applications: {
+    items: [
+      'Coastal adaptation',
+      'Ecosystem restoration',
+      'Territorial planning',
+      'Infrastructure',
+      'Risk management',
+      'Investment and insurance',
+    ],
+  },
   collaborators: {
     body: 'We work alongside international development agencies, universities and coastal conservation programs. Each partnership brings together science, field data and local knowledge so adaptation solutions reach the ground.',
   },

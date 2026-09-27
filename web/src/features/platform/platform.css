@@ -118,7 +118,6 @@ html[data-theme='dark'] .platform-shell {
   gap: 10px;
 }
 
-.platform-status,
 .platform-language,
 .platform-back,
 .platform-models-link {
@@ -129,20 +128,11 @@ html[data-theme='dark'] .platform-shell {
   text-transform: uppercase;
 }
 
-.platform-status {
+.platform-contact {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 11px;
-  color: var(--ink-soft);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-}
-
-.platform-status .platform-pulse {
-  width: 6px;
-  height: 6px;
-  animation: platform-ping 2.2s ease-out infinite;
+  padding-right: 6px;
+  color: var(--ink);
 }
 
 .platform-language,
@@ -841,60 +831,6 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   line-height: 1.7;
 }
 
-.platform-collaborate {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-  margin-top: 27px;
-  padding: 18px 20px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--teal) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
-}
-
-.platform-collaborate-copy {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.platform-icon-collaborate {
-  width: 20px;
-  height: 20px;
-  margin-top: 2px;
-  color: var(--teal);
-}
-
-.platform-collaborate-copy strong {
-  display: block;
-  font-family: 'Archivo', Arial, sans-serif;
-  font-size: 13px;
-}
-
-.platform-collaborate-copy p {
-  margin: 4px 0 0;
-  color: var(--ink-soft);
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.platform-collaborate-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-  padding: 11px 18px;
-  border-radius: 999px;
-  background: var(--teal);
-  color: #0b1626;
-  font-family: 'Archivo', Arial, sans-serif;
-  font-weight: 800;
-  font-size: 12px;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
 .platform-map-error {
   position: absolute;
   z-index: 10;
@@ -950,7 +886,7 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
   }
 
   .platform-title,
-  .platform-status {
+  .platform-contact {
     display: none;
   }
 
@@ -1080,16 +1016,6 @@ html[data-theme='light'] .platform-map .maplibregl-ctrl button .maplibregl-ctrl-
     grid-template-columns: 1fr;
   }
 
-
-  .platform-collaborate {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .platform-collaborate-cta {
-    margin-left: 0;
-    justify-content: center;
-  }
 
   .platform-mobile-scrim {
     position: absolute;
