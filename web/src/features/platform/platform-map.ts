@@ -95,44 +95,12 @@ function fillIconList(element: HTMLElement | null, values: string[], icons: read
   );
 }
 
-function fillOverview(panel: HTMLElement, overview: PlatformLocation['content']['es']['overview']): void {
-  const body = panel.querySelector<HTMLElement>('[data-overview-body]');
-  if (body) body.textContent = overview.body;
-
-  panel.querySelector('[data-overview-highlights]')?.replaceChildren(
-    ...overview.highlights.map(({ value, label }) => {
-      const item = document.createElement('li');
-      const strong = document.createElement('strong');
-      strong.textContent = value;
-      const span = document.createElement('span');
-      span.textContent = label;
-      item.append(strong, span);
-      return item;
-    }),
-  );
-
-  panel.querySelector('[data-overview-facts]')?.replaceChildren(
-    ...overview.facts.map(({ label, value }) => {
-      const row = document.createElement('div');
-      const dt = document.createElement('dt');
-      dt.textContent = label;
-      const dd = document.createElement('dd');
-      dd.textContent = value;
-      row.append(dt, dd);
-      return row;
-    }),
-  );
-
-  panel.querySelector('[data-overview-milestones]')?.replaceChildren(
-    ...overview.milestones.map(({ date, label }) => {
-      const item = document.createElement('li');
-      const time = document.createElement('span');
-      time.className = 'platform-milestone-date';
-      time.textContent = date;
-      const text = document.createElement('span');
-      text.textContent = label;
-      item.append(time, text);
-      return item;
+function fillOverview(panel: HTMLElement, paragraphs: string[]): void {
+  panel.querySelector('[data-overview-body]')?.replaceChildren(
+    ...paragraphs.map((text) => {
+      const p = document.createElement('p');
+      p.textContent = text;
+      return p;
     }),
   );
 }

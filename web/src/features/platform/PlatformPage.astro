@@ -168,16 +168,7 @@ const locationCount = String(platformLocations.length).padStart(2, '0');
       </div>
 
       <div class="platform-tabpanel" role="tabpanel" id="location-panel-overview" aria-labelledby="location-tab-overview" data-location-tabpanel="overview" hidden>
-        <p class="platform-overview-body" data-overview-body></p>
-        <ul class="platform-overview-highlights" data-overview-highlights aria-label={copy.panel.highlights}></ul>
-        <section class="platform-location-section">
-          <h2>{copy.panel.facts}</h2>
-          <dl class="platform-overview-facts" data-overview-facts></dl>
-        </section>
-        <section class="platform-location-section">
-          <h2>{copy.panel.milestones}</h2>
-          <ol class="platform-overview-milestones" data-overview-milestones></ol>
-        </section>
+        <div class="platform-overview-body" data-overview-body></div>
       </div>
 
       <div class="platform-collaborate">

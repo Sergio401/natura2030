@@ -46,9 +46,6 @@ export interface PlatformCopy {
     tabDetails: string;
     tabOverview: string;
     tabsLabel: string;
-    highlights: string;
-    facts: string;
-    milestones: string;
     photoCredit: string;
   };
   categories: Record<LocationCategory, string>;
@@ -95,9 +92,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       tabDetails: 'Detalle',
       tabOverview: 'Resumen del proyecto',
       tabsLabel: 'Secciones del proyecto',
-      highlights: 'Cifras clave',
-      facts: 'Ficha del proyecto',
-      milestones: 'Hitos',
       photoCredit: 'Foto',
     },
     categories: {
@@ -148,9 +142,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       tabDetails: 'Details',
       tabOverview: 'Project overview',
       tabsLabel: 'Project sections',
-      highlights: 'Key figures',
-      facts: 'Project facts',
-      milestones: 'Milestones',
       photoCredit: 'Photo',
     },
     categories: {

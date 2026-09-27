@@ -14,15 +14,8 @@ export interface LocalizedLocationDetails {
   outputs: string[];
   /** Alt text of the location's hero photo (the image itself lives in `platform-location-media.ts`). */
   heroAlt: string;
-  /** Content of the panel's "Project overview" tab. */
-  overview: LocationOverview;
-}
-
-export interface LocationOverview {
-  body: string;
-  highlights: { value: string; label: string }[];
-  facts: { label: string; value: string }[];
-  milestones: { date: string; label: string }[];
+  /** Paragraphs (1–2) of the panel's "Project overview" tab. */
+  overview: string[];
 }
 
 export interface PlatformLocation {
@@ -55,26 +48,10 @@ export const platformLocations: PlatformLocation[] = [
         outputs: ['Campos de velocidad', 'Recomendaciones para restauración'],
         heroAlt:
           'Monitoreo de corrientes en un canal de manglar en Nayarit mediante una cámara GoPro y visualización de campos de velocidad',
-        overview: {
-          body: 'El proyecto combina hidrodinámica y biogeoquímica para entender cuánto carbono y alcalinidad exportan los manglares de Marismas Nacionales hacia el océano. ALA aporta la red de cámaras y los algoritmos que convierten video en campos de velocidad; el equipo de Yale mide la química del agua. Juntos, los datos permiten estimar flujos con mayor precisión y orientar la conservación y restauración de uno de los sistemas de manglar más extensos del Pacífico mexicano.',
-          highlights: [
-            { value: '7', label: 'cámaras de monitoreo' },
-            { value: '4', label: 'variables químicas integradas' },
-            { value: '2', label: 'temporadas de campo' },
-          ],
-          facts: [
-            { label: 'Periodo', value: '2025 – 2027' },
-            { label: 'Aliado', value: 'Yale Center for Natural Carbon Capture' },
-            { label: 'Área de estudio', value: 'Canales y bordes de manglar' },
-            { label: 'Enfoque', value: 'Inteligencia ambiental' },
-          ],
-          milestones: [
-            { date: '2025', label: 'Diseño e instalación de la red de cámaras' },
-            { date: '2025', label: 'Primera campaña de campo con mediciones químicas' },
-            { date: '2026', label: 'Validación de los algoritmos de velocidad' },
-            { date: '2027', label: 'Estimación de flujos de carbono y alcalinidad' },
-          ],
-        },
+        overview: [
+          'El proyecto combina hidrodinámica y biogeoquímica para entender cuánto carbono y alcalinidad exportan los manglares de Marismas Nacionales hacia el océano. ALA aporta la red de cámaras y los algoritmos que convierten video en campos de velocidad; el equipo de Yale mide la química del agua.',
+          'Juntos, estos datos permiten estimar los flujos con mayor precisión y orientar la conservación y restauración de uno de los sistemas de manglar más extensos del Pacífico mexicano.',
+        ],
       },
       en: {
         title: 'Measuring currents in mangroves',
@@ -91,26 +68,10 @@ export const platformLocations: PlatformLocation[] = [
         outputs: ['Velocity fields', 'Restoration recommendations'],
         heroAlt:
           'Monitoring currents in a mangrove channel in Nayarit using a GoPro camera and velocity field visualization',
-        overview: {
-          body: 'The project combines hydrodynamics and biogeochemistry to understand how much carbon and alkalinity the mangroves of Marismas Nacionales export to the ocean. ALA provides the camera network and the algorithms that turn video into velocity fields; the Yale team measures water chemistry. Together, the data make flux estimates more precise and guide the conservation and restoration of one of the largest mangrove systems on Mexico’s Pacific coast.',
-          highlights: [
-            { value: '7', label: 'monitoring cameras' },
-            { value: '4', label: 'chemical variables integrated' },
-            { value: '2', label: 'field seasons' },
-          ],
-          facts: [
-            { label: 'Period', value: '2025 – 2027' },
-            { label: 'Partner', value: 'Yale Center for Natural Carbon Capture' },
-            { label: 'Study area', value: 'Mangrove channels and forest edges' },
-            { label: 'Focus', value: 'Environmental intelligence' },
-          ],
-          milestones: [
-            { date: '2025', label: 'Camera network design and installation' },
-            { date: '2025', label: 'First field campaign with chemical sampling' },
-            { date: '2026', label: 'Velocity algorithms validated' },
-            { date: '2027', label: 'Carbon and alkalinity flux estimates' },
-          ],
-        },
+        overview: [
+          'The project combines hydrodynamics and biogeochemistry to understand how much carbon and alkalinity the mangroves of Marismas Nacionales export to the ocean. ALA provides the camera network and the algorithms that turn video into velocity fields; the Yale team measures water chemistry.',
+          'Together, these data make flux estimates more precise and guide the conservation and restoration of one of the largest mangrove systems on Mexico’s Pacific coast.',
+        ],
       },
     },
   },
@@ -146,26 +107,10 @@ export const platformLocations: PlatformLocation[] = [
           'Fortalecimiento local',
         ],
         heroAlt: 'Lanchas de madera frente a un borde de manglar con árboles secos en Punta Soldado, Buenaventura',
-        overview: {
-          body: 'Punta Soldado es una isla del Pacífico colombiano, en la bahía de Buenaventura, expuesta a mareas altas, oleaje y a los efectos de El Niño. El proyecto combina pronósticos de nivel del mar, mediciones de corrientes y modelación con Delft3D para entender cómo se mueve el agua alrededor de la isla y de sus manglares. Con esa base se evalúa una barrera permeable de madera como solución basada en la naturaleza y se fortalecen capacidades locales en turismo de naturaleza y apoyo a la investigación científica.',
-          highlights: [
-            { value: '5', label: 'fuentes de datos integradas' },
-            { value: '6', label: 'productos técnicos' },
-            { value: '1', label: 'piloto basado en la naturaleza' },
-          ],
-          facts: [
-            { label: 'Periodo', value: '2024 – 2026' },
-            { label: 'Territorio', value: 'Isla Punta Soldado, bahía de Buenaventura' },
-            { label: 'Modelación', value: 'Delft3D' },
-            { label: 'Enfoque', value: 'Inteligencia ambiental · Soluciones basadas en la naturaleza · Desarrollo local' },
-          ],
-          milestones: [
-            { date: '2024', label: 'Diagnóstico costero y primeras mediciones en campo' },
-            { date: '2025', label: 'Modelos 3D de raíces de manglar por fotogrametría' },
-            { date: '2025', label: 'Pronósticos de inundación durante El Niño' },
-            { date: '2026', label: 'Instalación y evaluación del piloto de barrera permeable' },
-          ],
-        },
+        overview: [
+          'Punta Soldado es una isla del Pacífico colombiano, en la bahía de Buenaventura, expuesta a mareas altas, oleaje y a los efectos de El Niño. El proyecto combina pronósticos de nivel del mar, mediciones de corrientes y modelación con Delft3D para entender cómo se mueve el agua alrededor de la isla y de sus manglares.',
+          'Con esa base se evalúa una barrera permeable de madera como solución basada en la naturaleza y se fortalecen capacidades locales en turismo de naturaleza y apoyo a la investigación científica.',
+        ],
       },
       en: {
         title: 'Climate adaptation and coastal resilience in Punta Soldado',
@@ -194,26 +139,10 @@ export const platformLocations: PlatformLocation[] = [
           'Local capacity building',
         ],
         heroAlt: 'Wooden boats in front of a mangrove edge with dead trees in Punta Soldado, Buenaventura',
-        overview: {
-          body: 'Punta Soldado is an island on Colombia’s Pacific coast, in the bay of Buenaventura, exposed to high tides, waves and the effects of El Niño. The project combines sea-level forecasts, current measurements and Delft3D modeling to understand how water moves around the island and its mangroves. On that basis, a permeable wooden barrier is being tested as a nature-based solution, and local capacity is strengthened in nature tourism and support for scientific research.',
-          highlights: [
-            { value: '5', label: 'data sources integrated' },
-            { value: '6', label: 'technical products' },
-            { value: '1', label: 'nature-based pilot' },
-          ],
-          facts: [
-            { label: 'Period', value: '2024 – 2026' },
-            { label: 'Territory', value: 'Punta Soldado Island, Buenaventura bay' },
-            { label: 'Modeling', value: 'Delft3D' },
-            { label: 'Focus', value: 'Environmental intelligence · Nature-based solutions · Local development' },
-          ],
-          milestones: [
-            { date: '2024', label: 'Coastal diagnosis and first field measurements' },
-            { date: '2025', label: '3D photogrammetry models of mangrove roots' },
-            { date: '2025', label: 'Flood forecasts during El Niño' },
-            { date: '2026', label: 'Permeable barrier pilot installed and evaluated' },
-          ],
-        },
+        overview: [
+          'Punta Soldado is an island on Colombia’s Pacific coast, in the bay of Buenaventura, exposed to high tides, waves and the effects of El Niño. The project combines sea-level forecasts, current measurements and Delft3D modeling to understand how water moves around the island and its mangroves.',
+          'On that basis, a permeable wooden barrier is being tested as a nature-based solution, and local capacity is strengthened in nature tourism and support for scientific research.',
+        ],
       },
     },
   },
@@ -238,25 +167,10 @@ export const platformLocations: PlatformLocation[] = [
         outputs: ['Auspicio de participantes', 'Fortalecimiento de capacidades'],
         heroAlt:
           'Río rodeado de vegetación tropical en Baños, Ecuador, utilizado como imagen representativa de la gestión y conservación del agua',
-        overview: {
-          body: 'En el II Encuentro Nacional de Juventudes del Agua de Ecuador, ALA auspició la participación de jóvenes de distintas provincias para que accedieran a talleres, espacios de intercambio y a la Red Agua Ecuador. La iniciativa apuesta por formar una nueva generación de líderes que una el conocimiento técnico y comunitario en la gestión sostenible del agua.',
-          highlights: [
-            { value: '15', label: 'jóvenes auspiciados' },
-            { value: '3', label: 'días de formación e intercambio' },
-            { value: '1', label: 'red nacional articulada' },
-          ],
-          facts: [
-            { label: 'Fecha', value: '2025' },
-            { label: 'Evento', value: 'II Encuentro Nacional de Juventudes del Agua' },
-            { label: 'Red aliada', value: 'Red Agua Ecuador' },
-            { label: 'Enfoque', value: 'Desarrollo local' },
-          ],
-          milestones: [
-            { date: '2025', label: 'Convocatoria y selección de participantes' },
-            { date: '2025', label: 'Encuentro nacional en Quito' },
-            { date: '2025', label: 'Conexión de los participantes con la Red Agua Ecuador' },
-          ],
-        },
+        overview: [
+          'En el II Encuentro Nacional de Juventudes del Agua de Ecuador, ALA auspició la participación de jóvenes para que accedieran a talleres, espacios de intercambio y a la Red Agua Ecuador.',
+          'La iniciativa apuesta por formar una nueva generación de líderes que una el conocimiento técnico y comunitario en la gestión sostenible del agua.',
+        ],
       },
       en: {
         title: 'Youth for water in Ecuador',
@@ -273,25 +187,10 @@ export const platformLocations: PlatformLocation[] = [
         outputs: ['Participant sponsorship', 'Capacity building'],
         heroAlt:
           'River surrounded by tropical vegetation in Baños, Ecuador, used as a representative image of water management and conservation',
-        overview: {
-          body: 'At Ecuador’s 2nd National Youth for Water Gathering, ALA sponsored young people from different provinces so they could join workshops, exchange spaces and the Red Agua Ecuador network. The initiative invests in a new generation of leaders who bring technical and community knowledge together in sustainable water management.',
-          highlights: [
-            { value: '15', label: 'young people sponsored' },
-            { value: '3', label: 'days of training and exchange' },
-            { value: '1', label: 'national network engaged' },
-          ],
-          facts: [
-            { label: 'Date', value: '2025' },
-            { label: 'Event', value: '2nd National Youth for Water Gathering' },
-            { label: 'Partner network', value: 'Red Agua Ecuador' },
-            { label: 'Focus', value: 'Local development' },
-          ],
-          milestones: [
-            { date: '2025', label: 'Call for applications and participant selection' },
-            { date: '2025', label: 'National gathering in Quito' },
-            { date: '2025', label: 'Participants connected with Red Agua Ecuador' },
-          ],
-        },
+        overview: [
+          'At Ecuador’s 2nd National Youth for Water Gathering, ALA sponsored young people so they could join workshops, exchange spaces and the Red Agua Ecuador network.',
+          'The initiative invests in a new generation of leaders who bring technical and community knowledge together in sustainable water management.',
+        ],
       },
     },
   },
