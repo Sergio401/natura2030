@@ -5,7 +5,7 @@ export const en: SiteContent = {
     siteName: 'NATURA 2030',
     orgName: 'Adaptation Latin America',
     description:
-      'NATURA 2030 brings together climate and ocean data from multiple sources into inputs local teams can use for coastal adaptation decisions across Latin America',
+      'Adaptation Latin America builds technology-driven solutions for coastal climate adaptation, integrating data, technology, and nature to anticipate risks and guide decisions across the region',
   },
   inputs: {
     items: [

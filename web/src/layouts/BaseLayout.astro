@@ -13,6 +13,8 @@ interface Props {
 }
 
 const { lang, title, description } = Astro.props;
+const ogImage = new URL('/favicon-180.png', Astro.site);
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
 // Read at request time (not import.meta.env): the same code runs on both the
 // `natura` (prod) and `natura-dev` (dev) pm2 processes, and only the dev
@@ -33,6 +35,17 @@ const devBannerText = lang === 'en'
     <link rel="apple-touch-icon" href="/favicon-180.png" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Adaptation Latin America" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="color-scheme" content="light dark" />
     <script is:inline>
       (function () {

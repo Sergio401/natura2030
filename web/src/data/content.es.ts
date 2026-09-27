@@ -5,7 +5,7 @@ export const es: SiteContent = {
     siteName: 'NATURA 2030',
     orgName: 'Adaptation Latin America',
     description:
-      'NATURA 2030 integra información climática y oceanográfica de múltiples fuentes en insumos útiles para decisiones locales de adaptación costera en América Latina',
+      'Adaptation Latin America desarrolla soluciones tecnológicas para la adaptación climática costera, integrando datos, tecnología y naturaleza para anticipar riesgos y orientar decisiones en la región',
   },
   inputs: {
     items: [

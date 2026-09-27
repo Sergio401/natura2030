@@ -11,7 +11,7 @@ const selfHosted = process.env.SELF_HOSTED === 'true';
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.SITE_URL ?? 'https://natura2030.adaptationla.org',
+  site: process.env.SITE_URL ?? 'https://adaptationla.org',
   output: 'server',
   adapter: selfHosted ? node({ mode: 'standalone' }) : vercel(),
   trailingSlash: 'always',
