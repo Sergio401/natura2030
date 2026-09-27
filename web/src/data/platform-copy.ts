@@ -4,7 +4,8 @@ export type LocationCategory =
   | 'coastal-adaptation'
   | 'ecosystem-restoration'
   | 'infrastructure'
-  | 'risk-management';
+  | 'risk-management'
+  | 'local-development';
 
 export interface PlatformCopy {
   meta: {
@@ -21,7 +22,6 @@ export interface PlatformCopy {
   };
   map: {
     ariaLabel: string;
-    locationCount: string;
     locationCountLabel: string;
     legendTitle: string;
     satellite: string;
@@ -43,7 +43,13 @@ export interface PlatformCopy {
     collaborateTitle: string;
     collaborateBody: string;
     collaborateCta: string;
-    heroAlt: string;
+    tabDetails: string;
+    tabOverview: string;
+    tabsLabel: string;
+    highlights: string;
+    facts: string;
+    milestones: string;
+    photoCredit: string;
   };
   categories: Record<LocationCategory, string>;
 }
@@ -65,7 +71,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     },
     map: {
       ariaLabel: 'Mapa de iniciativas de Adaptation Latin America',
-      locationCount: '02',
       locationCountLabel: 'Ubicaciones registradas',
       legendTitle: 'Aplicaciones',
       satellite: 'Satélite',
@@ -87,14 +92,20 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       collaborateTitle: '¿Te interesa colaborar?',
       collaborateBody: 'Buscamos aliados técnicos y financieros para implementar este proyecto',
       collaborateCta: 'Conversemos sobre este proyecto',
-      heroAlt:
-        'Monitoreo de corrientes en un canal de manglar en Nayarit mediante una cámara GoPro y visualización de campos de velocidad',
+      tabDetails: 'Detalle',
+      tabOverview: 'Resumen del proyecto',
+      tabsLabel: 'Secciones del proyecto',
+      highlights: 'Cifras clave',
+      facts: 'Ficha del proyecto',
+      milestones: 'Hitos',
+      photoCredit: 'Foto',
     },
     categories: {
       'coastal-adaptation': 'Adaptación costera',
       'ecosystem-restoration': 'Restauración de ecosistemas',
       infrastructure: 'Infraestructura',
       'risk-management': 'Gestión del riesgo',
+      'local-development': 'Desarrollo local',
     },
   },
   en: {
@@ -113,7 +124,6 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
     },
     map: {
       ariaLabel: 'Map of Adaptation Latin America initiatives',
-      locationCount: '02',
       locationCountLabel: 'Registered locations',
       legendTitle: 'Applications',
       satellite: 'Satellite',
@@ -135,14 +145,20 @@ export const platformCopy: Record<Locale, PlatformCopy> = {
       collaborateTitle: 'Interested in collaborating?',
       collaborateBody: "We're looking for technical and financial partners to implement this project",
       collaborateCta: "Let's talk about this project",
-      heroAlt:
-        'Monitoring currents in a mangrove channel in Nayarit using a GoPro camera and velocity field visualization',
+      tabDetails: 'Details',
+      tabOverview: 'Project overview',
+      tabsLabel: 'Project sections',
+      highlights: 'Key figures',
+      facts: 'Project facts',
+      milestones: 'Milestones',
+      photoCredit: 'Photo',
     },
     categories: {
       'coastal-adaptation': 'Coastal adaptation',
       'ecosystem-restoration': 'Ecosystem restoration',
       infrastructure: 'Infrastructure',
       'risk-management': 'Risk management',
+      'local-development': 'Local development',
     },
   },
 };

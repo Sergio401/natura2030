@@ -12,6 +12,7 @@ const CATEGORY_COLORS = {
   'ecosystem-restoration': '#82d49a',
   infrastructure: '#ffee9f',
   'risk-management': '#ff9b6a',
+  'local-development': '#c3a6ff',
 } as const;
 
 const STREET_STYLE: StyleSpecification = {
@@ -94,6 +95,48 @@ function fillIconList(element: HTMLElement | null, values: string[], icons: read
   );
 }
 
+function fillOverview(panel: HTMLElement, overview: PlatformLocation['content']['es']['overview']): void {
+  const body = panel.querySelector<HTMLElement>('[data-overview-body]');
+  if (body) body.textContent = overview.body;
+
+  panel.querySelector('[data-overview-highlights]')?.replaceChildren(
+    ...overview.highlights.map(({ value, label }) => {
+      const item = document.createElement('li');
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+      const span = document.createElement('span');
+      span.textContent = label;
+      item.append(strong, span);
+      return item;
+    }),
+  );
+
+  panel.querySelector('[data-overview-facts]')?.replaceChildren(
+    ...overview.facts.map(({ label, value }) => {
+      const row = document.createElement('div');
+      const dt = document.createElement('dt');
+      dt.textContent = label;
+      const dd = document.createElement('dd');
+      dd.textContent = value;
+      row.append(dt, dd);
+      return row;
+    }),
+  );
+
+  panel.querySelector('[data-overview-milestones]')?.replaceChildren(
+    ...overview.milestones.map(({ date, label }) => {
+      const item = document.createElement('li');
+      const time = document.createElement('span');
+      time.className = 'platform-milestone-date';
+      time.textContent = date;
+      const text = document.createElement('span');
+      text.textContent = label;
+      item.append(time, text);
+      return item;
+    }),
+  );
+}
+
 export function initPlatformMap(root: HTMLElement): void {
   if (root.dataset.initialized === 'true') return;
   root.dataset.initialized = 'true';
@@ -112,6 +155,28 @@ export function initPlatformMap(root: HTMLElement): void {
     languageUrl.searchParams.set('location', initialLocationId ?? '');
     languageLink.href = languageUrl.toString();
   }
+
+  const tabs = Array.from(panel.querySelectorAll<HTMLButtonElement>('[data-location-tab]'));
+  const selectTab = (name: string, focus = false): void => {
+    for (const tab of tabs) {
+      const active = tab.dataset.locationTab === name;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      if (active && focus) tab.focus();
+    }
+    panel.querySelectorAll<HTMLElement>('[data-location-tabpanel]').forEach((tabPanel) => {
+      tabPanel.hidden = tabPanel.dataset.locationTabpanel !== name;
+    });
+  };
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => selectTab(tab.dataset.locationTab ?? 'details'));
+    tab.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      event.preventDefault();
+      const next = tabs[(index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      selectTab(next.dataset.locationTab ?? 'details', true);
+    });
+  });
 
   let selectedLocationId: string | null = null;
   let selectedLocation: PlatformLocation | null = null;
@@ -202,6 +267,11 @@ export function initPlatformMap(root: HTMLElement): void {
       `${location.coordinates[1].toFixed(4)}°, ${location.coordinates[0].toFixed(4)}°`,
     );
 
+    panel.querySelectorAll<HTMLElement>('[data-hero-location]').forEach((figure) => {
+      figure.hidden = figure.dataset.heroLocation !== location.id;
+    });
+    panel.querySelector('.platform-badge-status')?.classList.toggle('is-completed', Boolean(location.completed));
+
     const categoryBadge = panel.querySelector<HTMLElement>('[data-location-category-badge]');
     if (categoryBadge) {
       categoryBadge.textContent = copy.categories[location.category];
@@ -221,6 +291,14 @@ export function initPlatformMap(root: HTMLElement): void {
     fillList(panel.querySelector<HTMLElement>('[data-location-applications]'), details.applications);
     fillIconList(panel.querySelector<HTMLElement>('[data-location-inputs]'), details.dataInputs, DATA_INPUT_ICONS);
     fillIconList(panel.querySelector<HTMLElement>('[data-location-outputs]'), details.outputs, OUTPUT_ICONS);
+    const inputsSection = panel.querySelector<HTMLElement>('[data-location-inputs-section]');
+    if (inputsSection) inputsSection.hidden = details.dataInputs.length === 0;
+    const outputsSection = panel.querySelector<HTMLElement>('[data-location-outputs-section]');
+    if (outputsSection) outputsSection.hidden = details.outputs.length === 0;
+
+    fillOverview(panel, details.overview);
+    selectTab('details');
+    panel.querySelector('.platform-panel-body')?.scrollTo({ top: 0 });
 
     const collaborateCta = panel.querySelector<HTMLAnchorElement>('[data-location-cta]');
     if (collaborateCta) {

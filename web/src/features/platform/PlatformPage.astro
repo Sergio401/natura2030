@@ -2,9 +2,9 @@
 import { Image } from 'astro:assets';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import isotipoColor from '../../assets/brand/isotipo-color.png';
-import panelHeroImg from '../../assets/landing/manglar-gopro-velocidad.jpg';
 import ThemeToggle from '../../components/shared/ThemeToggle.astro';
 import { platformLocations } from '../../data/platform-locations';
+import { locationMedia } from '../../data/platform-location-media';
 import { platformCopy } from '../../data/platform-copy';
 import type { Locale } from '../../data/types';
 import { ICONS } from './icons';
@@ -19,6 +19,7 @@ const copy = platformCopy[locale];
 const languageHref = locale === 'es' ? '/platform/en/' : '/platform/';
 const siteHref = locale === 'es' ? '/' : '/en/';
 const modelsHref = locale === 'es' ? '/models/' : '/models/en/';
+const locationCount = String(platformLocations.length).padStart(2, '0');
 ---
 
 <main class="platform-shell" id="main" data-platform-root data-locale={locale}>
@@ -52,7 +53,7 @@ const modelsHref = locale === 'es' ? '/models/' : '/models/en/';
     <div class="platform-map" data-platform-map></div>
 
     <div class="platform-map-summary" aria-hidden="true">
-      <strong>{copy.map.locationCount}</strong>
+      <strong>{locationCount}</strong>
       <span>{copy.map.locationCountLabel}</span>
     </div>
 
@@ -88,7 +89,15 @@ const modelsHref = locale === 'es' ? '/models/' : '/models/en/';
     <button type="button" class="platform-panel-close" data-panel-close aria-label={copy.panel.close}>×</button>
     <div class="platform-panel-body">
       <div class="platform-hero">
-        <Image src={panelHeroImg} alt={copy.panel.heroAlt} width={640} height={480} />
+        {platformLocations.map((location) => {
+          const media = locationMedia[location.id];
+          return media && (
+            <figure class="platform-hero-figure" data-hero-location={location.id} hidden>
+              <Image src={media.image} alt={location.content[locale].heroAlt} width={640} height={360} loading="lazy" />
+              <figcaption class="platform-hero-credit">{copy.panel.photoCredit}: {media.credit}</figcaption>
+            </figure>
+          );
+        })}
       </div>
 
       <div class="platform-location-meta">
@@ -114,38 +123,62 @@ const modelsHref = locale === 'es' ? '/models/' : '/models/en/';
         </span>
       </div>
 
-      <p class="platform-location-summary" data-location-summary></p>
-
-      <div class="platform-mini-grid" data-location-challenge-block hidden>
-        <div class="platform-mini-block platform-mini-block-challenge">
-          <span class="platform-mini-label">
-            <span class="platform-icon" set:html={ICONS.triangleAlert} />{copy.panel.challenge}
-          </span>
-          <p data-location-challenge></p>
-        </div>
-        <div class="platform-mini-block platform-mini-block-response">
-          <span class="platform-mini-label">
-            <span class="platform-icon" set:html={ICONS.leaf} />{copy.panel.response}
-          </span>
-          <p data-location-response></p>
-        </div>
-        <div class="platform-mini-block platform-mini-block-applications">
-          <span class="platform-mini-label">
-            <span class="platform-icon" set:html={ICONS.grid2x2} />{copy.panel.applications}
-          </span>
-          <ul data-location-applications></ul>
-        </div>
+      <div class="platform-tabs" role="tablist" aria-label={copy.panel.tabsLabel} data-location-tabs>
+        <button type="button" role="tab" id="location-tab-details" aria-controls="location-panel-details" aria-selected="true" data-location-tab="details">
+          {copy.panel.tabDetails}
+        </button>
+        <button type="button" role="tab" id="location-tab-overview" aria-controls="location-panel-overview" aria-selected="false" tabindex="-1" data-location-tab="overview">
+          {copy.panel.tabOverview}
+        </button>
       </div>
 
-      <section class="platform-location-section">
-        <h2>{copy.panel.dataInputs}</h2>
-        <ul class="platform-icon-grid" data-location-inputs></ul>
-      </section>
+      <div class="platform-tabpanel" role="tabpanel" id="location-panel-details" aria-labelledby="location-tab-details" data-location-tabpanel="details">
+        <p class="platform-location-summary" data-location-summary></p>
 
-      <section class="platform-location-section">
-        <h2>{copy.panel.outputs}</h2>
-        <ul class="platform-icon-grid" data-location-outputs></ul>
-      </section>
+        <div class="platform-mini-grid" data-location-challenge-block hidden>
+          <div class="platform-mini-block platform-mini-block-challenge">
+            <span class="platform-mini-label">
+              <span class="platform-icon" set:html={ICONS.triangleAlert} />{copy.panel.challenge}
+            </span>
+            <p data-location-challenge></p>
+          </div>
+          <div class="platform-mini-block platform-mini-block-response">
+            <span class="platform-mini-label">
+              <span class="platform-icon" set:html={ICONS.leaf} />{copy.panel.response}
+            </span>
+            <p data-location-response></p>
+          </div>
+          <div class="platform-mini-block platform-mini-block-applications">
+            <span class="platform-mini-label">
+              <span class="platform-icon" set:html={ICONS.grid2x2} />{copy.panel.applications}
+            </span>
+            <ul data-location-applications></ul>
+          </div>
+        </div>
+
+        <section class="platform-location-section" data-location-inputs-section>
+          <h2>{copy.panel.dataInputs}</h2>
+          <ul class="platform-icon-grid" data-location-inputs></ul>
+        </section>
+
+        <section class="platform-location-section" data-location-outputs-section>
+          <h2>{copy.panel.outputs}</h2>
+          <ul class="platform-icon-grid" data-location-outputs></ul>
+        </section>
+      </div>
+
+      <div class="platform-tabpanel" role="tabpanel" id="location-panel-overview" aria-labelledby="location-tab-overview" data-location-tabpanel="overview" hidden>
+        <p class="platform-overview-body" data-overview-body></p>
+        <ul class="platform-overview-highlights" data-overview-highlights aria-label={copy.panel.highlights}></ul>
+        <section class="platform-location-section">
+          <h2>{copy.panel.facts}</h2>
+          <dl class="platform-overview-facts" data-overview-facts></dl>
+        </section>
+        <section class="platform-location-section">
+          <h2>{copy.panel.milestones}</h2>
+          <ol class="platform-overview-milestones" data-overview-milestones></ol>
+        </section>
+      </div>
 
       <div class="platform-collaborate">
         <div class="platform-collaborate-copy">
