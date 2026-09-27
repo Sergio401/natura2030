@@ -286,8 +286,8 @@ let wordIndex = 0;
   .nd-nav { position: sticky; top: var(--dev-banner-h, 0px); z-index: 40; display: flex; align-items: center; justify-content: space-between;
     padding: 18px 48px; background: transparent;
     transition: background .3s ease, backdrop-filter .3s ease; }
-  .nd-nav.scrolled { background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 1px 0 var(--border); }
-  .nd-nav { transition: background .3s ease, backdrop-filter .3s ease, transform .5s cubic-bezier(.16,1,.3,1), opacity .35s ease; }
+  .nd-nav.scrolled { background: var(--bg); box-shadow: 0 1px 0 var(--border); }
+  .nd-nav { transition: background .3s ease, box-shadow .3s ease, transform .5s cubic-bezier(.16,1,.3,1), opacity .35s ease; }
 
   /* Rail lateral: reemplaza al top bar cuando el hero sale de pantalla (solo escritorio). */
   .nd-rail { position: fixed; right: 14px; top: 50%; z-index: 45; display: none; flex-direction: column; align-items: center; gap: 4px;
@@ -516,7 +516,7 @@ let wordIndex = 0;
     .nd-wrap, .nd-section, .nd-hero, .nd-problem { padding-left: 24px; padding-right: 24px; }
     /* Móvil: el top bar se pliega como acordeón (logo + botón Menú). */
     .nd-nav { padding: 14px 16px; flex-wrap: wrap; }
-    .nd-nav.is-open { background: color-mix(in srgb, var(--bg) 96%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 1px 0 var(--border); }
+    .nd-nav.is-open { background: var(--bg); box-shadow: 0 1px 0 var(--border); }
     .nd-brand { flex: 1; min-width: 0; }
     .nd-brand .word { font-size: 13px; }
     .nd-nav-toggle { flex: none; margin-left: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; cursor: pointer;
