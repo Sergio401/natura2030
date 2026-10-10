@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ADMIN_CAPABILITIES, ADMIN_RESTRICTIONS } from '../../lib/admin/policy';
 import type { Job, JobStatus } from '../../lib/admin/jobs-types';
 import './admin.css';
@@ -120,6 +120,27 @@ function pastedName(file: File, index: number): File {
   const stamp = new Date().toISOString().slice(11, 19).replace(/:/g, '');
   const extension = file.type.split('/')[1] || 'png';
   return new File([file], `pantallazo-${stamp}${index ? `-${index + 1}` : ''}.${extension}`, { type: file.type });
+}
+
+// The model answers in light Markdown: blank-line paragraphs, "- " / "1. "
+// lists and **bold**. Render just that, without injecting HTML.
+function renderInline(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map((part, index) =>
+    part.startsWith('**') && part.endsWith('**') ? <strong key={index}>{part.slice(2, -2)}</strong> : part,
+  );
+}
+
+function renderMessage(content: string): ReactNode[] {
+  return content.trim().split(/\n\s*\n+/).map((block, blockIndex) => {
+    const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+    if (lines.length > 0 && lines.every((line) => /^[-•*]\s+/.test(line))) {
+      return <ul key={blockIndex}>{lines.map((line, i) => <li key={i}>{renderInline(line.replace(/^[-•*]\s+/, ''))}</li>)}</ul>;
+    }
+    if (lines.length > 0 && lines.every((line) => /^\d+[.)]\s+/.test(line))) {
+      return <ol key={blockIndex}>{lines.map((line, i) => <li key={i}>{renderInline(line.replace(/^\d+[.)]\s+/, ''))}</li>)}</ol>;
+    }
+    return <p key={blockIndex}>{lines.flatMap((line, i) => (i === 0 ? renderInline(line) : [<br key={`br-${i}`} />, ...renderInline(line)]))}</p>;
+  });
 }
 
 function formatBytes(bytes: number): string {
@@ -535,7 +556,7 @@ export default function AdminApp() {
           ) : messages.map((message, index) => (
             <article className={`admin-message is-${message.role}`} key={`${message.role}-${index}`}>
               <span className="admin-message-role">{message.role === 'user' ? 'Tú' : 'Asistente'}</span>
-              <div>{message.content.split('\n').map((line, lineIndex) => <p key={lineIndex}>{line || <br />}</p>)}</div>
+              <div>{renderMessage(message.content)}</div>
               {message.files && message.files.length > 0 && <div className="admin-message-files">{message.files.map((file) => <span key={file}>{file}</span>)}</div>}
             </article>
           ))}

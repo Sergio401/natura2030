@@ -304,8 +304,11 @@
 .admin-message-role { padding-top: 13px; color: var(--admin-softer); font-family: 'Archivo', Arial, sans-serif; font-size: 0.66rem; font-weight: 900; letter-spacing: 0.08em; }
 .admin-message > div:not(.admin-message-files) { padding: 12px 16px; border-radius: 4px 18px 18px 18px; color: var(--admin-ink); background: var(--admin-surface); box-shadow: 0 8px 24px color-mix(in srgb, var(--admin-ink) 5%, transparent); font-size: 0.95rem; line-height: 1.65; }
 .admin-message.is-user > div:not(.admin-message-files) { border-radius: 18px 4px 18px 18px; background: color-mix(in srgb, var(--admin-teal) 24%, var(--admin-surface)); }
-.admin-message p { margin: 0; white-space: pre-wrap; }
-.admin-message p + p { margin-top: 8px; }
+.admin-message p, .admin-message ul, .admin-message ol { margin: 0; overflow-wrap: anywhere; }
+.admin-message ul, .admin-message ol { padding-left: 1.3em; }
+.admin-message li + li { margin-top: 4px; }
+.admin-message :is(p, ul, ol) + :is(p, ul, ol) { margin-top: 10px; }
+.admin-message strong { font-weight: 700; }
 .admin-message-files { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
 .admin-message-files span { padding: 5px 9px; border: 1px solid var(--admin-border); border-radius: 999px; color: var(--admin-soft); font-size: 0.7rem; }
 .admin-thinking { display: flex; align-items: center; gap: 5px; min-height: 48px; }
