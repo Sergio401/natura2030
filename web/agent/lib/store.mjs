@@ -55,6 +55,18 @@ import { randomBytes } from 'node:crypto';
  * @property {{commit: string, deployedAt: string}|null} prod
  * @property {string|null} error
  * @property {JobLogEntry[]} log
+ * @property {JobAttachment[]} [attachments]
+ */
+
+/**
+ * A file the admin uploaded in the chat and that travels with the job. Stored
+ * under `${AGENT_DATA_DIR}/attachments/<job id>/<file>`; the worker copies it
+ * into the dev worktree before each Claude round.
+ * @typedef {object} JobAttachment
+ * @property {string} name   Original file name, as the admin saw it.
+ * @property {string} file   Sanitised file name on disk (unique within the job).
+ * @property {string} type   MIME type.
+ * @property {number} size   Bytes.
  */
 
 export const TERMINAL = Object.freeze(['done', 'failed', 'discarded']);
@@ -62,9 +74,34 @@ export const ACTION_TYPES = Object.freeze(['approve', 'discard', 'feedback']);
 
 export const LIMITS = Object.freeze({
   summary: 140,
-  instruction: 6000,
+  instruction: 12000,
   feedback: 4000,
   result: 4000,
+});
+
+// Shared with src/pages/api/admin/chat.ts and the admin UI: what can be
+// uploaded in the chat and handed to the executor.
+export const ATTACHMENT_TYPES = Object.freeze({
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'application/pdf': 'pdf',
+  'text/plain': 'txt',
+  'text/markdown': 'md',
+  'text/csv': 'csv',
+  'text/tab-separated-values': 'tsv',
+  'text/yaml': 'yaml',
+  'text/x-python': 'py',
+  'application/json': 'json',
+  'application/geo+json': 'geojson',
+});
+
+export const ATTACHMENT_LIMITS = Object.freeze({
+  count: 6,
+  fileBytes: 3 * 1024 * 1024,
+  // base64 inflates ~4/3; nginx caps request bodies at 8 MB (deploy/nginx/natura.conf).
+  totalBytes: 5 * 1024 * 1024,
 });
 
 export class StoreError extends Error {
@@ -87,6 +124,10 @@ export function dataDir() {
 
 export function jobsDir() {
   return path.join(dataDir(), 'jobs');
+}
+
+export function attachmentsDir(id) {
+  return path.join(dataDir(), 'attachments', id);
 }
 
 export function logsDir(id) {
@@ -185,25 +226,81 @@ export function appendLog(job, status, message) {
   return job;
 }
 
+function sanitiseFileName(name, ext, taken) {
+  const base = String(name)
+    .replace(/\.[^.]*$/, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60) || 'archivo';
+  let candidate = `${base}.${ext}`;
+  for (let n = 2; taken.has(candidate); n += 1) candidate = `${base}-${n}.${ext}`;
+  taken.add(candidate);
+  return candidate;
+}
+
+/**
+ * Validate uploaded files ({name, type, data: data-URL}) and decode them.
+ * @param {unknown} value
+ * @returns {Array<{name: string, type: string, ext: string, bytes: Buffer}>}
+ */
+export function decodeAttachments(value) {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value) || value.length > ATTACHMENT_LIMITS.count) {
+    throw new StoreError('INVALID', `Se pueden adjuntar hasta ${ATTACHMENT_LIMITS.count} archivos por cambio.`);
+  }
+  let total = 0;
+  return value.map((item) => {
+    const { name, type, data } = /** @type {{name?: unknown, type?: unknown, data?: unknown}} */ (item ?? {});
+    const ext = typeof type === 'string' ? ATTACHMENT_TYPES[/** @type {keyof typeof ATTACHMENT_TYPES} */ (type)] : undefined;
+    const prefix = `data:${type};base64,`;
+    if (typeof name !== 'string' || !name || name.length > 180 || !ext || typeof data !== 'string' || !data.startsWith(prefix)) {
+      throw new StoreError('INVALID', 'Uno de los archivos adjuntos no está permitido.');
+    }
+    const bytes = Buffer.from(data.slice(prefix.length), 'base64');
+    total += bytes.length;
+    if (bytes.length === 0 || bytes.length > ATTACHMENT_LIMITS.fileBytes || total > ATTACHMENT_LIMITS.totalBytes) {
+      throw new StoreError('INVALID', 'Uno de los archivos adjuntos supera el tamaño permitido.');
+    }
+    return { name, type: /** @type {string} */ (type), ext, bytes };
+  });
+}
+
 /**
  * Web side: create a queued job. Throws StoreError('OPEN_JOB') if another job is open.
- * @param {{summary: string, instruction: string, requestedBy: string}} input
+ * @param {{summary: string, instruction: string, requestedBy: string, attachments?: unknown}} input
  * @returns {Promise<Job>}
  */
-export async function createJob({ summary, instruction, requestedBy }) {
+export async function createJob({ summary, instruction, requestedBy, attachments: rawAttachments }) {
   if (typeof summary !== 'string' || !summary.trim() || summary.length > LIMITS.summary) {
     throw new StoreError('INVALID', `El resumen debe tener entre 1 y ${LIMITS.summary} caracteres.`);
   }
   if (typeof instruction !== 'string' || !instruction.trim() || instruction.length > LIMITS.instruction) {
     throw new StoreError('INVALID', `La instrucción debe tener entre 1 y ${LIMITS.instruction} caracteres.`);
   }
+  const files = decodeAttachments(rawAttachments);
   const open = await findOpenJob();
   if (open) throw new StoreError('OPEN_JOB', `Ya hay un cambio abierto (${open.id}).`, open);
 
   const at = now();
+  const id = newId();
+  /** @type {JobAttachment[]} */
+  const attachments = [];
+  if (files.length > 0) {
+    const dir = attachmentsDir(id);
+    await fs.mkdir(dir, { recursive: true });
+    const taken = new Set();
+    for (const file of files) {
+      const fileName = sanitiseFileName(file.name, file.ext, taken);
+      await fs.writeFile(path.join(dir, fileName), file.bytes);
+      attachments.push({ name: file.name, file: fileName, type: file.type, size: file.bytes.length });
+    }
+  }
   /** @type {Job} */
   const job = {
-    id: newId(),
+    id,
     createdAt: at,
     updatedAt: at,
     status: 'queued',
@@ -218,6 +315,7 @@ export async function createJob({ summary, instruction, requestedBy }) {
     prod: null,
     error: null,
     log: [{ at, status: 'queued', message: 'Solicitud recibida.' }],
+    attachments,
   };
   await writeJob(job);
   return job;

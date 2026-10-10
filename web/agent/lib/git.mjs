@@ -176,3 +176,32 @@ export function toWebRelative(repoRelativePath) {
   }
   return null;
 }
+
+/**
+ * Contents of a file at a git ref (`git show <ref>:<path>`), or '' if it does
+ * not exist there.
+ * @param {string} cwd
+ * @param {string} ref
+ * @param {string} repoRelativePath
+ * @param {NodeJS.ProcessEnv} [env]
+ */
+export async function readFileAtRef(cwd, ref, repoRelativePath, env) {
+  const result = await git(['show', `${ref}:${repoRelativePath}`], { cwd, env }, { throwOnError: false });
+  return result.code === 0 ? result.stdout : '';
+}
+
+/**
+ * Repo-relative paths that differ from `ref`: committed and uncommitted edits
+ * plus untracked files. Used to scan everything a job has touched so far, not
+ * just the current round.
+ * @param {string} cwd
+ * @param {string} ref
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {Promise<string[]>}
+ */
+export async function changedSinceRef(cwd, ref, env) {
+  const diff = await git(['diff', '--name-only', ref], { cwd, env }, { throwOnError: false });
+  const tracked = diff.code === 0 ? diff.stdout.split('\n').filter(Boolean) : [];
+  const untracked = await statusPaths(cwd, env);
+  return [...new Set([...tracked, ...untracked])];
+}

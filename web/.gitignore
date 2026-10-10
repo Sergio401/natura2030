@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+
+# change executor: files a job uploaded, readable by Claude, never committed
+.agent-inbox/

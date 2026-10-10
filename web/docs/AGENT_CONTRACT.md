@@ -25,7 +25,9 @@ cliente ──chat──▶ /admin (API de Claude, ANTHROPIC_API_KEY del servido
 Reglas fijas:
 
 - **Un solo cambio abierto a la vez.** Abierto = cualquier estado que no sea terminal.
-- **Solo texto y estructura de la landing.** El worker rechaza cualquier archivo fuera de la allowlist.
+- **Alcance cerrado** (textos, estilos, imágenes y paneles de la landing; puntos del mapa; modelos
+  de Python). Sin librerías nuevas, sin idiomas nuevos, sin módulos nuevos. El worker rechaza
+  cualquier archivo fuera de la allowlist y cualquier cambio del tipo `Locale`.
 - **El worker nunca corre Bash de Claude.** Claude solo lee y edita archivos. Verificación, build, git y pm2 los ejecuta el worker de forma determinista.
 - **Nadie hace commits salvo el worker**, y solo con prefijo `[agent]`.
 
@@ -68,20 +70,44 @@ worker como por los endpoints de Astro. No duplicar esa lógica.
 
 ## Allowlist de archivos editables (rutas relativas a `web/`)
 
+Áreas permitidas (se pueden editar y crear archivos dentro):
+
 ```
-src/data/content.es.ts
-src/data/content.en.ts
-src/data/platform-copy.ts
-src/data/models-copy.ts
-src/themes/v1-nature-distilled/copy.ts
-src/themes/v1-nature-distilled/tokens.css
-src/themes/v1-nature-distilled/Page.astro
+src/data/**                       textos, tipos de contenido, puntos del mapa y sus fotos
+src/themes/v1-nature-distilled/** landing: voz, tokens visuales, paneles
+src/components/shared/**          componentes compartidos
+src/assets/**                     imágenes (las subidas llegan a src/assets/uploads/)
+src/features/platform/**          estilos y presentación del mapa
+src/features/models/**            laboratorio: registro, model.py, workers, controles
+src/pages/models/**               rutas es/en de cada modelo
 ```
 
-Definida una sola vez en `agent/lib/allowlist.mjs` (exporta `ALLOWED_FILES` y `isAllowed(path)`).
-Se aplica dos veces: en el hook `PreToolUse` de Claude (bloquea Edit/Write fuera de la lista) y
-después de la corrida, sobre `git status --porcelain` del worktree (archivos nuevos, borrados o
-modificados fuera de la lista → job `failed` y worktree limpiado).
+Siempre prohibidas, aunque caigan en un área permitida (la deny-list gana): `package.json`,
+lockfiles, `pnpm-workspace.yaml`, `astro.config.*`, `tsconfig*.json`, `.env*`, `*.sh`, `agent/**`,
+`deploy/**`, `ecosystem.config.cjs`, `src/pages/api/**`, `src/pages/admin/**`, `src/lib/admin/**`,
+`src/features/admin/**`, `src/layouts/**`.
+
+Definida una sola vez en `agent/lib/allowlist.mjs` (exporta `ALLOWED_PATTERNS`, `DENIED_PATTERNS`
+e `isAllowed(path)`). Se aplica dos veces: en el hook `PreToolUse` de Claude (bloquea Edit/Write
+fuera de la lista) y después de la corrida, sobre `git status --porcelain` del worktree (archivos
+nuevos, borrados o modificados fuera de la lista → job `failed` y worktree limpiado). Además, el
+worker compara la línea `export type Locale = ...` de `src/data/types.ts` con la de prod: si
+cambió, el job falla (no se pueden agregar idiomas).
+
+## Archivos adjuntos
+
+El chat acepta imágenes (png, jpg, webp, gif), PDF, txt, md, csv, tsv, YAML, JSON, GeoJSON y `.py`
+(hasta 6 por cambio, 3 MB cada uno, 5 MB en total; lista en `ATTACHMENT_TYPES` de
+`agent/lib/store.mjs`). Todo lo que se sube durante la conversación viaja con el job al confirmar
+la propuesta (`POST /api/admin/jobs` con `attachments: [{name, type, data}]`, data URL base64).
+
+- El store los guarda en `~/natura-agent/attachments/<id>/` y los lista en `job.attachments`.
+- Antes de cada ronda de Claude, el worker los copia a `web/.agent-inbox/` (gitignored, solo
+  referencia: pantallazos, YAML, código) y, si son imágenes, también a
+  `web/src/assets/uploads/<yyyymmdd>-<archivo>` para que el sitio pueda importarlas (Claude no
+  puede escribir binarios). El prompt de la ronda le dice a Claude dónde está cada uno.
+- Antes de verificar, el worker borra `.agent-inbox/` y las imágenes de `uploads/` que ningún
+  archivo cambiado menciona: los pantallazos de referencia nunca se commitean.
 
 ## Esquema del job (`jobs/<id>.json`)
 
@@ -197,10 +223,16 @@ Salida esperada de `--output-format json`: objeto con `type: "result"`, `subtype
 
 Reglas del `--append-system-prompt` (el texto exacto vive en `agent/lib/prompt.mjs`):
 
-- solo puede editar los archivos de la allowlist; cualquier otro archivo está prohibido;
-- no puede crear archivos, borrar archivos, instalar dependencias ni cambiar configuración;
-- mantiene la identidad visual y la estructura de datos (`SiteContent` en `src/data/types.ts`);
-- si el cambio pide algo fuera del alcance, no lo hace y lo explica en su respuesta final;
+- qué puede hacer (las seis operaciones del alcance) y en qué áreas de archivos;
+- prohibido: instalar librerías (solo lo ya instalado: Archivo, fuentes del sistema,
+  lucide-static, maplibre-gl, React), agregar idiomas, crear módulos o rutas nuevas fuera de
+  `src/pages/models`, tocar lógica de servidor/admin/config, y cualquier cambio riesgoso;
+- dónde va cada cosa (contenido, voz, tokens, paneles, imágenes con `<Image>`);
+- cómo tratar los adjuntos (pantallazo = referencia; imágenes para el sitio desde `uploads/`);
+- el mapeo YAML → `PlatformLocation` (slug, `[lng, lat]`, categoría, ambos idiomas, foto en
+  `platform-location-media.ts`, `completed`);
+- cómo se agrega un modelo de Python (registro, `model.py`, worker Pyodide, controles, rutas);
+- si el cambio pide algo fuera del alcance, hace solo la parte permitida y explica el resto;
 - termina con un resumen de dos líneas de lo que cambió.
 
 ## Prompt del chat (web) y tool calling
@@ -213,7 +245,7 @@ Se añade una tool:
 ```json
 {
   "name": "submit_change_request",
-  "description": "Enviar una solicitud de cambio de texto o estructura de la landing al ejecutor, una vez entendida y validada con el usuario.",
+  "description": "Enviar al ejecutor una solicitud de cambio dentro del alcance permitido (textos, estilos, imágenes y paneles de la landing, puntos del mapa, modelos de Python), una vez entendida y validada con el usuario. Los archivos adjuntos de la conversación viajan con la solicitud.",
   "strict": true,
   "input_schema": {
     "type": "object",

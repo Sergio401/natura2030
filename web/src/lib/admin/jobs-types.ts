@@ -52,6 +52,13 @@ export interface JobProdInfo {
   deployedAt: string;
 }
 
+export interface JobAttachment {
+  name: string;
+  file: string;
+  type: string;
+  size: number;
+}
+
 export interface Job {
   id: string;
   createdAt: string;
@@ -68,4 +75,5 @@ export interface Job {
   prod: JobProdInfo | null;
   error: string | null;
   log: JobLogEntry[];
+  attachments?: JobAttachment[];
 }

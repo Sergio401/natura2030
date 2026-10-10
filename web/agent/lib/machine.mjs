@@ -20,6 +20,7 @@ import {
   appendLog,
   isTerminal,
   logsDir,
+  attachmentsDir,
   LIMITS,
 } from './store.mjs';
 import { ALLOWED_FILES, isAllowed } from './allowlist.mjs';
@@ -30,6 +31,8 @@ import {
   commitAll,
   pushBranch,
   mergeDevIntoProd,
+  readFileAtRef,
+  changedSinceRef,
   toWebRelative as gitToWebRelative,
 } from './git.mjs';
 import { run, tailLines, ShellError } from './shell.mjs';
@@ -221,6 +224,82 @@ export async function releaseLock(config) {
 }
 
 // ---------------------------------------------------------------------------
+// Job attachments in the dev worktree
+// ---------------------------------------------------------------------------
+
+// Every attachment is copied to INBOX_DIR (gitignored, read-only reference for
+// Claude: screenshots, YAML, CSV...). Images are also copied to UPLOADS_DIR,
+// where the site can import them; Claude cannot write binaries, so this is the
+// only way a new image reaches the site. Uploads that no changed file
+// references are removed before verification, so reference screenshots never
+// get committed.
+export const INBOX_DIR = '.agent-inbox';
+export const UPLOADS_DIR = 'src/assets/uploads';
+
+/** Web-relative paths where this job's attachments are available to Claude. */
+export function attachmentPaths(job) {
+  return (job.attachments ?? []).map((attachment) => ({
+    ...attachment,
+    inbox: `${INBOX_DIR}/${attachment.file}`,
+    upload: attachment.type.startsWith('image/') ? `${UPLOADS_DIR}/${job.id.slice(0, 8)}-${attachment.file}` : null,
+  }));
+}
+
+async function stageAttachments(job, config) {
+  const webDir = devWebDir(config);
+  const items = attachmentPaths(job);
+  await fs.rm(path.join(webDir, INBOX_DIR), { recursive: true, force: true });
+  if (items.length === 0) return;
+  await fs.mkdir(path.join(webDir, INBOX_DIR), { recursive: true });
+  for (const item of items) {
+    const source = path.join(attachmentsDir(job.id), item.file);
+    await fs.copyFile(source, path.join(webDir, item.inbox));
+    if (item.upload) {
+      await fs.mkdir(path.join(webDir, UPLOADS_DIR), { recursive: true });
+      await fs.copyFile(source, path.join(webDir, item.upload));
+    }
+  }
+}
+
+/** Delete staged uploads that no file changed by this job (any round) mentions. */
+async function pruneUnusedUploads(job, config, changedWebPaths) {
+  const webDir = devWebDir(config);
+  const uploads = attachmentPaths(job).map((item) => item.upload).filter(Boolean);
+  if (uploads.length === 0) return;
+  const texts = [];
+  for (const file of changedWebPaths) {
+    if (uploads.includes(file)) continue;
+    try {
+      texts.push(await fs.readFile(path.join(webDir, file), 'utf8'));
+    } catch {
+      // deleted or unreadable: nothing to scan
+    }
+  }
+  const haystack = texts.join('\n');
+  for (const upload of uploads) {
+    const fileName = upload.split('/').pop();
+    if (!haystack.includes(fileName)) {
+      await fs.rm(path.join(webDir, upload), { force: true });
+    }
+  }
+}
+
+async function clearInbox(config) {
+  await fs.rm(path.join(devWebDir(config), INBOX_DIR), { recursive: true, force: true });
+}
+
+/**
+ * The executor may not add a language: the `Locale` union in src/data/types.ts
+ * must stay exactly as it is on prod.
+ */
+async function localeUnchanged(config) {
+  const pattern = /export type Locale\s*=[^;]*;/;
+  const current = (await fs.readFile(path.join(devWebDir(config), 'src/data/types.ts'), 'utf8').catch(() => '')).match(pattern)?.[0];
+  const original = (await readFileAtRef(config.devDir, `origin/${config.prodBranch}`, 'web/src/data/types.ts', process.env)).match(pattern)?.[0];
+  return current === original;
+}
+
+// ---------------------------------------------------------------------------
 // State transitions
 // ---------------------------------------------------------------------------
 
@@ -230,6 +309,7 @@ export async function releaseLock(config) {
  */
 async function failJob(job, config, message) {
   try {
+    await clearInbox(config);
     await resetWorktreeToProd({ cwd: config.devDir, prodBranch: config.prodBranch, env: process.env });
   } catch (error) {
     log(job.id, `No se pudo limpiar el worktree de desarrollo tras el fallo: ${shellErrorTail(error)}`);
@@ -254,6 +334,7 @@ async function runClaudeRound(job, config, { kind, prompt, resumeSessionId }) {
 
   let result;
   try {
+    await stageAttachments(job, config);
     result = await runClaude({
       cwd: devWebDir(config),
       prompt,
@@ -315,12 +396,16 @@ async function handleQueued(job, config) {
 
   job = await updateJob(job.id, (j) => appendLog(j, 'running', 'Claude está editando (ronda 1).'));
 
-  return runClaudeRound(job, config, { kind: 'initial', prompt: buildInitialPrompt(job) });
+  return runClaudeRound(job, config, { kind: 'initial', prompt: buildInitialPrompt(job, attachmentPaths(job)) });
 }
 
 /** verifying: allowlist -> pnpm install -> pnpm check -> pnpm build -> deploying_dev | running(autofix) | failed */
 async function handleVerifying(job, config) {
   const webDir = devWebDir(config);
+
+  await clearInbox(config);
+  const touched = await changedSinceRef(config.devDir, `origin/${config.prodBranch}`, process.env);
+  await pruneUnusedUploads(job, config, touched.map(gitToWebRelative).filter(Boolean));
 
   const changed = await statusPaths(config.devDir, process.env);
   const violations = [];
@@ -336,6 +421,10 @@ async function handleVerifying(job, config) {
 
   if (violations.length > 0) {
     return failJob(job, config, `Claude modificó archivos fuera de lo permitido: ${violations.join(', ')}.`);
+  }
+
+  if (!(await localeUnchanged(config))) {
+    return failJob(job, config, 'El cambio intentó agregar o modificar idiomas del sitio (tipo Locale), y eso no está permitido.');
   }
 
   job = await updateJob(job.id, (j) => {
@@ -518,7 +607,7 @@ async function handlePreviewAction(job, config) {
     const lastSessionId = job.rounds[job.rounds.length - 1]?.sessionId;
     return runClaudeRound(job, config, {
       kind: 'feedback',
-      prompt: buildFeedbackPrompt(job, feedbackText),
+      prompt: buildFeedbackPrompt(job, feedbackText, attachmentPaths(job)),
       resumeSessionId: lastSessionId,
     });
   }

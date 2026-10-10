@@ -37,30 +37,25 @@ Piezas que ya existen:
 
 ## Operaciones permitidas hoy
 
-Solo texto y estructura de la landing existente, vía la allowlist fija del contrato:
+1. Modificar cualquier texto del sitio (es y en).
+2. Modificar estilos: colores, tipografía (solo Archivo y fuentes del sistema), imágenes, diseño.
+3. Colocar imágenes y elementos nuevos en la landing.
+4. Agregar o quitar paneles de la landing.
+5. Agregar puntos al mapa, con el YAML establecido o con datos sueltos.
+6. Agregar modelos de Python al laboratorio (corren en el navegador del visitante con Pyodide;
+   el servidor nunca ejecuta ese código, `pnpm build` solo lo empaqueta como texto).
 
-- `src/data/content.es.ts` / `content.en.ts` (copy factual, ambos idiomas);
-- `src/data/platform-copy.ts`, `src/data/models-copy.ts`;
-- `src/themes/v1-nature-distilled/copy.ts`, `tokens.css`, `Page.astro`.
+No permitido: instalar librerías, agregar idiomas, crear módulos nuevos (páginas o secciones con
+otro fin que el mapa y los modelos), tocar login/admin/servidor/despliegue/configuración.
 
-Cualquier ruta fuera de esa lista es rechazada dos veces: por el hook `PreToolUse` mientras
-Claude edita, y por el chequeo de `git status` del worker después de la corrida. Un intento
-fuera de la allowlist termina el job en `failed`, nunca en `preview` ni `done`.
+El chat acepta pantallazos (pegar con Cmd+V, arrastrar o adjuntar): los describe, confirma qué
+elemento se quiere cambiar y los manda con el job como referencia. Detalle de áreas de archivos,
+deny-list y adjuntos en `AGENT_CONTRACT.md`.
 
-## Operaciones futuras (no implementadas)
-
-Quedan fuera del ejecutor actual y requieren su propio diseño de validación antes de
-habilitarse:
-
-1. **Puntos del mapa** (`add_map_location`): agregar una entrada a
-   `src/data/platform-locations.ts` con activos asociados — necesita esquema estricto de
-   coordenadas/activos, no solo texto libre.
-2. **Modelos** (`add_model`): registrar un modelo en `src/features/models/models/` y
-   `registry.ts` — implica ejecutar o al menos cargar código/datos aportados por el cliente,
-   lo que necesita un sandbox real, separado del worker de texto.
-
-Mientras no existan, el chat de `/admin/` debe seguir explicando que esas operaciones no están
-disponibles en vez de intentar forzarlas por la ruta de texto.
+Cualquier ruta fuera de las áreas permitidas es rechazada dos veces: por el hook `PreToolUse`
+mientras Claude edita, y por el chequeo de `git status` del worker después de la corrida. Un
+intento fuera de la allowlist, o un cambio del tipo `Locale`, termina el job en `failed`, nunca en
+`preview` ni `done`.
 
 ## Controles de seguridad vigentes
 

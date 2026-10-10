@@ -32,13 +32,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   } catch {
     return Response.json({ error: 'Solicitud inválida.' }, { status: 400, headers: NO_STORE });
   }
-  const { summary, instruction } = (body ?? {}) as { summary?: unknown; instruction?: unknown };
+  const { summary, instruction, attachments } = (body ?? {}) as { summary?: unknown; instruction?: unknown; attachments?: unknown };
 
   try {
     const job = (await createJob({
       summary: typeof summary === 'string' ? summary : '',
       instruction: typeof instruction === 'string' ? instruction : '',
       requestedBy: adminUsername() || 'admin',
+      attachments,
     })) as Job;
     return Response.json({ job }, { status: 201, headers: NO_STORE });
   } catch (error) {

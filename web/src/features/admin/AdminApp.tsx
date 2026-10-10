@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
 import { ADMIN_CAPABILITIES, ADMIN_RESTRICTIONS } from '../../lib/admin/policy';
 import type { Job, JobStatus } from '../../lib/admin/jobs-types';
 import './admin.css';
@@ -24,9 +24,22 @@ interface Proposal {
   instruction: string;
 }
 
-const ACCEPTED_TYPES = '.png,.jpg,.jpeg,.webp,.gif,.pdf,.csv,.tsv,.txt,.md,.json,.geojson';
-const MAX_FILE_BYTES = 2 * 1024 * 1024;
-const MAX_TOTAL_BYTES = 4 * 1024 * 1024;
+// Mirrors ATTACHMENT_TYPES / ATTACHMENT_LIMITS in agent/lib/store.mjs: every
+// file sent in the conversation travels with the job when the proposal is confirmed.
+const MIME_BY_EXTENSION: Record<string, string> = {
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif',
+  pdf: 'application/pdf', txt: 'text/plain', md: 'text/markdown', csv: 'text/csv',
+  tsv: 'text/tab-separated-values', yaml: 'text/yaml', yml: 'text/yaml', py: 'text/x-python',
+  json: 'application/json', geojson: 'application/geo+json',
+};
+const ACCEPTED_TYPES = Object.keys(MIME_BY_EXTENSION).map((extension) => `.${extension}`).join(',');
+const MAX_FILES = 6;
+const MAX_FILE_BYTES = 3 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 5 * 1024 * 1024;
+// Retina screenshots are often several MB: images above this size or edge are
+// re-encoded client-side before they are attached.
+const IMAGE_MAX_EDGE = 2400;
+const IMAGE_REENCODE_ABOVE_BYTES = 1.5 * 1024 * 1024;
 const POLL_INTERVAL_MS = 3000;
 const POLL_WARNING_AFTER_MS = 60_000;
 
@@ -45,27 +58,68 @@ const STATUS_LABELS: Record<JobStatus, string> = {
 };
 
 const QUICK_ACTIONS = [
-  { label: 'Editar el titular', prompt: 'Quiero cambiar el titular del hero de la landing page.' },
-  { label: 'Actualizar un texto', prompt: 'Quiero actualizar un texto de la landing page.' },
-  { label: 'Ajustar un color', prompt: 'Quiero ajustar un color o token visual de la landing page.' },
+  { label: 'Cambiar un texto', prompt: 'Quiero cambiar un texto de la página.' },
+  { label: 'Ajustar el diseño', prompt: 'Quiero ajustar el diseño de la página (colores, tipografía o imágenes).' },
+  { label: 'Agregar un punto al mapa', prompt: 'Quiero agregar un punto nuevo al mapa de iniciativas.' },
 ];
 
-function readFile(file: File): Promise<PendingFile> {
+// The browser's file.type is unreliable (empty for .yaml, application/x-yaml,
+// text/x-python...), so the extension decides, and the data URL is rebuilt
+// with that type: the server checks that the prefix matches.
+function mimeFor(file: File): string | null {
+  const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
+  return MIME_BY_EXTENSION[extension] ?? null;
+}
+
+function readAsDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve({ name: file.name, type: file.type || inferMime(file.name), data: String(reader.result), size: file.size });
-    reader.onerror = () => reject(new Error(`No se pudo leer ${file.name}`));
-    reader.readAsDataURL(file);
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
+    reader.readAsDataURL(blob);
   });
 }
 
-function inferMime(name: string): string {
-  const extension = name.split('.').pop()?.toLowerCase();
-  const types: Record<string, string> = {
-    csv: 'text/csv', tsv: 'text/tab-separated-values', txt: 'text/plain', md: 'text/markdown',
-    json: 'application/json', geojson: 'application/geo+json', pdf: 'application/pdf',
-  };
-  return types[extension ?? ''] ?? 'application/octet-stream';
+async function shrinkImage(file: File, type: string): Promise<{ blob: Blob; type: string; name: string } | null> {
+  if (type !== 'image/png' && type !== 'image/jpeg' && type !== 'image/webp') return null;
+  const bitmap = await createImageBitmap(file).catch(() => null);
+  if (!bitmap) return null;
+  const edge = Math.max(bitmap.width, bitmap.height);
+  if (edge <= IMAGE_MAX_EDGE && file.size <= IMAGE_REENCODE_ABOVE_BYTES) {
+    bitmap.close();
+    return null;
+  }
+  const scale = Math.min(1, IMAGE_MAX_EDGE / edge);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  // Safari may not encode WebP; JPEG is the fallback.
+  for (const [mime, extension] of [['image/webp', 'webp'], ['image/jpeg', 'jpg']] as const) {
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, mime, 0.9));
+    if (blob && blob.type === mime) return { blob, type: mime, name: `${file.name.replace(/\.[^.]+$/, '')}.${extension}` };
+  }
+  return null;
+}
+
+async function readFile(file: File): Promise<PendingFile> {
+  const type = mimeFor(file);
+  if (!type) throw new Error(`"${file.name}" no es un tipo de archivo permitido.`);
+  const shrunk = await shrinkImage(file, type);
+  const blob = shrunk?.blob ?? file;
+  const finalType = shrunk?.type ?? type;
+  const raw = await readAsDataUrl(blob);
+  const data = `data:${finalType};base64,${raw.slice(raw.indexOf(',') + 1)}`;
+  return { name: shrunk?.name ?? file.name, type: finalType, data, size: blob.size };
+}
+
+function pastedName(file: File, index: number): File {
+  // Pasted screenshots arrive as "image.png"; give them a readable unique name.
+  if (file.name && file.name !== 'image.png') return file;
+  const stamp = new Date().toISOString().slice(11, 19).replace(/:/g, '');
+  const extension = file.type.split('/')[1] || 'png';
+  return new File([file], `pantallazo-${stamp}${index ? `-${index + 1}` : ''}.${extension}`, { type: file.type });
 }
 
 function formatBytes(bytes: number): string {
@@ -98,6 +152,9 @@ export default function AdminApp() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [files, setFiles] = useState<PendingFile[]>([]);
+  // Files already sent in this conversation; they go with the next confirmed job.
+  const [sessionFiles, setSessionFiles] = useState<PendingFile[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -223,6 +280,7 @@ export default function AdminApp() {
     await fetch('/api/admin/logout/', { method: 'POST', credentials: 'same-origin' }).catch(() => undefined);
     setMessages([]);
     setFiles([]);
+    setSessionFiles([]);
     setInput('');
     setProposal(null);
     setOpenJob(null);
@@ -230,29 +288,45 @@ export default function AdminApp() {
     setView('login');
   }
 
-  async function addFiles(selected: FileList | null) {
+  async function addFiles(selected: FileList | File[] | null) {
     if (!selected) return;
     setError('');
     const incoming = Array.from(selected);
-    if (files.length + incoming.length > 4) {
-      setError('Puedes adjuntar hasta 4 archivos por mensaje.');
-      return;
-    }
-    if (incoming.some((file) => file.size > MAX_FILE_BYTES)) {
-      setError('Cada archivo puede pesar hasta 2 MB.');
-      return;
-    }
-    if (files.reduce((sum, file) => sum + file.size, 0) + incoming.reduce((sum, file) => sum + file.size, 0) > MAX_TOTAL_BYTES) {
-      setError('El total de archivos puede pesar hasta 4 MB.');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (incoming.length === 0) return;
+    const alreadyAttached = [...sessionFiles, ...files];
+    if (alreadyAttached.length + incoming.length > MAX_FILES) {
+      setError(`Puedes adjuntar hasta ${MAX_FILES} archivos por cambio (esta conversación ya tiene ${alreadyAttached.length}).`);
       return;
     }
     try {
       const loadedFiles = await Promise.all(incoming.map(readFile));
+      if (loadedFiles.some((file) => file.size > MAX_FILE_BYTES)) {
+        setError('Cada archivo puede pesar hasta 3 MB.');
+        return;
+      }
+      const total = [...alreadyAttached, ...loadedFiles].reduce((sum, file) => sum + file.size, 0);
+      if (total > MAX_TOTAL_BYTES) {
+        setError('El total de archivos de un cambio puede pesar hasta 5 MB.');
+        return;
+      }
       setFiles((current) => [...current, ...loadedFiles]);
     } catch (fileError) {
       setError(fileError instanceof Error ? fileError.message : 'No fue posible leer los archivos.');
     }
-    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  function handlePaste(event: ClipboardEvent<HTMLTextAreaElement>) {
+    const pasted = Array.from(event.clipboardData.files);
+    if (pasted.length === 0) return;
+    event.preventDefault();
+    void addFiles(pasted.map(pastedName));
+  }
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    setIsDragging(false);
+    void addFiles(event.dataTransfer.files);
   }
 
   async function send(forcedPrompt?: string) {
@@ -277,7 +351,7 @@ export default function AdminApp() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ messages: nextMessages.map(({ role, content }) => ({ role, content })), attachments: sentFiles }),
+        body: JSON.stringify({ messages: nextMessages.map(({ role, content, files: names }) => ({ role, content, files: names })), attachments: sentFiles }),
       });
       const result = await response.json() as { message?: string; error?: string; proposal?: Proposal };
       if (response.status === 401) {
@@ -286,6 +360,7 @@ export default function AdminApp() {
       }
       if (!response.ok || !result.message) throw new Error(result.error || 'No fue posible obtener una respuesta.');
       setMessages((current) => [...current, { role: 'assistant', content: result.message! }]);
+      setSessionFiles((current) => [...current, ...sentFiles]);
       if (result.proposal) setProposal(result.proposal);
     } catch (sendError) {
       setError(sendError instanceof Error ? sendError.message : 'No fue posible obtener una respuesta.');
@@ -318,7 +393,11 @@ export default function AdminApp() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ summary: proposal.summary, instruction: proposal.instruction }),
+        body: JSON.stringify({
+          summary: proposal.summary,
+          instruction: proposal.instruction,
+          attachments: sessionFiles.map(({ name, type, data }) => ({ name, type, data })),
+        }),
       });
       const data = await response.json() as { job?: Job; error?: string };
       if (response.status === 401) {
@@ -332,6 +411,7 @@ export default function AdminApp() {
       if (!response.ok || !data.job) throw new Error(data.error || 'No fue posible crear el cambio.');
       setOpenJob(data.job);
       setProposal(null);
+      setSessionFiles([]);
       void loadJobs();
     } catch (createError) {
       setError(createError instanceof Error ? createError.message : 'No fue posible crear el cambio.');
@@ -423,8 +503,8 @@ export default function AdminApp() {
         <a className="admin-brand" href="/"><img src="/favicon-32.png" alt="" /><span>ADAPTATION LATIN AMERICA<small>ADMIN</small></span></a>
         <div className="admin-header-actions">
           <span className="admin-mode"><i />Modo propuesta</span>
-          <button className="admin-status-toggle" type="button" onClick={() => setShowStatus(true)}>
-            Cambios{openJob ? ' ●' : ''}
+          <button className="admin-status-toggle" type="button" onClick={() => setShowStatus((current) => !current)} aria-expanded={showStatus}>
+            <span>Cambios</span>{openJob && <i className="admin-status-dot" aria-label="Hay un cambio en curso" />}
           </button>
           <button className="admin-icon-button" type="button" onClick={toggleTheme} aria-label="Cambiar tema">◐</button>
           <button className="admin-text-button" type="button" onClick={logout}>Cerrar sesión</button>
@@ -434,8 +514,8 @@ export default function AdminApp() {
       <aside className={`admin-policy ${showPolicy ? 'is-open' : ''}`}>
         <div className="admin-policy-heading"><div><span className="admin-kicker">Permisos del agente</span><h2>Alcance controlado</h2></div><button type="button" onClick={() => setShowPolicy(false)} aria-label="Cerrar reglas">×</button></div>
         <section><h3>Puede ayudarte con</h3><ul className="admin-allowed">{ADMIN_CAPABILITIES.map((item) => <li key={item}>{item}</li>)}</ul></section>
-        <section><h3>No puede hacer (todavía)</h3><ul className="admin-blocked">{ADMIN_RESTRICTIONS.map((item) => <li key={item}>{item}</li>)}</ul></section>
-        <div className="admin-phase-note"><strong>Cómo se publica un cambio</strong><p>Cuando confirmas una propuesta, el ejecutor la aplica, la verifica y la publica en un sitio de desarrollo para tu revisión. Solo pasa a producción cuando la confirmas por segunda vez.</p></div>
+        <section><h3>No puede hacer</h3><ul className="admin-blocked">{ADMIN_RESTRICTIONS.map((item) => <li key={item}>{item}</li>)}</ul></section>
+        <div className="admin-phase-note"><strong>Cómo se publica un cambio</strong><p>Cuando confirmas una propuesta, el ejecutor la aplica, la verifica y la publica en el sitio de pruebas (con un banner rojo) para tu revisión. Solo pasa al sitio real cuando la apruebas por segunda vez.</p></div>
       </aside>
 
       <section className="admin-chat">
@@ -449,7 +529,7 @@ export default function AdminApp() {
             <div className="admin-welcome">
               <div className="admin-agent-mark"><img src="/favicon-32.png" alt="" /></div>
               <h2>¿Qué quieres actualizar?</h2>
-              <p>Puedo ayudarte a preparar cambios de texto y estructura para la landing page. El mapa y los modelos todavía no están disponibles.</p>
+              <p>Puedo cambiar textos y diseño, agregar imágenes y paneles a la landing, sumar puntos al mapa y modelos al laboratorio. Si te es más fácil, pega un pantallazo de lo que quieres cambiar.</p>
               <div className="admin-quick-actions">{QUICK_ACTIONS.map((action) => <button type="button" key={action.label} onClick={() => void send(action.prompt)}>{action.label}<span>↗</span></button>)}</div>
             </div>
           ) : messages.map((message, index) => (
@@ -469,6 +549,17 @@ export default function AdminApp() {
               <span className="admin-kicker">Propuesta de cambio</span>
               <p>{proposal.summary}</p>
             </div>
+            {sessionFiles.length > 0 && (
+              <div className="admin-proposal-files">
+                <span>Archivos que se envían con el cambio:</span>
+                {sessionFiles.map((file, index) => (
+                  <span className="admin-chip" key={`${file.name}-${index}`}>
+                    {file.name}
+                    <button type="button" onClick={() => setSessionFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} aria-label={`No enviar ${file.name}`} disabled={actionBusy}>×</button>
+                  </span>
+                ))}
+              </div>
+            )}
             <details className="admin-proposal-details">
               <summary>Ver instrucción completa</summary>
               <pre>{proposal.instruction}</pre>
@@ -485,14 +576,19 @@ export default function AdminApp() {
 
         <div className="admin-composer-wrap">
           {error && <div className="admin-error" role="alert"><span>{error}</span><button type="button" onClick={() => setError('')} aria-label="Cerrar">×</button></div>}
-          {files.length > 0 && <div className="admin-files">{files.map((file, index) => <span key={`${file.name}-${index}`}><b>{file.name}</b><small>{formatBytes(file.size)}</small><button type="button" onClick={() => setFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} aria-label={`Quitar ${file.name}`}>×</button></span>)}</div>}
-          <div className="admin-composer">
+          {files.length > 0 && <div className="admin-files">{files.map((file, index) => <span key={`${file.name}-${index}`}>{file.type.startsWith('image/') && <img src={file.data} alt="" />}<b>{file.name}</b><small>{formatBytes(file.size)}</small><button type="button" onClick={() => setFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} aria-label={`Quitar ${file.name}`}>×</button></span>)}</div>}
+          <div
+            className={`admin-composer ${isDragging ? 'is-dragging' : ''}`}
+            onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+          >
             <button className="admin-attach" type="button" onClick={() => fileInputRef.current?.click()} aria-label="Adjuntar archivos" title="Adjuntar archivos">+</button>
             <input ref={fileInputRef} type="file" accept={ACCEPTED_TYPES} multiple hidden onChange={(event) => void addFiles(event.target.files)} />
-            <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleKeyDown} placeholder="Describe el cambio que quieres hacer…" rows={1} disabled={isSending} />
+            <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleKeyDown} onPaste={handlePaste} placeholder="Describe el cambio o pega un pantallazo…" rows={1} disabled={isSending} />
             <button className="admin-send" type="button" onClick={() => void send()} disabled={isSending || (!input.trim() && files.length === 0)} aria-label="Enviar">↑</button>
           </div>
-          <p className="admin-composer-help">Imágenes, PDF, Word, Excel, CSV, JSON y GeoJSON · 2 MB por archivo · Enter para enviar</p>
+          <p className="admin-composer-help">Imágenes, pantallazos (pégalos o arrástralos), YAML, PDF, CSV, JSON y Python · 3 MB por archivo · Enter para enviar</p>
         </div>
       </section>
 

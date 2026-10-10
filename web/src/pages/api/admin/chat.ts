@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { hasValidSession, isSameOrigin } from '../../../lib/admin/auth';
 import { ADMIN_SYSTEM_PROMPT } from '../../../lib/admin/policy';
-import { findOpenJob, LIMITS } from '../../../../agent/lib/store.mjs';
+import { ATTACHMENT_LIMITS, ATTACHMENT_TYPES, findOpenJob, LIMITS } from '../../../../agent/lib/store.mjs';
 
 export const prerender = false;
 
@@ -14,7 +14,7 @@ const DEFAULT_MODEL = 'gpt-5.6-luna';
 const SUBMIT_CHANGE_TOOL = {
   type: 'function',
   name: 'submit_change_request',
-  description: 'Enviar una solicitud de cambio de texto o estructura de la landing al ejecutor, una vez entendida y validada con el usuario.',
+  description: 'Enviar al ejecutor una solicitud de cambio dentro del alcance permitido (textos, estilos, imágenes y paneles de la landing, puntos del mapa, modelos de Python), una vez entendida y validada con el usuario. Los archivos adjuntos de la conversación viajan con la solicitud.',
   parameters: {
     type: 'object',
     properties: {
@@ -41,6 +41,7 @@ const STATUS_LABELS: Record<string, string> = {
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
+  files?: string[];
 }
 
 interface Attachment {
@@ -50,25 +51,12 @@ interface Attachment {
   size: number;
 }
 
-const MAX_BODY_BYTES = 6 * 1024 * 1024;
-const MAX_FILE_BYTES = 2 * 1024 * 1024;
-const MAX_TOTAL_FILE_BYTES = 4 * 1024 * 1024;
+const MAX_BODY_BYTES = 8 * 1024 * 1024;
+const MAX_TEXT_FILE_CHARS = 40_000;
 
-// Kept in sync with the file types the admin UI actually offers (see AdminApp.tsx's
-// ACCEPTED_TYPES) — images, PDFs and a few plain-text formats, no Word/Excel.
-const ALLOWED_TYPES = new Set([
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-  'application/pdf',
-  'text/plain',
-  'text/markdown',
-  'text/csv',
-  'text/tab-separated-values',
-  'application/json',
-  'application/geo+json',
-]);
+// Same list as the job store (agent/lib/store.mjs), so whatever the chat
+// accepts can also travel with the job. The admin UI mirrors it.
+const ALLOWED_TYPES = new Set(Object.keys(ATTACHMENT_TYPES));
 
 function validMessages(value: unknown): value is ChatMessage[] {
   return Array.isArray(value) && value.length <= 20 && value.every((message) =>
@@ -76,12 +64,16 @@ function validMessages(value: unknown): value is ChatMessage[] {
     typeof message === 'object' &&
     ((message as ChatMessage).role === 'user' || (message as ChatMessage).role === 'assistant') &&
     typeof (message as ChatMessage).content === 'string' &&
-    (message as ChatMessage).content.length <= 8_000,
+    (message as ChatMessage).content.length <= 8_000 &&
+    ((message as ChatMessage).files === undefined || (
+      Array.isArray((message as ChatMessage).files) &&
+      ((message as ChatMessage).files as unknown[]).every((name) => typeof name === 'string' && name.length <= 180)
+    )),
   );
 }
 
 function validAttachments(value: unknown): value is Attachment[] {
-  if (!Array.isArray(value) || value.length > 4) return false;
+  if (!Array.isArray(value) || value.length > ATTACHMENT_LIMITS.count) return false;
   let total = 0;
   for (const file of value) {
     if (!file || typeof file !== 'object') return false;
@@ -90,11 +82,28 @@ function validAttachments(value: unknown): value is Attachment[] {
       typeof item.name !== 'string' || item.name.length > 180 ||
       typeof item.type !== 'string' || !ALLOWED_TYPES.has(item.type) ||
       typeof item.data !== 'string' || !item.data.startsWith(`data:${item.type};base64,`) ||
-      typeof item.size !== 'number' || item.size <= 0 || item.size > MAX_FILE_BYTES
+      typeof item.size !== 'number' || item.size <= 0 || item.size > ATTACHMENT_LIMITS.fileBytes
     ) return false;
     total += item.size;
   }
-  return total <= MAX_TOTAL_FILE_BYTES;
+  return total <= ATTACHMENT_LIMITS.totalBytes;
+}
+
+function decodeText(dataUrl: string): string {
+  const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+  const text = Buffer.from(base64, 'base64').toString('utf8');
+  return text.length > MAX_TEXT_FILE_CHARS ? `${text.slice(0, MAX_TEXT_FILE_CHARS)}\n[…archivo recortado]` : text;
+}
+
+function isTextType(type: string): boolean {
+  return type.startsWith('text/') || type === 'application/json' || type === 'application/geo+json';
+}
+
+// Earlier turns only keep their text, so tell the model which files a turn
+// carried: it can still refer to them by name in the instruction.
+function withFileNote(message: ChatMessage): string {
+  if (!message.files || message.files.length === 0) return message.content;
+  return `${message.content}\n\n[Archivos adjuntos en este mensaje: ${message.files.join(', ')}]`;
 }
 
 interface ResponsesOutputItem {
@@ -168,11 +177,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   const input = messages.slice(-12).map((message, index, visibleMessages) => {
     const isLatest = index === visibleMessages.length - 1;
-    if (!isLatest) return { role: message.role, content: message.content };
-    const content: Array<Record<string, unknown>> = [{ type: 'input_text', text: message.content }];
+    if (!isLatest) return { role: message.role, content: withFileNote(message) };
+    const content: Array<Record<string, unknown>> = [{ type: 'input_text', text: withFileNote(message) }];
     for (const file of attachments) {
       if (file.type.startsWith('image/')) {
-        content.push({ type: 'input_image', image_url: file.data, detail: 'auto' });
+        content.push({ type: 'input_text', text: `Imagen adjunta: ${file.name}` });
+        content.push({ type: 'input_image', image_url: file.data, detail: 'high' });
+      } else if (isTextType(file.type)) {
+        content.push({ type: 'input_text', text: `Contenido del archivo adjunto ${file.name}:\n${decodeText(file.data)}` });
       } else {
         content.push({ type: 'input_file', filename: file.name, file_data: file.data });
       }
@@ -191,7 +203,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         tools: [SUBMIT_CHANGE_TOOL],
         tool_choice: 'auto',
         store: false,
-        max_output_tokens: 1800,
+        max_output_tokens: 6000,
       }),
       signal: AbortSignal.timeout(90_000),
     });

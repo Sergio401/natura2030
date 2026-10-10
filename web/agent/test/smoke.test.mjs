@@ -9,13 +9,14 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 
 import { processOnce, generateSettings } from '../lib/machine.mjs';
 import { createJob, setAction } from '../lib/store.mjs';
+import { isAllowed } from '../lib/allowlist.mjs';
 
-const SCRATCH_ROOT =
-  '/private/tmp/claude-501/-Users-sergioleonardogonzalezfonseca-CodeProjects-natura2030/d685e5e9-ed20-41b5-a174-72637f8a4021/scratchpad';
+const SCRATCH_ROOT = process.env.AGENT_TEST_SCRATCH || path.join(os.tmpdir(), 'natura-agent-tests');
 
 function sh(cmd, args, opts = {}) {
   return execFileSync(cmd, args, { stdio: 'pipe', ...opts }).toString();
@@ -89,6 +90,51 @@ const CLAUDE_BAD_SRC = [
   '',
 ].join('\n');
 
+// Reads the round prompt (-p), finds the staged upload path and references it
+// from content.es.ts, and checks the reference copy is readable in the inbox.
+const CLAUDE_USES_UPLOAD_SRC = [
+  '#!/usr/bin/env node',
+  "import { promises as fs } from 'node:fs';",
+  "import path from 'node:path';",
+  'const args = process.argv.slice(2);',
+  "if (args.includes('--help')) { console.log('--max-turns'); process.exit(0); }",
+  "const prompt = args[args.indexOf('-p') + 1];",
+  "const upload = prompt.match(/para usarla en el sitio: (src\\/assets\\/uploads\\/[^)]+)\\)/)[1];",
+  "const inbox = prompt.match(/: (\\.agent-inbox\\/foto\\.png)/)[1];",
+  "await fs.access(path.join(process.cwd(), inbox));",
+  "await fs.access(path.join(process.cwd(), '.agent-inbox/punto.yaml'));",
+  "const target = path.join(process.cwd(), 'src/data/content.es.ts');",
+  "await fs.appendFile(target, `\\n// imagen: ${upload.split('/').pop()}\\n`, 'utf8');",
+  "process.stdout.write(JSON.stringify({ type: 'result', is_error: false, result: 'Use la foto.', session_id: 's-' + Date.now(), num_turns: 1, total_cost_usd: 0 }));",
+  '',
+].join('\n');
+
+// Tries to add a language by widening the Locale union.
+const CLAUDE_ADDS_LOCALE_SRC = [
+  '#!/usr/bin/env node',
+  "import { promises as fs } from 'node:fs';",
+  "import path from 'node:path';",
+  'const args = process.argv.slice(2);',
+  "if (args.includes('--help')) { console.log('--max-turns'); process.exit(0); }",
+  "const target = path.join(process.cwd(), 'src/data/types.ts');",
+  "const before = await fs.readFile(target, 'utf8');",
+  "await fs.writeFile(target, before.replace(\"'es' | 'en'\", \"'es' | 'en' | 'fr'\"), 'utf8');",
+  "process.stdout.write(JSON.stringify({ type: 'result', is_error: false, result: 'Agregue frances.', session_id: 's-' + Date.now(), num_turns: 1, total_cost_usd: 0 }));",
+  '',
+].join('\n');
+
+// Feedback round that edits a different file than the one importing the image.
+const CLAUDE_EDITS_OTHER_SRC = [
+  '#!/usr/bin/env node',
+  "import { promises as fs } from 'node:fs';",
+  "import path from 'node:path';",
+  'const args = process.argv.slice(2);',
+  "if (args.includes('--help')) { console.log('--max-turns'); process.exit(0); }",
+  "await fs.writeFile(path.join(process.cwd(), 'src/data/otro.ts'), 'export const x = 1;\\n', 'utf8');",
+  "process.stdout.write(JSON.stringify({ type: 'result', is_error: false, result: 'Ajuste.', session_id: 's-' + Date.now(), num_turns: 1, total_cost_usd: 0 }));",
+  '',
+].join('\n');
+
 function pnpmStubSrc(logPath) {
   return [
     '#!/usr/bin/env node',
@@ -157,6 +203,12 @@ async function setupFixture() {
     'utf8',
   );
   await fs.writeFile(
+    path.join(seedDir, 'web', 'src', 'data', 'types.ts'),
+    "export type Locale = 'es' | 'en';\n",
+    'utf8',
+  );
+  await fs.writeFile(path.join(seedDir, 'web', '.gitignore'), '.agent-inbox/\n', 'utf8');
+  await fs.writeFile(
     path.join(seedDir, 'web', 'package.json'),
     JSON.stringify({ name: 'web-fixture', private: true }, null, 2) + '\n',
     'utf8',
@@ -178,6 +230,9 @@ async function setupFixture() {
 
   const claudeGood = await writeExecutable(path.join(binDir, 'claude-good.mjs'), CLAUDE_GOOD_SRC);
   const claudeBad = await writeExecutable(path.join(binDir, 'claude-bad.mjs'), CLAUDE_BAD_SRC);
+  const claudeUpload = await writeExecutable(path.join(binDir, 'claude-upload.mjs'), CLAUDE_USES_UPLOAD_SRC);
+  const claudeLocale = await writeExecutable(path.join(binDir, 'claude-locale.mjs'), CLAUDE_ADDS_LOCALE_SRC);
+  const claudeOther = await writeExecutable(path.join(binDir, 'claude-other.mjs'), CLAUDE_EDITS_OTHER_SRC);
   const pnpmStub = await writeExecutable(
     path.join(binDir, 'pnpm-stub.mjs'),
     pnpmStubSrc(path.join(root, 'pnpm-calls.log')),
@@ -206,12 +261,12 @@ async function setupFixture() {
   };
   baseConfig.settingsPath = await generateSettings(baseConfig);
 
-  return { root, originDir, prodDir, devDir, dataDir, claudeGood, claudeBad, baseConfig };
+  return { root, originDir, prodDir, devDir, dataDir, claudeGood, claudeBad, claudeUpload, claudeLocale, claudeOther, baseConfig };
 }
 
 async function createJobWithEnv(fx, input) {
   process.env.AGENT_DATA_DIR = fx.dataDir;
-  return createJob({ summary: input.summary, instruction: input.instruction, requestedBy: 'admin' });
+  return createJob({ summary: input.summary, instruction: input.instruction, requestedBy: 'admin', attachments: input.attachments });
 }
 
 async function setActionWithEnv(fx, jobId, action) {
@@ -341,4 +396,114 @@ test('a check failure that never clears exhausts autofix rounds and fails', asyn
 
   const status = sh('git', ['status', '--porcelain'], { cwd: fx.devDir }).trim();
   assert.equal(status, '', 'dev worktree should be clean after exhausting autofix rounds');
+});
+
+test('allowlist: allowed areas accept new files, the deny list always wins', () => {
+  const web = '/repo/web';
+  for (const ok of [
+    'src/data/content.es.ts',
+    'src/data/platform-locations.ts',
+    'src/assets/uploads/20261010-foto.webp',
+    'src/assets/platform/nueva.jpg',
+    'src/themes/v1-nature-distilled/Page.astro',
+    'src/components/shared/Banner.astro',
+    'src/features/platform/platform.css',
+    'src/features/models/models/oleaje/model.py',
+    'src/features/models/runtime/oleaje.worker.ts',
+    'src/pages/models/oleaje/index.astro',
+    'src/pages/models/en/oleaje/index.astro',
+  ]) assert.equal(isAllowed(ok, web), true, ok);
+  for (const no of [
+    'package.json',
+    'pnpm-lock.yaml',
+    'astro.config.mjs',
+    'tsconfig.json',
+    '.env',
+    'src/layouts/BaseLayout.astro',
+    'src/pages/index.astro',
+    'src/pages/fr/index.astro',
+    'src/pages/api/admin/chat.ts',
+    'src/pages/admin/index.astro',
+    'src/lib/admin/policy.ts',
+    'src/features/admin/AdminApp.tsx',
+    'src/features/models/package.json',
+    'agent/lib/allowlist.mjs',
+    'deploy/update.sh',
+    '.agent-inbox/foto.png',
+    '../outside.ts',
+    '/etc/passwd',
+  ]) assert.equal(isAllowed(no, web), false, no);
+});
+
+test('attachments reach Claude; a used upload is committed, the inbox and unused uploads are not', async () => {
+  const fx = await setupFixture();
+  const config = { ...fx.baseConfig, claudeBin: fx.claudeUpload };
+  const png = `data:image/png;base64,${Buffer.from('fake-png').toString('base64')}`;
+  const shot = `data:image/png;base64,${Buffer.from('fake-screenshot').toString('base64')}`;
+  const yaml = `data:text/yaml;base64,${Buffer.from('id: "004"\n').toString('base64')}`;
+
+  const job = await createJobWithEnv(fx, {
+    summary: 'Nueva foto en la landing',
+    instruction: 'Usa foto.png en el hero; pantallazo.png es solo referencia.',
+    attachments: [
+      { name: 'Foto.PNG', type: 'image/png', data: png },
+      { name: 'pantallazo.png', type: 'image/png', data: shot },
+      { name: 'punto.yaml', type: 'text/yaml', data: yaml },
+    ],
+  });
+  assert.deepEqual(job.attachments.map((a) => a.file), ['foto.png', 'pantallazo.png', 'punto.yaml']);
+
+  const preview = await processOnce(config);
+  assert.equal(preview.status, 'preview', preview.error ?? '');
+  const committed = sh('git', ['show', '--name-only', '--format=', 'HEAD'], { cwd: fx.devDir }).trim().split('\n').sort();
+  assert.equal(committed.length, 2, committed.join(', '));
+  assert.ok(committed.includes('web/src/data/content.es.ts'));
+  assert.ok(committed.some((file) => /^web\/src\/assets\/uploads\/\d{8}-foto\.png$/.test(file)));
+  await assert.rejects(fs.access(path.join(fx.devDir, 'web', '.agent-inbox')));
+});
+
+test('rejects attachments of a type that is not allowed', async () => {
+  const fx = await setupFixture();
+  await assert.rejects(
+    createJobWithEnv(fx, {
+      summary: 'Archivo raro',
+      instruction: 'x',
+      attachments: [{ name: 'malo.svg', type: 'image/svg+xml', data: 'data:image/svg+xml;base64,PHN2Zy8+' }],
+    }),
+    /no está permitido/,
+  );
+});
+
+test('a change that adds a language fails', async () => {
+  const fx = await setupFixture();
+  const config = { ...fx.baseConfig, claudeBin: fx.claudeLocale };
+  await createJobWithEnv(fx, { summary: 'Agregar francés', instruction: 'Agrega el idioma francés.' });
+  const result = await processOnce(config);
+  assert.equal(result.status, 'failed');
+  assert.match(result.error, /idiomas/);
+  const status = sh('git', ['status', '--porcelain'], { cwd: fx.devDir }).trim();
+  assert.equal(status, '');
+});
+
+test('a feedback round that edits another file keeps an image used in round 1', async () => {
+  const fx = await setupFixture();
+  const png = `data:image/png;base64,${Buffer.from('fake-png').toString('base64')}`;
+  const yaml = `data:text/yaml;base64,${Buffer.from('id: "004"\n').toString('base64')}`;
+  const job = await createJobWithEnv(fx, {
+    summary: 'Foto y luego ajuste',
+    instruction: 'Usa foto.png.',
+    attachments: [
+      { name: 'foto.png', type: 'image/png', data: png },
+      { name: 'punto.yaml', type: 'text/yaml', data: yaml },
+    ],
+  });
+  const preview = await processOnce({ ...fx.baseConfig, claudeBin: fx.claudeUpload });
+  assert.equal(preview.status, 'preview', preview.error ?? '');
+
+  await setActionWithEnv(fx, job.id, { type: 'feedback', instruction: 'Cambia otro texto.' });
+  const again = await processOnce({ ...fx.baseConfig, claudeBin: fx.claudeOther });
+  assert.equal(again.status, 'preview', again.error ?? '');
+  const tree = sh('git', ['ls-tree', '-r', '--name-only', 'HEAD'], { cwd: fx.devDir });
+  assert.match(tree, /web\/src\/assets\/uploads\/\d{8}-foto\.png/);
+  assert.match(tree, /web\/src\/data\/otro\.ts/);
 });
